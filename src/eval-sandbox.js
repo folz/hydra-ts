@@ -1,7 +1,6 @@
 // handles code evaluation and attaching relevant objects to global and evaluation contexts
 
 const Sandbox = require('./lib/sandbox.js');
-const ArrayUtils = require('./lib/array-utils.js');
 
 class EvalSandbox {
   constructor(parent, makeGlobal, userProps = []) {
@@ -34,6 +33,7 @@ class EvalSandbox {
       });
       //  this.parent.speed = window.speed
     } else {
+      // pass
     }
   }
 

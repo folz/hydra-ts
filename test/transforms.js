@@ -1,6 +1,5 @@
-const { should, expect, assert } = require('chai');
+const { expect } = require('chai');
 const { prepareForHydra, mockRegl } = require('./lib/util');
-const transforms = require('../src/glsl/composable-glsl-functions');
 
 describe('Transforms', function () {
   const dimensions = {

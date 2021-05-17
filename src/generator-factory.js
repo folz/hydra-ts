@@ -17,7 +17,7 @@ class GeneratorFactory {
   }
   init() {
     this.glslTransforms = {};
-    this.generators = Object.entries(this.generators).reduce((prev, [method, transform]) => {
+    this.generators = Object.entries(this.generators).reduce((prev, [method]) => {
       this.changeListener({ type: 'remove', synth: this, method });
       return prev;
     }, {});

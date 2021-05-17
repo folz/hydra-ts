@@ -151,6 +151,7 @@ class Audio {
       window['a' + index] =
         (scale = 1, offset = 0) =>
         () =>
+          // eslint-disable-next-line no-undef
           a.fft[index] * scale + offset;
     });
     //  console.log(this.settings)

@@ -1,8 +1,10 @@
 const functions = require('./../src/glsl/composable-glsl-functions.js');
 const fs = require('fs');
 
+// eslint-disable-next-line no-unused-vars
 let glslFunctions = [];
 
+// eslint-disable-next-line no-unused-vars
 const typeLookup = {
   src: {
     returnType: 'vec4',

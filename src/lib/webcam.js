@@ -18,7 +18,7 @@ module.exports = function (deviceId) {
       const video = document.createElement('video');
       //  video.src = window.URL.createObjectURL(stream)
       video.srcObject = stream;
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         video.addEventListener('loadedmetadata', () => {
           video.play().then(() => resolve({ video: video }));
         });

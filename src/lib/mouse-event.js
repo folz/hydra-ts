@@ -16,6 +16,7 @@ function mouseButtons(ev) {
         return 1 << (b - 1);
       }
     } else if ('button' in ev) {
+      // eslint-disable-next-line no-redeclare
       var b = ev.button;
       if (b === 1) {
         return 4;

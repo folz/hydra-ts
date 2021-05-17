@@ -1,5 +1,4 @@
-const { should, expect, assert } = require('chai');
-const rewire = require('rewire');
+const { expect } = require('chai');
 const { prepareForHydra, mockRegl } = require('./lib/util');
 
 describe('HydraSynth', function () {
@@ -34,6 +33,7 @@ describe('HydraSynth', function () {
     it('Does not create global variables if set to false', function () {
       const prev_keys = Object.keys(global.window);
 
+      // eslint-disable-next-line no-unused-vars
       const hydra = new HydraSynth({ autoLoop: false, makeGlobal: false, canvas });
 
       const new_keys = Object.keys(global.window).filter((x) => prev_keys.indexOf(x) < 0);

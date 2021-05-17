@@ -50,7 +50,7 @@ class HydraRenderer {
       mouse: Mouse,
       render: this._render.bind(this),
       setResolution: this.setResolution.bind(this),
-      update: (dt) => {}, // user defined update function
+      update: () => {}, // user defined update function
       hush: this.hush.bind(this),
     };
 
@@ -145,7 +145,7 @@ class HydraRenderer {
     console.log(this.canvas.width);
   }
 
-  canvasToImage(callback) {
+  canvasToImage() {
     const a = document.createElement('a');
     a.style.display = 'none';
 
@@ -172,6 +172,7 @@ class HydraRenderer {
   }
 
   _initAudio() {
+    // eslint-disable-next-line no-unused-vars
     const that = this;
     this.synth.a = new Audio({
       numBins: 4,
@@ -390,7 +391,7 @@ class HydraRenderer {
   }
 
   // dt in ms
-  tick(dt, uniforms) {
+  tick(dt) {
     this.sandbox.tick();
     if (this.detectAudio === true) this.synth.a.tick();
     //  let updateInterval = 1000/this.synth.fps // ms
@@ -398,7 +399,7 @@ class HydraRenderer {
       try {
         this.synth.update(dt);
       } catch (e) {
-        console.log(error);
+        console.log(e);
       }
     }
 

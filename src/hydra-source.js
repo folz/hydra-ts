@@ -42,7 +42,7 @@ class HydraSource {
     vid.autoplay = true;
     vid.loop = true;
     vid.muted = true; // mute in order to load without user interaction
-    const onload = vid.addEventListener('loadeddata', () => {
+    vid.addEventListener('loadeddata', () => {
       this.src = vid;
       vid.play();
       this.tex = this.regl.texture(this.src);
@@ -105,7 +105,7 @@ class HydraSource {
     this.tex = this.regl.texture({ shape: [1, 1] });
   }
 
-  tick(time) {
+  tick() {
     //  console.log(this.src, this.tex.width, this.tex.height)
     if (this.src !== null && this.dynamic === true) {
       if (this.src.videoWidth && this.src.videoWidth !== this.tex.width) {

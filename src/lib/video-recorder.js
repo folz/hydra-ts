@@ -12,6 +12,7 @@ class VideoRecorder {
     this.mediaSource.addEventListener('sourceopen', () => {
       console.log('MediaSource opened');
       self.sourceBuffer = self.mediaSource.addSourceBuffer('video/webm; codecs="vp8"');
+      // eslint-disable-next-line no-undef
       console.log('Source buffer: ', sourceBuffer);
     });
   }

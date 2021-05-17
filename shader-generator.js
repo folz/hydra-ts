@@ -17,6 +17,7 @@ class ShaderGenerator {
       if (type === 'add') {
         self.renderer[method] = synth.generators[method];
       } else if (type === 'remove') {
+        // pass
       }
     };
     generatorOpts.defaultOutput = {

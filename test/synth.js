@@ -1,9 +1,6 @@
 const { DummyOutput } = require('./lib/util');
 
-const { should, expect, assert } = require('chai');
-const rewire = require('rewire');
-const sinon = require('sinon');
-const { JSDOM } = require('jsdom');
+const { expect, assert } = require('chai');
 
 const Synth = require('../src/create-synth');
 
@@ -63,7 +60,7 @@ describe('Synth', function () {
           glsl: '<foo>',
         },
       ],
-    ].forEach((ext, i) => {
+    ].forEach((ext) => {
       synth.extendTransforms = ext;
 
       events.length = 0;

@@ -1,5 +1,4 @@
 const generateGlsl = require('./glsl-utils.js').generateGlsl;
-const formatArguments = require('./glsl-utils.js').formatArguments;
 
 // const glslTransforms = require('./glsl/composable-glsl-functions.js')
 const utilityGlsl = require('./glsl/utility-functions.js');
@@ -33,7 +32,6 @@ GlslSource.prototype.out = function (_output) {
 
 GlslSource.prototype.glsl = function () {
   //var output = _output || this.defaultOutput
-  var self = this;
   // uniforms included in all shaders
   //  this.defaultUniforms = output.uniforms
   var passes = [];

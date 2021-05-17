@@ -35,6 +35,7 @@ module.exports = function (defaultOutput, precision) {
     var pass = {
       frag: frag,
       uniforms: output.uniforms,
+      // eslint-disable-next-line no-undef
       precision: precisionValue,
     };
     console.log('rendering', pass);
