@@ -2,19 +2,19 @@ const { should, expect, assert } = require('chai');
 const rewire = require('rewire');
 const { prepareForHydra, mockRegl } = require('./lib/util');
 
-describe('HydraSynth', () => {
+describe('HydraSynth', function () {
   let HydraSynth;
   let canvas;
   let mocked;
 
-  before(() => {
+  before(function () {
     mocked = mockRegl();
   });
-  after(() => {
+  after(function () {
     mocked.reset();
   });
 
-  beforeEach(() => {
+  beforeEach(function () {
     const { canvas: new_canvas } = prepareForHydra();
 
     canvas = new_canvas;
@@ -22,7 +22,7 @@ describe('HydraSynth', () => {
     HydraSynth = require('../index');
   });
 
-  it('Sets up basic infrastructure', () => {
+  it('Sets up basic infrastructure', function () {
     const hydra = new HydraSynth({ autoLoop: false, makeGlobal: false, canvas });
 
     expect(hydra).to.be.an('object').and.to.include.keys(['s', 'a', 'audio', 'bpm']);
@@ -30,8 +30,8 @@ describe('HydraSynth', () => {
     expect(hydra.bpm).to.be.a('number').and.to.be.equal(60);
   });
 
-  describe('makeGlobal', () => {
-    it('Does not create global variables if set to false', () => {
+  describe('makeGlobal', function () {
+    it('Does not create global variables if set to false', function () {
       const prev_keys = Object.keys(global.window);
 
       const hydra = new HydraSynth({ autoLoop: false, makeGlobal: false, canvas });
@@ -41,7 +41,7 @@ describe('HydraSynth', () => {
       expect(new_keys).to.have.lengthOf(0);
     });
 
-    it('Creates expected global variables if set to true', () => {
+    it('Creates expected global variables if set to true', function () {
       const transforms = require('../src/glsl/composable-glsl-functions');
 
       const prev_keys = Object.keys(global.window);

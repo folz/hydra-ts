@@ -110,7 +110,7 @@ update = (dt) => {
 
 - changed format for defining custom functions
 
-2.0.0
+  2.0.0
 
 - resize() function
 - updates to MakeGlobal

@@ -2,23 +2,23 @@ const { should, expect, assert } = require('chai');
 const { prepareForHydra, mockRegl } = require('./lib/util');
 const transforms = require('../src/glsl/composable-glsl-functions');
 
-describe('Transforms', () => {
+describe('Transforms', function () {
   const dimensions = {
     width: 100,
     height: 100,
   };
   let mocked;
 
-  before(() => {
+  before(function () {
     mocked = mockRegl(dimensions);
   });
-  after(() => {
+  after(function () {
     mocked.reset();
   });
 
-  describe('src transforms', () => {
-    describe('solid', () => {
-      it('Fills the buffer completely with the expected value', () => {
+  describe('src transforms', function () {
+    describe('solid', function () {
+      it('Fills the buffer completely with the expected value', function () {
         const { canvas } = prepareForHydra();
         const HydraSynth = require('../index');
 

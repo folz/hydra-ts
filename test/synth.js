@@ -7,14 +7,14 @@ const { JSDOM } = require('jsdom');
 
 const Synth = require('../src/create-synth');
 
-describe('Synth', () => {
-  it('Sets the seq prototype on Array', () => {
+describe('Synth', function () {
+  it('Sets the seq prototype on Array', function () {
     expect(Array.prototype).to.include.keys('fast');
 
     expect(Array.prototype.fast).to.be.a('function');
   });
 
-  it('Contains all transforms', () => {
+  it('Contains all transforms', function () {
     const transforms = require('../src/glsl/composable-glsl-functions');
     const srcNames = Object.entries(transforms)
       .filter(([, transform]) => transform.type === 'src')
@@ -31,7 +31,7 @@ describe('Synth', () => {
     );
   });
 
-  it('Can be extended', () => {
+  it('Can be extended', function () {
     const transforms = require('../src/glsl/composable-glsl-functions');
     const srcNames = Object.entries(transforms)
       .filter(([, transform]) => transform.type === 'src')
@@ -87,7 +87,7 @@ describe('Synth', () => {
     expect(synth.generators).to.include.keys('bar');
   });
 
-  it('Can create function chains', () => {
+  it('Can create function chains', function () {
     const dummyOutput = new DummyOutput();
     const synth = new Synth(dummyOutput);
 
@@ -96,7 +96,7 @@ describe('Synth', () => {
     });
   });
 
-  it('Sets up uniforms properly', () => {
+  it('Sets up uniforms properly', function () {
     const dummyOutput = new DummyOutput();
     const synth = new Synth(dummyOutput);
 
