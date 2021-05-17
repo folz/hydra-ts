@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const { prepareForHydra, mockRegl } = require('./lib/util');
 
-describe('Transforms', function () {
+describe.skip('Transforms', function () {
   const dimensions = {
     width: 100,
     height: 100,

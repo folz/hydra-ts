@@ -1,6 +1,6 @@
 const generateGlsl = require('./glsl-utils.js').generateGlsl;
 
-// const glslTransforms = require('./glsl/composable-glsl-functions.js')
+// const glslTransforms = require('./glsl/glsl-functions.js')
 const utilityGlsl = require('./glsl/utility-functions.js');
 
 var GlslSource = function (obj) {

@@ -1017,7 +1017,7 @@ module.exports = GeneratorFactory
 const generateGlsl = require('./glsl-utils.js').generateGlsl
 const formatArguments = require('./glsl-utils.js').formatArguments
 
-// const glslTransforms = require('./glsl/composable-glsl-functions.js')
+// const glslTransforms = require('./glsl/glsl-functions.js')
 const utilityGlsl = require('./glsl/utility-functions.js')
 
 var GlslSource = function (obj) {

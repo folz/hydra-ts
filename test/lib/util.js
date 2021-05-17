@@ -73,9 +73,10 @@ function mockRegl(dimensions = { width: 100, height: 100 }) {
   mock('regl', function (...args) {
     const [config] = args;
     const ctx = gl(dimensions.width, dimensions.height, { preserveDrawingBuffer: true });
-    config.extensions = config.extensions.filter(
-      (x) => ['oes_texture_half_float', 'oes_texture_half_float_linear'].indexOf(x) === -1
-    );
+    config.extensions =
+      config.extensions?.filter(
+        (x) => ['oes_texture_half_float', 'oes_texture_half_float_linear'].indexOf(x) === -1
+      ) ?? [];
     config.gl = ctx;
     return orig_regl(...args);
   });
