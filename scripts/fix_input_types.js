@@ -1,55 +1,62 @@
-const functions = require('./glsl-functions.js')
+const functions = require('./glsl-functions.js');
 const fs = require('fs');
 
-let glslFunctions = []
+// eslint-disable-next-line no-unused-vars
+let glslFunctions = [];
 
-
+// eslint-disable-next-line no-unused-vars
 const typeLookup = {
-  'src': {
+  src: {
     returnType: 'vec4',
-    args: ['vec2 _st']
+    args: ['vec2 _st'],
   },
-  'coord': {
+  coord: {
     returnType: 'vec2',
-    args: ['vec2 _st']
+    args: ['vec2 _st'],
   },
-  'color': {
+  color: {
     returnType: 'vec4',
-    args: ['vec4 _c0']
+    args: ['vec4 _c0'],
   },
-  'combine': {
+  combine: {
     returnType: 'vec4',
-    args: ['vec4 _c0', 'vec4 _c1']
+    args: ['vec4 _c0', 'vec4 _c1'],
   },
-  'combineCoords': {
+  combineCoords: {
     returnType: 'vec2',
-    args: ['vec2 _st', 'vec4 c0']
-  }
-}
+    args: ['vec2 _st', 'vec4 c0'],
+  },
+};
 
 var output = `module.exports = [
-  ${functions.map((transform) => {
-    var inputs = transform.inputs
-     var res = transform.glsl.split('\n')
-    // res.splice(0, 1)
-    // res.splice(res.length-1, 1)
-    var padded = res.map((str) => `   ${str}`)
-    var str = `${padded.join('\n')}`
-    return`{
+  ${functions
+    .map((transform) => {
+      var inputs = transform.inputs;
+      var res = transform.glsl.split('\n');
+      // res.splice(0, 1)
+      // res.splice(res.length-1, 1)
+      var padded = res.map((str) => `   ${str}`);
+      var str = `${padded.join('\n')}`;
+      return `{
   name: '${transform.name}',
   type: '${transform.type}',
   inputs: [
-    ${inputs.map((input) => `{
+    ${inputs
+      .map(
+        (input) => `{
       type: '${input.type}',
       name: '${input.name}',
       default: ${parseFloat(input.default)},
-    }`).join(',\n')}
+    }`
+      )
+      .join(',\n')}
   ],
   glsl:
 \`${str}\`
-}`
-  }).join(',\n')}
-]`
+}`;
+    })
+    .join(',\n')}
+]`;
 
 // var output = `module.exports = [
 //   ${Object.keys(functions).map((key) => {
@@ -74,4 +81,4 @@ var output = `module.exports = [
 //   return str
 // })}`
 
-fs.writeFileSync('./converted-functions.js', output, 'utf-8')
+fs.writeFileSync('./converted-functions.js', output, 'utf-8');

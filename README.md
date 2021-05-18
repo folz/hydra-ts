@@ -9,38 +9,45 @@ This is the main logic of hydra packaged as a javascript module, intended for us
 ![image of hydra in webpage](/assets/hydra-webpage.png?raw=true)
 
 ### To include in a webpage (bundled version):
+
 Include the bundled version of this library in your html file:
+
 ```html
 <script src="https://unpkg.com/hydra-synth"></script>
 <script>
-      // create a new hydra-synth instance
-      var hydra = new Hydra({ detectAudio: false })
-      osc(4, 0.1, 1.2).out()
+  // create a new hydra-synth instance
+  var hydra = new Hydra({ detectAudio: false });
+  osc(4, 0.1, 1.2).out();
 </script>
 ```
 
 You can see and remix a live example here: https://glitch.com/edit/#!/hydra-webpage
 
 ### To use as a module:
+
 Download the module:
+
 ```
 npm install --save hydra-synth
 ```
 
 Include in your app:
-```javascript
-const Hydra = require('hydra-synth')
 
-const hydra = new Hydra({ detectAudio: false })
-osc(4, 0.1, 1.2).out()
+```javascript
+const Hydra = require('hydra-synth');
+
+const hydra = new Hydra({ detectAudio: false });
+osc(4, 0.1, 1.2).out();
 ```
 
 The rest of this README is about configuring hydra-synth. For broader hydra documentation and usage, see [getting started](https://github.com/ojack/hydra#basic-functions), [interactive function documentation](https://ojack.xyz/hydra-functions/), and [Hydra Book (by Naoto Hieda)](https://hydra-book.naotohieda.com/#/).
 
 #### API:
+
 ```javascript
-const hydra = new Hydra([opts])
+const hydra = new Hydra([opts]);
 ```
+
 create a new hydra instance
 
 If `opts` is specified, the default options (shown below) will be overridden.
@@ -73,22 +80,29 @@ If `opts` is specified, the default options (shown below) will be overridden.
 ```
 
 #### Custom render loop
+
 You can use your own render loop for triggering hydra updates, instead of the automatic looping. To use, set autoLoop to false, and call
+
 ```javascript
-hydra.tick(dt)
+hydra.tick(dt);
 ```
+
 where dt is the time elapsed in milliseconds since the last update
 
 ### To develop:
+
 ```javascript
 npm run dev
 ```
+
 Sets up an example using hydra-synth that is automatically updated when source files are updated. It is possible to write test code by editing /example/index.js or by writing hydra code into the developer console.
 
 #### Non-global mode [in progress]
+
 If makeGlobal is set to false, buffers and functions can be accessed via the synth property of the hydra instance. Note that sources and buffers are contained in an array and accessed by index. E.g.:
+
 ```javascript
-let synth = hydra.synth
-synth.osc().out()
-synth.s0.initCam()
+let synth = hydra.synth;
+synth.osc().out();
+synth.s0.initCam();
 ```

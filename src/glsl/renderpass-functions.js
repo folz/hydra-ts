@@ -4,7 +4,7 @@
 // basic sdf shapes
 // repeat
 // iq color palletes
-var glsl = require('glslify')
+var glsl = require('glslify');
 
 module.exports = {
   blur: {
@@ -13,13 +13,14 @@ module.exports = {
       {
         type: 'float',
         name: 'directionX',
-        default: 1.0
-      },{
+        default: 1.0,
+      },
+      {
         type: 'float',
         name: 'directionY',
-        default: 0.0
-      }
+        default: 0.0,
+      },
     ],
-    frag: glsl('./gaussian.frag')
-  }
-}
+    frag: glsl('./gaussian.frag'),
+  },
+};

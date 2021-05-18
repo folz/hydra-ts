@@ -6,7 +6,7 @@ module.exports = {
     glsl: `float _luminance(vec3 rgb){
       const vec3 W = vec3(0.2125, 0.7154, 0.0721);
       return dot(rgb, W);
-    }`
+    }`,
   },
   _noise: {
     type: 'util',
@@ -84,9 +84,8 @@ module.exports = {
     return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),
                                   dot(p2,x2), dot(p3,x3) ) );
   }
-    `
+    `,
   },
-
 
   _rgbToHsv: {
     type: 'util',
@@ -98,7 +97,7 @@ module.exports = {
             float d = q.x - min(q.w, q.y);
             float e = 1.0e-10;
             return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
-        }`
+        }`,
   },
   _hsvToRgb: {
     type: 'util',
@@ -106,6 +105,6 @@ module.exports = {
         vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
         vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
         return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
-    }`
-  }
-}
+    }`,
+  },
+};
