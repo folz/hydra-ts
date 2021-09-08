@@ -1,4 +1,4 @@
-const Hydra = require('../index.ts');
+const Hydra = require('../index');
 const loop = require('raf-loop');
 
 const HydraShaders = require('./../shader-generator');

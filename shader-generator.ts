@@ -1,5 +1,5 @@
-const Generator = require('./src/generator-factory');
-const Sandbox = require('./src/eval-sandbox');
+import Generator from './src/generator-factory';
+import Sandbox from './src/eval-sandbox';
 
 const baseUniforms = ['s0', 's1', 's2', 's3', 'o0', 'o1', 'o2']; // names of uniforms usually used in hydra. These can be customized
 
@@ -39,4 +39,4 @@ class ShaderGenerator {
   }
 }
 
-module.exports = ShaderGenerator;
+export default ShaderGenerator;

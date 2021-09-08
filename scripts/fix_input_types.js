@@ -75,4 +75,4 @@ var output = `module.exports = [
 // //  console.log('  ')
 //   return str
 // })}`
-fs.writeFileSync('./converted-functions.ts', output, 'utf-8');
+fs.writeFileSync('./converted-functions.js', output, 'utf-8');

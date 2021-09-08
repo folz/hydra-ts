@@ -1,8 +1,8 @@
 // handles code evaluation and attaching relevant objects to global and evaluation contexts
 
-const Sandbox = require('./lib/sandbox');
+import Sandbox from './lib/sandbox';
 
-class EvalSandbox {
+export default class EvalSandbox {
   constructor(parent, makeGlobal, userProps = []) {
     this.makeGlobal = makeGlobal;
     this.sandbox = Sandbox(parent);
@@ -41,5 +41,3 @@ class EvalSandbox {
     this.sandbox.eval(code);
   }
 }
-
-module.exports = EvalSandbox;

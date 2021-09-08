@@ -1,6 +1,7 @@
 "use strict";
 // functions that are only used within other functions
-module.exports = {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = {
     _luminance: {
         type: 'util',
         glsl: `float _luminance(vec3 rgb){

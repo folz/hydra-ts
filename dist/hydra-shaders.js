@@ -1,7 +1,11 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.HydraShaders = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
-const Generator = require('./src/generator-factory');
-const Sandbox = require('./src/eval-sandbox');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const generator_factory_1 = __importDefault(require("./src/generator-factory"));
+const eval_sandbox_1 = __importDefault(require("./src/eval-sandbox"));
 const baseUniforms = ['s0', 's1', 's2', 's3', 'o0', 'o1', 'o2']; // names of uniforms usually used in hydra. These can be customized
 class ShaderGenerator {
     constructor({ defaultUniforms = { time: 0, resolution: [1280, 720] }, customUniforms = baseUniforms, extendTransforms = [], } = {}) {
@@ -19,8 +23,8 @@ class ShaderGenerator {
         generatorOpts.defaultOutput = {
             render: (pass) => (self.generatedCode = pass[0]),
         };
-        this.generator = new Generator(generatorOpts);
-        this.sandbox = new Sandbox(this.renderer, false);
+        this.generator = new generator_factory_1.default(generatorOpts);
+        this.sandbox = new eval_sandbox_1.default(this.renderer, false);
         this.initialCode = `
       ${customUniforms.map((name) => `const ${name} = () => {}`).join(';')}
     `;
@@ -32,16 +36,20 @@ class ShaderGenerator {
         return this.generatedCode;
     }
 }
-module.exports = ShaderGenerator;
+exports.default = ShaderGenerator;
 
 },{"./src/eval-sandbox":2,"./src/generator-factory":3}],2:[function(require,module,exports){
 "use strict";
 // handles code evaluation and attaching relevant objects to global and evaluation contexts
-const Sandbox = require('./lib/sandbox');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const sandbox_1 = __importDefault(require("./lib/sandbox"));
 class EvalSandbox {
     constructor(parent, makeGlobal, userProps = []) {
         this.makeGlobal = makeGlobal;
-        this.sandbox = Sandbox(parent);
+        this.sandbox = (0, sandbox_1.default)(parent);
         this.parent = parent;
         var properties = Object.keys(parent);
         properties.forEach((property) => this.add(property));
@@ -74,7 +82,7 @@ class EvalSandbox {
         this.sandbox.eval(code);
     }
 }
-module.exports = EvalSandbox;
+exports.default = EvalSandbox;
 
 },{"./lib/sandbox":10}],3:[function(require,module,exports){
 "use strict";
@@ -83,7 +91,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const glsl_functions_js_1 = __importDefault(require("./glsl/glsl-functions.js"));
-const GlslSource = require('./glsl-source');
+const glsl_source_1 = __importDefault(require("./glsl-source"));
 class GeneratorFactory {
     constructor({ defaultUniforms, defaultOutput, extendTransforms = [], changeListener = () => { }, } = {}) {
         this.defaultOutput = defaultOutput;
@@ -100,7 +108,7 @@ class GeneratorFactory {
             return prev;
         }, {});
         this.sourceClass = (() => {
-            return class extends GlslSource {
+            return class extends glsl_source_1.default {
             };
         })();
         let functions = glsl_functions_js_1.default;
@@ -226,13 +234,17 @@ function processGlsl(obj) {
         console.warn(`type ${obj.type} not recognized`, obj);
     }
 }
-module.exports = GeneratorFactory;
+exports.default = GeneratorFactory;
 
 },{"./glsl-source":4,"./glsl/glsl-functions.js":6}],4:[function(require,module,exports){
 "use strict";
-const generateGlsl = require('./glsl-utils').generateGlsl;
-// const glslTransforms = require('./glsl/glsl-functions.ts')
-const utilityGlsl = require('./glsl/utility-functions');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const glsl_utils_1 = __importDefault(require("./glsl-utils"));
+// const glslTransforms = require('./glsl/glsl-functions')
+const utility_functions_1 = __importDefault(require("./glsl/utility-functions"));
 var GlslSource = function (obj) {
     this.transforms = [];
     this.transforms.push(obj);
@@ -289,7 +301,7 @@ GlslSource.prototype.glsl = function () {
     return passes;
 };
 GlslSource.prototype.compile = function (transforms) {
-    var shaderInfo = generateGlsl(transforms);
+    var shaderInfo = (0, glsl_utils_1.default)(transforms);
     var uniforms = {};
     shaderInfo.uniforms.forEach((uniform) => {
         uniforms[uniform.name] = uniform.value;
@@ -313,7 +325,7 @@ GlslSource.prototype.compile = function (transforms) {
   varying vec2 uv;
   uniform sampler2D prevBuffer;
 
-  ${Object.values(utilityGlsl)
+  ${Object.values(utility_functions_1.default)
         .map((transform) => {
         //  console.log(transform.glsl)
         return `
@@ -341,13 +353,17 @@ GlslSource.prototype.compile = function (transforms) {
         uniforms: Object.assign({}, this.defaultUniforms, uniforms),
     };
 };
-module.exports = GlslSource;
+exports.default = GlslSource;
 
 },{"./glsl-utils":5,"./glsl/utility-functions":7}],5:[function(require,module,exports){
 "use strict";
 // converts a tree of javascript functions to a shader
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 // Add extra functionality to Array.prototype for generating sequences in time
-const arrayUtils = require('./lib/array-utils');
+const array_utils_1 = __importDefault(require("./lib/array-utils"));
 // [WIP] how to treat different dimensions (?)
 const DEFAULT_CONVERSIONS = {
     float: {
@@ -355,23 +371,21 @@ const DEFAULT_CONVERSIONS = {
         vec2: { name: 'sum', args: [[1, 1]] },
     },
 };
-module.exports = {
-    generateGlsl: function (transforms) {
-        var shaderParams = {
-            uniforms: [],
-            glslFunctions: [],
-            fragColor: '',
-        };
-        var gen = generateGlsl(transforms, shaderParams)('st');
-        shaderParams.fragColor = gen;
-        // remove uniforms with duplicate names
-        let uniforms = {};
-        shaderParams.uniforms.forEach((uniform) => (uniforms[uniform.name] = uniform));
-        shaderParams.uniforms = Object.values(uniforms);
-        return shaderParams;
-    },
-    formatArguments: formatArguments,
-};
+function default_1(transforms) {
+    var shaderParams = {
+        uniforms: [],
+        glslFunctions: [],
+        fragColor: '',
+    };
+    var gen = generateGlsl(transforms, shaderParams)('st');
+    shaderParams.fragColor = gen;
+    // remove uniforms with duplicate names
+    let uniforms = {};
+    shaderParams.uniforms.forEach((uniform) => (uniforms[uniform.name] = uniform));
+    shaderParams.uniforms = Object.values(uniforms);
+    return shaderParams;
+}
+exports.default = default_1;
 // recursive function for generating shader string from object containing functions and user arguments. Order of functions in string depends on type of function
 // to do: improve variable names
 function generateGlsl(transforms, shaderParams) {
@@ -521,7 +535,7 @@ function formatArguments(transform, startIndex) {
                 }
                 else {
                     //  console.log("is Array")
-                    typedArg.value = (context, props) => arrayUtils.getValue(userArgs[index])(props);
+                    typedArg.value = (context, props) => array_utils_1.default.getValue(userArgs[index])(props);
                     typedArg.isUniform = true;
                 }
             }
@@ -1624,7 +1638,8 @@ exports.default = [
 },{}],7:[function(require,module,exports){
 "use strict";
 // functions that are only used within other functions
-module.exports = {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = {
     _luminance: {
         type: 'util',
         glsl: `float _luminance(vec3 rgb){
@@ -1737,11 +1752,15 @@ module.exports = {
 // WIP utils for working with arrays
 // Possibly should be integrated with lfo extension, etc.
 // to do: transform time rather than array values, similar to working with coordinates in hydra
-var easing = require('./easing-functions');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const easing_functions_1 = __importDefault(require("./easing-functions"));
 var map = (num, in_min, in_max, out_min, out_max) => {
     return ((num - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
 };
-module.exports = {
+exports.default = {
     init: () => {
         Array.prototype.fast = function (speed = 1) {
             this._speed = speed;
@@ -1756,9 +1775,9 @@ module.exports = {
                 this._smooth = 1;
                 this._ease = ease;
             }
-            else if (easing[ease]) {
+            else if (easing_functions_1.default[ease]) {
                 this._smooth = 1;
-                this._ease = easing[ease];
+                this._ease = easing_functions_1.default[ease];
             }
             return this;
         };
@@ -1785,7 +1804,7 @@ module.exports = {
         let smooth = arr._smooth ? arr._smooth : 0;
         let index = time * speed * (bpm / 60) + (arr._offset || 0);
         if (smooth !== 0) {
-            let ease = arr._ease ? arr._ease : easing['linear'];
+            let ease = arr._ease ? arr._ease : easing_functions_1.default['linear'];
             let _index = index - smooth / 2;
             let currValue = arr[Math.floor(_index % arr.length)];
             let nextValue = arr[Math.floor((_index + 1) % arr.length)];
@@ -1801,7 +1820,8 @@ module.exports = {
 },{"./easing-functions":9}],9:[function(require,module,exports){
 "use strict";
 // from https://gist.github.com/gre/1650294
-module.exports = {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = {
     // no easing, no acceleration
     linear: function (t) {
         return t;
@@ -1865,7 +1885,8 @@ module.exports = {
 // attempt custom evaluation sandbox for hydra functions
 // for now, just avoids polluting the global namespace
 // should probably be replaced with an abstract syntax tree
-module.exports = () => {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = () => {
     var initialCode = ``;
     var sandbox = createSandbox(initialCode);
     var addToContext = (name, object) => {

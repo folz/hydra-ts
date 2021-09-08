@@ -2,11 +2,15 @@
 // WIP utils for working with arrays
 // Possibly should be integrated with lfo extension, etc.
 // to do: transform time rather than array values, similar to working with coordinates in hydra
-var easing = require('./easing-functions');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const easing_functions_1 = __importDefault(require("./easing-functions"));
 var map = (num, in_min, in_max, out_min, out_max) => {
     return ((num - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
 };
-module.exports = {
+exports.default = {
     init: () => {
         Array.prototype.fast = function (speed = 1) {
             this._speed = speed;
@@ -21,9 +25,9 @@ module.exports = {
                 this._smooth = 1;
                 this._ease = ease;
             }
-            else if (easing[ease]) {
+            else if (easing_functions_1.default[ease]) {
                 this._smooth = 1;
-                this._ease = easing[ease];
+                this._ease = easing_functions_1.default[ease];
             }
             return this;
         };
@@ -50,7 +54,7 @@ module.exports = {
         let smooth = arr._smooth ? arr._smooth : 0;
         let index = time * speed * (bpm / 60) + (arr._offset || 0);
         if (smooth !== 0) {
-            let ease = arr._ease ? arr._ease : easing['linear'];
+            let ease = arr._ease ? arr._ease : easing_functions_1.default['linear'];
             let _index = index - smooth / 2;
             let currValue = arr[Math.floor(_index % arr.length)];
             let nextValue = arr[Math.floor((_index + 1) % arr.length)];

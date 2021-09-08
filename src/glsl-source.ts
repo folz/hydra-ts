@@ -1,7 +1,8 @@
-const generateGlsl = require('./glsl-utils').generateGlsl;
+import generateGlsl from './glsl-utils';
 
-// const glslTransforms = require('./glsl/glsl-functions.ts')
-const utilityGlsl = require('./glsl/utility-functions');
+// const glslTransforms = require('./glsl/glsl-functions')
+import utilityGlsl from './glsl/utility-functions';
+import exp from 'constants';
 
 var GlslSource = function (obj) {
   this.transforms = [];
@@ -117,4 +118,4 @@ GlslSource.prototype.compile = function (transforms) {
   };
 };
 
-module.exports = GlslSource;
+export default GlslSource;

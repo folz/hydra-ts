@@ -4,8 +4,8 @@ const Source = require('./src/hydra-source');
 const Mouse = require('./src/lib/mouse')();
 const Audio = require('./src/lib/audio');
 const VidRecorder = require('./src/lib/video-recorder');
-const ArrayUtils = require('./src/lib/array-utils');
-const Sandbox = require('./src/eval-sandbox.ts');
+import ArrayUtils from './src/lib/array-utils';
+import Sandbox from './src/eval-sandbox';
 
 const Generator = require('./src/generator-factory');
 

@@ -1,5 +1,5 @@
 "use strict";
-//const transforms = require('./glsl-transforms.ts')
+//const transforms = require('./glsl-transforms')
 var Output = function ({ regl, precision, label = '', width, height }) {
     this.regl = regl;
     this.precision = precision;

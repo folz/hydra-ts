@@ -1,5 +1,5 @@
 import glslTransforms from './glsl/glsl-functions.js';
-const GlslSource = require('./glsl-source');
+import GlslSource from './glsl-source';
 
 class GeneratorFactory {
   constructor({
@@ -156,4 +156,4 @@ function processGlsl(obj) {
   }
 }
 
-module.exports = GeneratorFactory;
+export default GeneratorFactory;

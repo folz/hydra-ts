@@ -1,10 +1,14 @@
 "use strict";
 // handles code evaluation and attaching relevant objects to global and evaluation contexts
-const Sandbox = require('./lib/sandbox');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const sandbox_1 = __importDefault(require("./lib/sandbox"));
 class EvalSandbox {
     constructor(parent, makeGlobal, userProps = []) {
         this.makeGlobal = makeGlobal;
-        this.sandbox = Sandbox(parent);
+        this.sandbox = (0, sandbox_1.default)(parent);
         this.parent = parent;
         var properties = Object.keys(parent);
         properties.forEach((property) => this.add(property));
@@ -37,4 +41,4 @@ class EvalSandbox {
         this.sandbox.eval(code);
     }
 }
-module.exports = EvalSandbox;
+exports.default = EvalSandbox;

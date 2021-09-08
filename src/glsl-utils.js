@@ -1,7 +1,11 @@
 "use strict";
 // converts a tree of javascript functions to a shader
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 // Add extra functionality to Array.prototype for generating sequences in time
-const arrayUtils = require('./lib/array-utils');
+const array_utils_1 = __importDefault(require("./lib/array-utils"));
 // [WIP] how to treat different dimensions (?)
 const DEFAULT_CONVERSIONS = {
     float: {
@@ -9,23 +13,21 @@ const DEFAULT_CONVERSIONS = {
         vec2: { name: 'sum', args: [[1, 1]] },
     },
 };
-module.exports = {
-    generateGlsl: function (transforms) {
-        var shaderParams = {
-            uniforms: [],
-            glslFunctions: [],
-            fragColor: '',
-        };
-        var gen = generateGlsl(transforms, shaderParams)('st');
-        shaderParams.fragColor = gen;
-        // remove uniforms with duplicate names
-        let uniforms = {};
-        shaderParams.uniforms.forEach((uniform) => (uniforms[uniform.name] = uniform));
-        shaderParams.uniforms = Object.values(uniforms);
-        return shaderParams;
-    },
-    formatArguments: formatArguments,
-};
+function default_1(transforms) {
+    var shaderParams = {
+        uniforms: [],
+        glslFunctions: [],
+        fragColor: '',
+    };
+    var gen = generateGlsl(transforms, shaderParams)('st');
+    shaderParams.fragColor = gen;
+    // remove uniforms with duplicate names
+    let uniforms = {};
+    shaderParams.uniforms.forEach((uniform) => (uniforms[uniform.name] = uniform));
+    shaderParams.uniforms = Object.values(uniforms);
+    return shaderParams;
+}
+exports.default = default_1;
 // recursive function for generating shader string from object containing functions and user arguments. Order of functions in string depends on type of function
 // to do: improve variable names
 function generateGlsl(transforms, shaderParams) {
@@ -175,7 +177,7 @@ function formatArguments(transform, startIndex) {
                 }
                 else {
                     //  console.log("is Array")
-                    typedArg.value = (context, props) => arrayUtils.getValue(userArgs[index])(props);
+                    typedArg.value = (context, props) => array_utils_1.default.getValue(userArgs[index])(props);
                     typedArg.isUniform = true;
                 }
             }

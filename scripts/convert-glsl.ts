@@ -1,4 +1,4 @@
-const functions = require('../src/glsl/glsl-functions.ts');
+const functions = require('../src/glsl/glsl-functions');
 const fs = require('fs');
 
 // eslint-disable-next-line no-unused-vars
@@ -81,4 +81,4 @@ var output = `module.exports = [
 //   return str
 // })}`
 
-fs.writeFileSync('./converted-functions.ts', output, 'utf-8');
+fs.writeFileSync('./converted-functions.js', output, 'utf-8');

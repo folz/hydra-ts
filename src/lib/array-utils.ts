@@ -2,13 +2,13 @@
 // Possibly should be integrated with lfo extension, etc.
 // to do: transform time rather than array values, similar to working with coordinates in hydra
 
-var easing = require('./easing-functions');
+import easing from './easing-functions';
 
 var map = (num, in_min, in_max, out_min, out_max) => {
   return ((num - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
 };
 
-module.exports = {
+export default {
   init: () => {
     Array.prototype.fast = function (speed = 1) {
       this._speed = speed;

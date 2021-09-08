@@ -1,7 +1,7 @@
 // converts a tree of javascript functions to a shader
 
 // Add extra functionality to Array.prototype for generating sequences in time
-const arrayUtils = require('./lib/array-utils');
+import arrayUtils from './lib/array-utils';
 
 // [WIP] how to treat different dimensions (?)
 const DEFAULT_CONVERSIONS = {
@@ -11,24 +11,22 @@ const DEFAULT_CONVERSIONS = {
   },
 };
 
-module.exports = {
-  generateGlsl: function (transforms) {
-    var shaderParams = {
-      uniforms: [], // list of uniforms used in shader
-      glslFunctions: [], // list of functions used in shader
-      fragColor: '',
-    };
+export default function (transforms) {
+  var shaderParams = {
+    uniforms: [], // list of uniforms used in shader
+    glslFunctions: [], // list of functions used in shader
+    fragColor: '',
+  };
 
-    var gen = generateGlsl(transforms, shaderParams)('st');
-    shaderParams.fragColor = gen;
-    // remove uniforms with duplicate names
-    let uniforms = {};
-    shaderParams.uniforms.forEach((uniform) => (uniforms[uniform.name] = uniform));
-    shaderParams.uniforms = Object.values(uniforms);
-    return shaderParams;
-  },
-  formatArguments: formatArguments,
-};
+  var gen = generateGlsl(transforms, shaderParams)('st');
+  shaderParams.fragColor = gen;
+  // remove uniforms with duplicate names
+  let uniforms = {};
+  shaderParams.uniforms.forEach((uniform) => (uniforms[uniform.name] = uniform));
+  shaderParams.uniforms = Object.values(uniforms);
+  return shaderParams;
+}
+
 // recursive function for generating shader string from object containing functions and user arguments. Order of functions in string depends on type of function
 // to do: improve variable names
 function generateGlsl(transforms, shaderParams) {

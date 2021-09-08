@@ -1,4 +1,4 @@
-const Synth = require('./hydra-synth.ts');
+const Synth = require('./hydra-synth');
 //const ShaderGenerator = require('./shader-generator')
 
 module.exports = Synth;

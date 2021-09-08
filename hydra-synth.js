@@ -1,18 +1,22 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 const Output = require('./src/output');
 const loop = require('raf-loop');
 const Source = require('./src/hydra-source');
 const Mouse = require('./src/lib/mouse')();
 const Audio = require('./src/lib/audio');
 const VidRecorder = require('./src/lib/video-recorder');
-const ArrayUtils = require('./src/lib/array-utils');
-const Sandbox = require('./src/eval-sandbox.ts');
+const array_utils_1 = __importDefault(require("./src/lib/array-utils"));
+const eval_sandbox_1 = __importDefault(require("./src/eval-sandbox"));
 const Generator = require('./src/generator-factory');
 // to do: add ability to pass in certain uniforms and transforms
 class HydraRenderer {
     constructor({ pb = null, width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, autoLoop = true, detectAudio = true, enableStreamCapture = true, canvas, precision, extendTransforms = {}, // add your own functions on init
      } = {}) {
-        ArrayUtils.init();
+        array_utils_1.default.init();
         this.pb = pb;
         this.width = width;
         this.height = height;
@@ -82,7 +86,7 @@ class HydraRenderer {
         if (autoLoop)
             loop(this.tick.bind(this)).start();
         // final argument is properties that the user can set, all others are treated as read-only
-        this.sandbox = new Sandbox(this.synth, makeGlobal, ['speed', 'update', 'bpm', 'fps']);
+        this.sandbox = new eval_sandbox_1.default(this.synth, makeGlobal, ['speed', 'update', 'bpm', 'fps']);
     }
     eval(code) {
         this.sandbox.eval(code);

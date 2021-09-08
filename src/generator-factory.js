@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const glsl_functions_js_1 = __importDefault(require("./glsl/glsl-functions.js"));
-const GlslSource = require('./glsl-source');
+const glsl_source_1 = __importDefault(require("./glsl-source"));
 class GeneratorFactory {
     constructor({ defaultUniforms, defaultOutput, extendTransforms = [], changeListener = () => { }, } = {}) {
         this.defaultOutput = defaultOutput;
@@ -21,7 +21,7 @@ class GeneratorFactory {
             return prev;
         }, {});
         this.sourceClass = (() => {
-            return class extends GlslSource {
+            return class extends glsl_source_1.default {
             };
         })();
         let functions = glsl_functions_js_1.default;
@@ -147,4 +147,4 @@ function processGlsl(obj) {
         console.warn(`type ${obj.type} not recognized`, obj);
     }
 }
-module.exports = GeneratorFactory;
+exports.default = GeneratorFactory;
