@@ -1,9 +1,8 @@
+"use strict";
 const HydraShaders = require('./../shader-generator.js');
 const shader = new HydraShaders();
-
 let x = shader.eval('osc().out()');
 console.log(x.frag, x.uniforms);
-
 let y = shader.eval(`
     let myFunc = () => 4
     osc(myFunc).out()
