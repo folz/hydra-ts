@@ -1,4 +1,4 @@
-export default function (options) {
+export default function (options?: DisplayMediaStreamConstraints) {
   return new Promise(function (resolve, reject) {
     //  async function startCapture(displayMediaOptions) {
     navigator.mediaDevices

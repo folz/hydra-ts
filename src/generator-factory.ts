@@ -1,13 +1,26 @@
 import glslTransforms from './glsl/glsl-functions.js';
 import GlslSource from './glsl-source';
 
+interface GeneratorFactoryOptions {
+  defaultUniforms?: any;
+  defaultOutput?: any;
+  extendTransforms?: any[];
+  changeListener?: (options: any) => void;
+}
+
 class GeneratorFactory {
+  defaultOutput: any;
+  defaultUniforms: any;
+  changeListener: any;
+  extendTransforms: any;
+  generators: any;
+
   constructor({
     defaultUniforms,
     defaultOutput,
     extendTransforms = [],
     changeListener = () => {},
-  } = {}) {
+  }: GeneratorFactoryOptions = {}) {
     this.defaultOutput = defaultOutput;
     this.defaultUniforms = defaultUniforms;
     this.changeListener = changeListener;

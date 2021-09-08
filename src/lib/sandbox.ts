@@ -7,7 +7,7 @@ export default () => {
 
   var sandbox = createSandbox(initialCode);
 
-  var addToContext = (name, object) => {
+  var addToContext = (name: string, object: string) => {
     initialCode += `
       var ${name} = ${object}
     `;
@@ -16,13 +16,13 @@ export default () => {
 
   return {
     addToContext: addToContext,
-    eval: (code) => sandbox.eval(code),
+    eval: (code: string) => sandbox.eval(code),
   };
 
-  function createSandbox(initial) {
+  function createSandbox(initial: string) {
     eval(initial);
     // optional params
-    var localEval = function (code) {
+    var localEval = function (code: string) {
       eval(code);
     };
 

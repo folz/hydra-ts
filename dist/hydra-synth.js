@@ -57,6 +57,7 @@ class HydraRenderer {
         else {
             let isIOS = (/iPad|iPhone|iPod/.test(navigator.platform) ||
                 (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) &&
+                // @ts-ignore
                 !window.MSStream;
             this.precision = isIOS ? 'highp' : 'mediump';
         }
@@ -3655,6 +3656,7 @@ exports.default = {
 },{}],21:[function(require,module,exports){
 // https://github.com/mikolalysenko/mouse-event
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 function mouseButtons(ev) {
     if (typeof ev === 'object') {
         if ('buttons' in ev) {
@@ -3688,11 +3690,9 @@ function mouseButtons(ev) {
     }
     return 0;
 }
-exports.buttons = mouseButtons;
 function mouseElement(ev) {
     return ev.target || ev.srcElement || window;
 }
-exports.element = mouseElement;
 function mouseRelativeX(ev) {
     if (typeof ev === 'object') {
         if ('pageX' in ev) {
@@ -3701,7 +3701,6 @@ function mouseRelativeX(ev) {
     }
     return 0;
 }
-exports.x = mouseRelativeX;
 function mouseRelativeY(ev) {
     if (typeof ev === 'object') {
         if ('pageY' in ev) {
@@ -3710,7 +3709,12 @@ function mouseRelativeY(ev) {
     }
     return 0;
 }
-exports.y = mouseRelativeY;
+exports.default = {
+    buttons: mouseButtons,
+    element: mouseElement,
+    x: mouseRelativeX,
+    y: mouseRelativeY,
+};
 
 },{}],22:[function(require,module,exports){
 // based on https://github.com/mikolalysenko/mouse-change
@@ -4033,7 +4037,7 @@ exports.default = VideoRecorder;
 "use strict";
 //const enumerateDevices = require('enumerate-devices')
 Object.defineProperty(exports, "__esModule", { value: true });
-function default_1(deviceId) {
+function Webcam(deviceId) {
     return navigator.mediaDevices
         .enumerateDevices()
         .then((devices) => devices.filter((devices) => devices.kind === 'videoinput'))
@@ -4059,7 +4063,7 @@ function default_1(deviceId) {
     })
         .catch(console.log.bind(console));
 }
-exports.default = default_1;
+exports.default = Webcam;
 
 },{}],27:[function(require,module,exports){
 "use strict";

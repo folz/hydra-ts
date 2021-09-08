@@ -1,8 +1,26 @@
 import Webcam from './lib/webcam';
 import Screen from './lib/screenmedia';
+import { Regl, Texture2D } from 'regl';
 
-class HydraSource {
-  constructor({ regl, width, height, pb, label = '' }) {
+interface HydraSourceOptions {
+  regl: Regl;
+  width: number;
+  height: number;
+  pb: any;
+  label: string;
+}
+
+class HydraSource implements HydraSourceOptions {
+  regl;
+  width;
+  height;
+  pb;
+  label;
+  src: any | null;
+  dynamic: boolean;
+  tex: Texture2D;
+
+  constructor({ regl, width, height, pb, label = '' }: HydraSourceOptions) {
     this.label = label;
     this.regl = regl;
     this.src = null;
@@ -24,7 +42,7 @@ class HydraSource {
     if (opts.dynamic) this.dynamic = opts.dynamic;
   }
 
-  initCam(index) {
+  initCam(index: number) {
     const self = this;
     Webcam(index)
       .then((response) => {

@@ -10,17 +10,20 @@ class ShaderGenerator {
     constructor({ defaultUniforms = { time: 0, resolution: [1280, 720] }, customUniforms = baseUniforms, extendTransforms = [], } = {}) {
         var self = this;
         self.renderer = {};
-        var generatorOpts = { defaultUniforms, extendTransforms };
-        generatorOpts.changeListener = ({ type, method, synth }) => {
-            if (type === 'add') {
-                self.renderer[method] = synth.generators[method];
-            }
-            else if (type === 'remove') {
-                // pass
-            }
-        };
-        generatorOpts.defaultOutput = {
-            render: (pass) => (self.generatedCode = pass[0]),
+        var generatorOpts = {
+            defaultUniforms,
+            extendTransforms,
+            changeListener: ({ type, method, synth }) => {
+                if (type === 'add') {
+                    self.renderer[method] = synth.generators[method];
+                }
+                else if (type === 'remove') {
+                    // pass
+                }
+            },
+            defaultOutput: {
+                render: (pass) => (self.generatedCode = pass[0]),
+            },
         };
         this.generator = new generator_factory_1.default(generatorOpts);
         this.sandbox = new eval_sandbox_1.default(this.renderer, false);

@@ -3,7 +3,12 @@
 import Sandbox from './lib/sandbox';
 
 export default class EvalSandbox {
-  constructor(parent, makeGlobal, userProps = []) {
+  makeGlobal: boolean;
+  parent: any;
+  sandbox: ReturnType<typeof Sandbox>;
+  userProps: any;
+
+  constructor(parent, makeGlobal: boolean, userProps: string[] = []) {
     this.makeGlobal = makeGlobal;
     this.sandbox = Sandbox(parent);
     this.parent = parent;
@@ -12,7 +17,7 @@ export default class EvalSandbox {
     this.userProps = userProps;
   }
 
-  add(name) {
+  add(name: string) {
     if (this.makeGlobal) window[name] = this.parent[name];
     this.sandbox.addToContext(name, `parent.${name}`);
   }
@@ -37,7 +42,7 @@ export default class EvalSandbox {
     }
   }
 
-  eval(code) {
+  eval(code: string) {
     this.sandbox.eval(code);
   }
 }

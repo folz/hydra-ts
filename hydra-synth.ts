@@ -7,12 +7,78 @@ import Audio from './src/lib/audio';
 import VidRecorder from './src/lib/video-recorder';
 import ArrayUtils from './src/lib/array-utils';
 import Sandbox from './src/eval-sandbox';
-import REGL from 'regl';
+import REGL, { DrawCommand, Framebuffer, Regl } from 'regl';
 
 import Generator from './src/generator-factory';
 
+type Precision = 'lowp' | 'mediump' | 'highp';
+
+type ReglProps = {
+  tex0: Framebuffer;
+  tex1: Framebuffer;
+  tex2: Framebuffer;
+  tex3: Framebuffer;
+};
+
+interface Synth {
+  time: number;
+  bpm: number;
+  width: number;
+  height: number;
+  fps?: number;
+  stats: {
+    fps: number;
+  };
+  speed: number;
+  mouse: typeof Mouse;
+  render: any;
+  setResolution: any;
+  update: any;
+  hush: any;
+  screencap?: () => void;
+  vidRecorder?: VidRecorder;
+}
+
+interface HydraRendererOptions {
+  pb?: any | null;
+  width?: number;
+  height?: number;
+  numSources?: number;
+  numOutputs?: number;
+  makeGlobal?: boolean;
+  autoLoop?: boolean;
+  detectAudio?: boolean;
+  enableStreamCapture?: boolean;
+  canvas?: HTMLCanvasElement;
+  precision?: Precision;
+  extendTransforms?: Record<any, any>;
+}
+
 // to do: add ability to pass in certain uniforms and transforms
-class HydraRenderer {
+class HydraRenderer implements HydraRendererOptions {
+  pb;
+  width;
+  height;
+  detectAudio;
+  canvas: HTMLCanvasElement;
+  synth: Synth;
+  timeSinceLastUpdate;
+  _time;
+  precision;
+  extendTransforms;
+  saveFrame: boolean;
+  captureStream: any;
+  generator?: Generator;
+  sandbox: Sandbox;
+  imageCallback?: (blob: Blob) => void;
+  regl: Regl;
+  renderAll: DrawCommand | false;
+  renderFbo: DrawCommand;
+  isRenderingAll: boolean;
+  s: typeof Source[];
+  o: typeof Output[];
+  output: typeof Output;
+
   constructor({
     pb = null,
     width = 1280,
@@ -26,7 +92,7 @@ class HydraRenderer {
     canvas,
     precision,
     extendTransforms = {}, // add your own functions on init
-  } = {}) {
+  }: HydraRendererOptions = {}) {
     ArrayUtils.init();
 
     this.pb = pb;
@@ -62,7 +128,7 @@ class HydraRenderer {
     // only allow valid precision options
     let precisionOptions = ['lowp', 'mediump', 'highp'];
     if (precision && precisionOptions.includes(precision.toLowerCase())) {
-      this.precision = precision.toLowerCase();
+      this.precision = precision.toLowerCase() as Precision;
       //
       // if(!precisionValid){
       //   console.warn('[hydra-synth warning]\nConstructor was provided an invalid floating point precision value of "' + precision + '". Using default value of "mediump" instead.')
@@ -71,6 +137,7 @@ class HydraRenderer {
       let isIOS =
         (/iPad|iPhone|iPod/.test(navigator.platform) ||
           (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) &&
+        // @ts-ignore
         !window.MSStream;
       this.precision = isIOS ? 'highp' : 'mediump';
     }
@@ -113,11 +180,11 @@ class HydraRenderer {
     this.sandbox = new Sandbox(this.synth, makeGlobal, ['speed', 'update', 'bpm', 'fps']);
   }
 
-  eval(code) {
+  eval(code: string) {
     this.sandbox.eval(code);
   }
 
-  getScreenImage(callback) {
+  getScreenImage(callback: HydraRenderer['imageCallback']) {
     this.imageCallback = callback;
     this.saveFrame = true;
   }
@@ -131,7 +198,7 @@ class HydraRenderer {
     });
   }
 
-  setResolution(width, height) {
+  setResolution(width: number, height: number) {
     //  console.log(width, height)
     this.canvas.width = width;
     this.canvas.height = height;
@@ -194,7 +261,7 @@ class HydraRenderer {
   }
 
   // create main output canvas and add to screen
-  _initCanvas(canvas) {
+  _initCanvas(canvas?: HTMLCanvasElement) {
     if (canvas) {
       this.canvas = canvas;
       this.width = canvas.width;
@@ -276,10 +343,10 @@ class HydraRenderer {
         ],
       },
       uniforms: {
-        tex0: this.regl.prop('tex0'),
-        tex1: this.regl.prop('tex1'),
-        tex2: this.regl.prop('tex2'),
-        tex3: this.regl.prop('tex3'),
+        tex0: this.regl.prop<ReglProps, keyof ReglProps>('tex0'),
+        tex1: this.regl.prop<ReglProps, keyof ReglProps>('tex1'),
+        tex2: this.regl.prop<ReglProps, keyof ReglProps>('tex2'),
+        tex3: this.regl.prop<ReglProps, keyof ReglProps>('tex3'),
       },
       count: 3,
       depth: { enable: false },
@@ -313,15 +380,15 @@ class HydraRenderer {
         ],
       },
       uniforms: {
-        tex0: this.regl.prop('tex0'),
-        resolution: this.regl.prop('resolution'),
+        tex0: this.regl.prop<ReglProps, keyof ReglProps>('tex0'),
+        resolution: this.regl.prop<ReglProps, keyof ReglProps>('resolution'),
       },
       count: 3,
       depth: { enable: false },
     });
   }
 
-  _initOutputs(numOutputs) {
+  _initOutputs(numOutputs: number) {
     const self = this;
     this.o = Array(numOutputs)
       .fill()
@@ -343,7 +410,7 @@ class HydraRenderer {
     this.output = this.o[0];
   }
 
-  _initSources(numSources) {
+  _initSources(numSources: number) {
     this.s = [];
     for (var i = 0; i < numSources; i++) {
       this.createSource(i);
@@ -383,7 +450,7 @@ class HydraRenderer {
     this.synth.setFunction = this.generator.setFunction.bind(this.generator);
   }
 
-  _render(output) {
+  _render(output: typeof Output) {
     if (output) {
       this.output = output;
       this.isRenderingAll = false;
@@ -393,7 +460,7 @@ class HydraRenderer {
   }
 
   // dt in ms
-  tick(dt) {
+  tick(dt: number) {
     this.sandbox.tick();
     if (this.detectAudio === true) this.synth.a.tick();
     //  let updateInterval = 1000/this.synth.fps // ms

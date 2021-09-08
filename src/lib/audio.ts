@@ -1,6 +1,20 @@
 import Meyda from 'meyda';
 
 class Audio {
+  vol: number;
+  scale: number;
+  max: number;
+  cutoff: number;
+  smooth: number;
+  beat: any;
+  onBeat: () => void;
+  canvas: HTMLCanvasElement;
+  isDrawing: boolean;
+  ctx: CanvasRenderingContext2D;
+  stream: MediaStream;
+  context: AudioContext;
+  meyda: any;
+
   constructor({ numBins = 4, cutoff = 2, smooth = 0.4, max = 15, scale = 10, isDrawing = false }) {
     this.vol = 0;
     this.scale = scale;

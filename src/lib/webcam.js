@@ -1,7 +1,7 @@
 "use strict";
 //const enumerateDevices = require('enumerate-devices')
 Object.defineProperty(exports, "__esModule", { value: true });
-function default_1(deviceId) {
+function Webcam(deviceId) {
     return navigator.mediaDevices
         .enumerateDevices()
         .then((devices) => devices.filter((devices) => devices.kind === 'videoinput'))
@@ -27,4 +27,4 @@ function default_1(deviceId) {
     })
         .catch(console.log.bind(console));
 }
-exports.default = default_1;
+exports.default = Webcam;
