@@ -1,7 +1,9 @@
 "use strict";
-const Hydra = require('../index');
-const loop = require('raf-loop');
-const HydraShaders = require('./../shader-generator');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const index_1 = __importDefault(require("../index"));
 function init() {
     ///  exampleNonGlobal()
     //  exampleExtendTransforms()
@@ -27,7 +29,7 @@ function init() {
     // canvas.style.width = '100%'
     // canvas.style.height = '100%'
     //  exampleCustomCanvas()
-    var hydra = new Hydra({ detectAudio: false, canvas: canvas });
+    var hydra = new index_1.default({ detectAudio: false, canvas: canvas });
     //  window.hydra = hydra
     shape()
         .scroll(() => mouse.x / width, () => mouse.y / height)
@@ -103,13 +105,13 @@ function exampleVideo() {
     src(s0).out();
 }
 function exampleNonGlobal() {
-    var hydra = new Hydra({ makeGlobal: false });
+    var hydra = new index_1.default({ makeGlobal: false });
     hydra.synth.fps = 10;
     hydra.synth.osc().out();
     window.hydra = hydra;
 }
 function exampleExtendTransforms() {
-    var hydra = new Hydra({
+    var hydra = new index_1.default({
         extendTransforms: {
             name: 'myOsc',
             type: 'src',

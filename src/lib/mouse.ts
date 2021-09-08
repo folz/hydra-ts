@@ -2,9 +2,9 @@
 
 'use strict';
 
-module.exports = mouseListen;
+export default mouseListen;
 
-var mouse = require('./mouse-event');
+import mouse from './mouse-event';
 
 function mouseListen(element, callback) {
   if (!callback) {

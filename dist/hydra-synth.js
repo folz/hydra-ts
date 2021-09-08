@@ -4,15 +4,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Output = require('./src/output');
-const loop = require('raf-loop');
-const Source = require('./src/hydra-source');
-const Mouse = require('./src/lib/mouse')();
-const Audio = require('./src/lib/audio');
-const VidRecorder = require('./src/lib/video-recorder');
+const output_1 = __importDefault(require("./src/output"));
+const raf_loop_1 = __importDefault(require("raf-loop"));
+const hydra_source_1 = __importDefault(require("./src/hydra-source"));
+const mouse_1 = __importDefault(require("./src/lib/mouse"));
+const Mouse = (0, mouse_1.default)();
+const audio_1 = __importDefault(require("./src/lib/audio"));
+const video_recorder_1 = __importDefault(require("./src/lib/video-recorder"));
 const array_utils_1 = __importDefault(require("./src/lib/array-utils"));
 const eval_sandbox_1 = __importDefault(require("./src/eval-sandbox"));
-const Generator = require('./src/generator-factory');
+const regl_1 = __importDefault(require("regl"));
+const generator_factory_1 = __importDefault(require("./src/generator-factory"));
 // to do: add ability to pass in certain uniforms and transforms
 class HydraRenderer {
     constructor({ pb = null, width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, autoLoop = true, detectAudio = true, enableStreamCapture = true, canvas, precision, extendTransforms = {}, // add your own functions on init
@@ -75,7 +77,7 @@ class HydraRenderer {
             try {
                 this.captureStream = this.canvas.captureStream(25);
                 // to do: enable capture stream of specific sources and outputs
-                this.synth.vidRecorder = new VidRecorder(this.captureStream);
+                this.synth.vidRecorder = new video_recorder_1.default(this.captureStream);
             }
             catch (e) {
                 console.warn('[hydra-synth warning]\nnew MediaSource() is not currently supported on iOS.');
@@ -85,7 +87,7 @@ class HydraRenderer {
         if (detectAudio)
             this._initAudio();
         if (autoLoop)
-            loop(this.tick.bind(this)).start();
+            (0, raf_loop_1.default)(this.tick.bind(this)).start();
         // final argument is properties that the user can set, all others are treated as read-only
         this.sandbox = new eval_sandbox_1.default(this.synth, makeGlobal, ['speed', 'update', 'bpm', 'fps']);
     }
@@ -145,7 +147,7 @@ class HydraRenderer {
     _initAudio() {
         // eslint-disable-next-line no-unused-vars
         const that = this;
-        this.synth.a = new Audio({
+        this.synth.a = new audio_1.default({
             numBins: 4,
             // changeListener: ({audio}) => {
             //   that.a = audio.bins.map((_, index) =>
@@ -179,7 +181,7 @@ class HydraRenderer {
         }
     }
     _initRegl() {
-        this.regl = require('regl')({
+        this.regl = (0, regl_1.default)({
             //  profile: true,
             canvas: this.canvas,
             pixelRatio: 1, //,
@@ -290,7 +292,7 @@ class HydraRenderer {
         this.o = Array(numOutputs)
             .fill()
             .map((el, index) => {
-            var o = new Output({
+            var o = new output_1.default({
                 regl: this.regl,
                 width: this.width,
                 height: this.height,
@@ -312,7 +314,7 @@ class HydraRenderer {
         }
     }
     createSource(i) {
-        let s = new Source({
+        let s = new hydra_source_1.default({
             regl: this.regl,
             pb: this.pb,
             width: this.width,
@@ -325,7 +327,7 @@ class HydraRenderer {
     }
     _generateGlslTransforms() {
         var self = this;
-        this.generator = new Generator({
+        this.generator = new generator_factory_1.default({
             defaultOutput: this.o[0],
             defaultUniforms: this.o[0].uniforms,
             extendTransforms: this.extendTransforms,
@@ -409,7 +411,7 @@ class HydraRenderer {
         //  this.regl.poll()
     }
 }
-module.exports = HydraRenderer;
+exports.default = HydraRenderer;
 
 },{"./src/eval-sandbox":11,"./src/generator-factory":12,"./src/hydra-source":17,"./src/lib/array-utils":18,"./src/lib/audio":19,"./src/lib/mouse":22,"./src/lib/video-recorder":25,"./src/output":27,"raf-loop":7,"regl":9}],2:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
@@ -3194,8 +3196,12 @@ exports.default = {
 
 },{}],17:[function(require,module,exports){
 "use strict";
-const Webcam = require('./lib/webcam');
-const Screen = require('./lib/screenmedia');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const webcam_1 = __importDefault(require("./lib/webcam"));
+const screenmedia_1 = __importDefault(require("./lib/screenmedia"));
 class HydraSource {
     constructor({ regl, width, height, pb, label = '' }) {
         this.label = label;
@@ -3220,7 +3226,7 @@ class HydraSource {
     }
     initCam(index) {
         const self = this;
-        Webcam(index)
+        (0, webcam_1.default)(index)
             .then((response) => {
             self.src = response.video;
             self.dynamic = true;
@@ -3269,7 +3275,7 @@ class HydraSource {
     }
     initScreen() {
         const self = this;
-        Screen()
+        (0, screenmedia_1.default)()
             .then(function (response) {
             self.src = response.video;
             self.tex = self.regl.texture(self.src);
@@ -3308,7 +3314,7 @@ class HydraSource {
         return this.tex;
     }
 }
-module.exports = HydraSource;
+exports.default = HydraSource;
 
 },{"./lib/screenmedia":24,"./lib/webcam":26}],18:[function(require,module,exports){
 "use strict";
@@ -3382,7 +3388,11 @@ exports.default = {
 
 },{"./easing-functions":20}],19:[function(require,module,exports){
 "use strict";
-const Meyda = require('meyda');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const meyda_1 = __importDefault(require("meyda"));
 class Audio {
     constructor({ numBins = 4, cutoff = 2, smooth = 0.4, max = 15, scale = 10, isDrawing = false }) {
         this.vol = 0;
@@ -3425,7 +3435,7 @@ class Audio {
             //  this.context = new AudioContext()
             let audio_stream = this.context.createMediaStreamSource(stream);
             //  console.log(this.context)
-            this.meyda = Meyda.createMeydaAnalyzer({
+            this.meyda = meyda_1.default.createMeydaAnalyzer({
                 audioContext: this.context,
                 source: audio_stream,
                 featureExtractors: [
@@ -3577,7 +3587,7 @@ class Audio {
         this.ctx.stroke()*/
     }
 }
-module.exports = Audio;
+exports.default = Audio;
 
 },{"meyda":4}],20:[function(require,module,exports){
 "use strict";
@@ -3705,8 +3715,12 @@ exports.y = mouseRelativeY;
 },{}],22:[function(require,module,exports){
 // based on https://github.com/mikolalysenko/mouse-change
 'use strict';
-module.exports = mouseListen;
-var mouse = require('./mouse-event');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = mouseListen;
+const mouse_event_1 = __importDefault(require("./mouse-event"));
 function mouseListen(element, callback) {
     if (!callback) {
         callback = element;
@@ -3743,8 +3757,8 @@ function mouseListen(element, callback) {
         return changed;
     }
     function handleEvent(nextButtons, ev) {
-        var nextX = mouse.x(ev);
-        var nextY = mouse.y(ev);
+        var nextX = mouse_event_1.default.x(ev);
+        var nextY = mouse_event_1.default.y(ev);
         if ('buttons' in ev) {
             nextButtons = ev.buttons | 0;
         }
@@ -3772,7 +3786,7 @@ function mouseListen(element, callback) {
         }
     }
     function handleMouseMove(ev) {
-        if (mouse.buttons(ev) === 0) {
+        if (mouse_event_1.default.buttons(ev) === 0) {
             handleEvent(0, ev);
         }
         else {
@@ -3780,10 +3794,10 @@ function mouseListen(element, callback) {
         }
     }
     function handleMouseDown(ev) {
-        handleEvent(buttonState | mouse.buttons(ev), ev);
+        handleEvent(buttonState | mouse_event_1.default.buttons(ev), ev);
     }
     function handleMouseUp(ev) {
-        handleEvent(buttonState & ~mouse.buttons(ev), ev);
+        handleEvent(buttonState & ~mouse_event_1.default.buttons(ev), ev);
     }
     function attachListeners() {
         if (attached) {
@@ -3913,7 +3927,8 @@ exports.default = () => {
 
 },{}],24:[function(require,module,exports){
 "use strict";
-module.exports = function (options) {
+Object.defineProperty(exports, "__esModule", { value: true });
+function default_1(options) {
     return new Promise(function (resolve, reject) {
         //  async function startCapture(displayMediaOptions) {
         navigator.mediaDevices
@@ -3928,10 +3943,12 @@ module.exports = function (options) {
         })
             .catch((err) => reject(err));
     });
-};
+}
+exports.default = default_1;
 
 },{}],25:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class VideoRecorder {
     constructor(stream) {
         this.mediaSource = new MediaSource();
@@ -4010,12 +4027,13 @@ class VideoRecorder {
         }
     }
 }
-module.exports = VideoRecorder;
+exports.default = VideoRecorder;
 
 },{}],26:[function(require,module,exports){
 "use strict";
 //const enumerateDevices = require('enumerate-devices')
-module.exports = function (deviceId) {
+Object.defineProperty(exports, "__esModule", { value: true });
+function default_1(deviceId) {
     return navigator.mediaDevices
         .enumerateDevices()
         .then((devices) => devices.filter((devices) => devices.kind === 'videoinput'))
@@ -4040,11 +4058,13 @@ module.exports = function (deviceId) {
         });
     })
         .catch(console.log.bind(console));
-};
+}
+exports.default = default_1;
 
 },{}],27:[function(require,module,exports){
 "use strict";
 //const transforms = require('./glsl-transforms')
+Object.defineProperty(exports, "__esModule", { value: true });
 var Output = function ({ regl, precision, label = '', width, height }) {
     this.regl = regl;
     this.precision = precision;
@@ -4151,7 +4171,7 @@ Output.prototype.tick = function (props) {
     //  console.log(props)
     this.draw(props);
 };
-module.exports = Output;
+exports.default = Output;
 
 },{}]},{},[1])(1)
 });

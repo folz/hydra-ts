@@ -1,5 +1,6 @@
 "use strict";
 //const transforms = require('./glsl-transforms')
+Object.defineProperty(exports, "__esModule", { value: true });
 var Output = function ({ regl, precision, label = '', width, height }) {
     this.regl = regl;
     this.precision = precision;
@@ -106,4 +107,4 @@ Output.prototype.tick = function (props) {
     //  console.log(props)
     this.draw(props);
 };
-module.exports = Output;
+exports.default = Output;

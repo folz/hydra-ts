@@ -1,4 +1,4 @@
-module.exports = function (options) {
+export default function (options) {
   return new Promise(function (resolve, reject) {
     //  async function startCapture(displayMediaOptions) {
     navigator.mediaDevices
@@ -13,4 +13,4 @@ module.exports = function (options) {
       })
       .catch((err) => reject(err));
   });
-};
+}

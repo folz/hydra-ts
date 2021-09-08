@@ -1,6 +1,6 @@
 //const enumerateDevices = require('enumerate-devices')
 
-module.exports = function (deviceId) {
+export default function (deviceId) {
   return navigator.mediaDevices
     .enumerateDevices()
     .then((devices) => devices.filter((devices) => devices.kind === 'videoinput'))
@@ -25,4 +25,4 @@ module.exports = function (deviceId) {
       });
     })
     .catch(console.log.bind(console));
-};
+}

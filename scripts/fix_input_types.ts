@@ -1,5 +1,5 @@
-const functions = require('./glsl-functions');
-const fs = require('fs');
+import functions from './glsl-functions';
+import fs from 'fs';
 
 // eslint-disable-next-line no-unused-vars
 let glslFunctions = [];
@@ -28,7 +28,7 @@ const typeLookup = {
   },
 };
 
-var output = `module.exports = [
+var output = `export default [
   ${functions
     .map((transform) => {
       var inputs = transform.inputs;
@@ -58,7 +58,7 @@ var output = `module.exports = [
     .join(',\n')}
 ]`;
 
-// var output = `module.exports = [
+// var output = `export default [
 //   ${Object.keys(functions).map((key) => {
 // //  console.log(key)
 //

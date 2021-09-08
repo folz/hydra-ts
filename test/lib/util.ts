@@ -84,7 +84,7 @@ function mockRegl(dimensions = { width: 100, height: 100 }) {
   return { reset: () => mock.stop('regl') };
 }
 
-module.exports = {
+export default {
   DummyOutput,
   prepareForHydra,
   mockRegl,

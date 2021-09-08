@@ -1,5 +1,9 @@
 "use strict";
-const Meyda = require('meyda');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const meyda_1 = __importDefault(require("meyda"));
 class Audio {
     constructor({ numBins = 4, cutoff = 2, smooth = 0.4, max = 15, scale = 10, isDrawing = false }) {
         this.vol = 0;
@@ -42,7 +46,7 @@ class Audio {
             //  this.context = new AudioContext()
             let audio_stream = this.context.createMediaStreamSource(stream);
             //  console.log(this.context)
-            this.meyda = Meyda.createMeydaAnalyzer({
+            this.meyda = meyda_1.default.createMeydaAnalyzer({
                 audioContext: this.context,
                 source: audio_stream,
                 featureExtractors: [
@@ -194,4 +198,4 @@ class Audio {
         this.ctx.stroke()*/
     }
 }
-module.exports = Audio;
+exports.default = Audio;

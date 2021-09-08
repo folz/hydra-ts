@@ -1,4 +1,4 @@
-const Meyda = require('meyda');
+import Meyda from 'meyda';
 
 class Audio {
   constructor({ numBins = 4, cutoff = 2, smooth = 0.4, max = 15, scale = 10, isDrawing = false }) {
@@ -217,4 +217,4 @@ class Audio {
   }
 }
 
-module.exports = Audio;
+export default Audio;

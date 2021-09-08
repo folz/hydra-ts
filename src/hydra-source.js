@@ -1,6 +1,10 @@
 "use strict";
-const Webcam = require('./lib/webcam');
-const Screen = require('./lib/screenmedia');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const webcam_1 = __importDefault(require("./lib/webcam"));
+const screenmedia_1 = __importDefault(require("./lib/screenmedia"));
 class HydraSource {
     constructor({ regl, width, height, pb, label = '' }) {
         this.label = label;
@@ -25,7 +29,7 @@ class HydraSource {
     }
     initCam(index) {
         const self = this;
-        Webcam(index)
+        (0, webcam_1.default)(index)
             .then((response) => {
             self.src = response.video;
             self.dynamic = true;
@@ -74,7 +78,7 @@ class HydraSource {
     }
     initScreen() {
         const self = this;
-        Screen()
+        (0, screenmedia_1.default)()
             .then(function (response) {
             self.src = response.video;
             self.tex = self.regl.texture(self.src);
@@ -113,4 +117,4 @@ class HydraSource {
         return this.tex;
     }
 }
-module.exports = HydraSource;
+exports.default = HydraSource;

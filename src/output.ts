@@ -1,5 +1,7 @@
 //const transforms = require('./glsl-transforms')
 
+import exp from 'constants';
+
 var Output = function ({ regl, precision, label = '', width, height }) {
   this.regl = regl;
   this.precision = precision;
@@ -123,4 +125,4 @@ Output.prototype.tick = function (props) {
   this.draw(props);
 };
 
-module.exports = Output;
+export default Output;

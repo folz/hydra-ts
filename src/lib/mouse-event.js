@@ -1,5 +1,6 @@
 // https://github.com/mikolalysenko/mouse-event
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 function mouseButtons(ev) {
     if (typeof ev === 'object') {
         if ('buttons' in ev) {
@@ -33,11 +34,9 @@ function mouseButtons(ev) {
     }
     return 0;
 }
-exports.buttons = mouseButtons;
 function mouseElement(ev) {
     return ev.target || ev.srcElement || window;
 }
-exports.element = mouseElement;
 function mouseRelativeX(ev) {
     if (typeof ev === 'object') {
         if ('pageX' in ev) {
@@ -46,7 +45,6 @@ function mouseRelativeX(ev) {
     }
     return 0;
 }
-exports.x = mouseRelativeX;
 function mouseRelativeY(ev) {
     if (typeof ev === 'object') {
         if ('pageY' in ev) {
@@ -55,4 +53,9 @@ function mouseRelativeY(ev) {
     }
     return 0;
 }
-exports.y = mouseRelativeY;
+exports.default = {
+    buttons: mouseButtons,
+    element: mouseElement,
+    x: mouseRelativeX,
+    y: mouseRelativeY,
+};

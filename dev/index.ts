@@ -1,7 +1,7 @@
-const Hydra = require('../index');
-const loop = require('raf-loop');
+import Hydra from '../index';
+import loop from 'raf-loop';
 
-const HydraShaders = require('./../shader-generator');
+import HydraShaders from './../shader-generator';
 
 function init() {
   ///  exampleNonGlobal()

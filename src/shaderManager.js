@@ -2,7 +2,8 @@
 // to do:
 // 1. how to handle multi-pass renders
 // 2. how to handle vertex shaders
-module.exports = function (defaultOutput, precision) {
+Object.defineProperty(exports, "__esModule", { value: true });
+function default_1(defaultOutput, precision) {
     var Frag = function (shaderString) {
         var obj = Object.create(Frag.prototype);
         obj.shaderString = `
@@ -47,4 +48,5 @@ module.exports = function (defaultOutput, precision) {
         output.render();
     };
     return Frag;
-};
+}
+exports.default = default_1;

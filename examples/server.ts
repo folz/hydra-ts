@@ -1,4 +1,4 @@
-const HydraShaders = require('./../shader-generator');
+import HydraShaders from './../shader-generator';
 const shader = new HydraShaders();
 
 let x = shader.eval('osc().out()');

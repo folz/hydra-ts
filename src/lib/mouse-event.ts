@@ -29,12 +29,10 @@ function mouseButtons(ev) {
   }
   return 0;
 }
-exports.buttons = mouseButtons;
 
 function mouseElement(ev) {
   return ev.target || ev.srcElement || window;
 }
-exports.element = mouseElement;
 
 function mouseRelativeX(ev) {
   if (typeof ev === 'object') {
@@ -44,7 +42,6 @@ function mouseRelativeX(ev) {
   }
   return 0;
 }
-exports.x = mouseRelativeX;
 
 function mouseRelativeY(ev) {
   if (typeof ev === 'object') {
@@ -54,4 +51,10 @@ function mouseRelativeY(ev) {
   }
   return 0;
 }
-exports.y = mouseRelativeY;
+
+export default {
+  buttons: mouseButtons,
+  element: mouseElement,
+  x: mouseRelativeX,
+  y: mouseRelativeY,
+};

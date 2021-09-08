@@ -1,13 +1,15 @@
-const Output = require('./src/output');
-const loop = require('raf-loop');
-const Source = require('./src/hydra-source');
-const Mouse = require('./src/lib/mouse')();
-const Audio = require('./src/lib/audio');
-const VidRecorder = require('./src/lib/video-recorder');
+import Output from './src/output';
+import loop from 'raf-loop';
+import Source from './src/hydra-source';
+import createMouse from './src/lib/mouse';
+const Mouse = createMouse();
+import Audio from './src/lib/audio';
+import VidRecorder from './src/lib/video-recorder';
 import ArrayUtils from './src/lib/array-utils';
 import Sandbox from './src/eval-sandbox';
+import REGL from 'regl';
 
-const Generator = require('./src/generator-factory');
+import Generator from './src/generator-factory';
 
 // to do: add ability to pass in certain uniforms and transforms
 class HydraRenderer {
@@ -209,7 +211,7 @@ class HydraRenderer {
   }
 
   _initRegl() {
-    this.regl = require('regl')({
+    this.regl = REGL({
       //  profile: true,
       canvas: this.canvas,
       pixelRatio: 1, //,
@@ -445,4 +447,4 @@ class HydraRenderer {
   }
 }
 
-module.exports = HydraRenderer;
+export default HydraRenderer;

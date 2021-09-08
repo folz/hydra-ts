@@ -3,15 +3,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Output = require('./src/output');
-const loop = require('raf-loop');
-const Source = require('./src/hydra-source');
-const Mouse = require('./src/lib/mouse')();
-const Audio = require('./src/lib/audio');
-const VidRecorder = require('./src/lib/video-recorder');
+const output_1 = __importDefault(require("./src/output"));
+const raf_loop_1 = __importDefault(require("raf-loop"));
+const hydra_source_1 = __importDefault(require("./src/hydra-source"));
+const mouse_1 = __importDefault(require("./src/lib/mouse"));
+const Mouse = (0, mouse_1.default)();
+const audio_1 = __importDefault(require("./src/lib/audio"));
+const video_recorder_1 = __importDefault(require("./src/lib/video-recorder"));
 const array_utils_1 = __importDefault(require("./src/lib/array-utils"));
 const eval_sandbox_1 = __importDefault(require("./src/eval-sandbox"));
-const Generator = require('./src/generator-factory');
+const regl_1 = __importDefault(require("regl"));
+const generator_factory_1 = __importDefault(require("./src/generator-factory"));
 // to do: add ability to pass in certain uniforms and transforms
 class HydraRenderer {
     constructor({ pb = null, width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, autoLoop = true, detectAudio = true, enableStreamCapture = true, canvas, precision, extendTransforms = {}, // add your own functions on init
@@ -74,7 +76,7 @@ class HydraRenderer {
             try {
                 this.captureStream = this.canvas.captureStream(25);
                 // to do: enable capture stream of specific sources and outputs
-                this.synth.vidRecorder = new VidRecorder(this.captureStream);
+                this.synth.vidRecorder = new video_recorder_1.default(this.captureStream);
             }
             catch (e) {
                 console.warn('[hydra-synth warning]\nnew MediaSource() is not currently supported on iOS.');
@@ -84,7 +86,7 @@ class HydraRenderer {
         if (detectAudio)
             this._initAudio();
         if (autoLoop)
-            loop(this.tick.bind(this)).start();
+            (0, raf_loop_1.default)(this.tick.bind(this)).start();
         // final argument is properties that the user can set, all others are treated as read-only
         this.sandbox = new eval_sandbox_1.default(this.synth, makeGlobal, ['speed', 'update', 'bpm', 'fps']);
     }
@@ -144,7 +146,7 @@ class HydraRenderer {
     _initAudio() {
         // eslint-disable-next-line no-unused-vars
         const that = this;
-        this.synth.a = new Audio({
+        this.synth.a = new audio_1.default({
             numBins: 4,
             // changeListener: ({audio}) => {
             //   that.a = audio.bins.map((_, index) =>
@@ -178,7 +180,7 @@ class HydraRenderer {
         }
     }
     _initRegl() {
-        this.regl = require('regl')({
+        this.regl = (0, regl_1.default)({
             //  profile: true,
             canvas: this.canvas,
             pixelRatio: 1, //,
@@ -289,7 +291,7 @@ class HydraRenderer {
         this.o = Array(numOutputs)
             .fill()
             .map((el, index) => {
-            var o = new Output({
+            var o = new output_1.default({
                 regl: this.regl,
                 width: this.width,
                 height: this.height,
@@ -311,7 +313,7 @@ class HydraRenderer {
         }
     }
     createSource(i) {
-        let s = new Source({
+        let s = new hydra_source_1.default({
             regl: this.regl,
             pb: this.pb,
             width: this.width,
@@ -324,7 +326,7 @@ class HydraRenderer {
     }
     _generateGlslTransforms() {
         var self = this;
-        this.generator = new Generator({
+        this.generator = new generator_factory_1.default({
             defaultOutput: this.o[0],
             defaultUniforms: this.o[0].uniforms,
             extendTransforms: this.extendTransforms,
@@ -408,4 +410,4 @@ class HydraRenderer {
         //  this.regl.poll()
     }
 }
-module.exports = HydraRenderer;
+exports.default = HydraRenderer;

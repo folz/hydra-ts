@@ -1,5 +1,6 @@
 "use strict";
-module.exports = function (options) {
+Object.defineProperty(exports, "__esModule", { value: true });
+function default_1(options) {
     return new Promise(function (resolve, reject) {
         //  async function startCapture(displayMediaOptions) {
         navigator.mediaDevices
@@ -14,4 +15,5 @@ module.exports = function (options) {
         })
             .catch((err) => reject(err));
     });
-};
+}
+exports.default = default_1;

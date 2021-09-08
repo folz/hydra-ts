@@ -1,5 +1,5 @@
-const Webcam = require('./lib/webcam');
-const Screen = require('./lib/screenmedia');
+import Webcam from './lib/webcam';
+import Screen from './lib/screenmedia';
 
 class HydraSource {
   constructor({ regl, width, height, pb, label = '' }) {
@@ -126,4 +126,4 @@ class HydraSource {
   }
 }
 
-module.exports = HydraSource;
+export default HydraSource;
