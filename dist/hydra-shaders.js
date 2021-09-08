@@ -1,7 +1,7 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.HydraShaders = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
-const Generator = require('./src/generator-factory.js');
-const Sandbox = require('./src/eval-sandbox.js');
+const Generator = require('./src/generator-factory');
+const Sandbox = require('./src/eval-sandbox');
 const baseUniforms = ['s0', 's1', 's2', 's3', 'o0', 'o1', 'o2']; // names of uniforms usually used in hydra. These can be customized
 class ShaderGenerator {
     constructor({ defaultUniforms = { time: 0, resolution: [1280, 720] }, customUniforms = baseUniforms, extendTransforms = [], } = {}) {
@@ -34,10 +34,10 @@ class ShaderGenerator {
 }
 module.exports = ShaderGenerator;
 
-},{"./src/eval-sandbox.js":2,"./src/generator-factory.js":3}],2:[function(require,module,exports){
+},{"./src/eval-sandbox":2,"./src/generator-factory":3}],2:[function(require,module,exports){
 "use strict";
 // handles code evaluation and attaching relevant objects to global and evaluation contexts
-const Sandbox = require('./lib/sandbox.js');
+const Sandbox = require('./lib/sandbox');
 class EvalSandbox {
     constructor(parent, makeGlobal, userProps = []) {
         this.makeGlobal = makeGlobal;
@@ -76,10 +76,14 @@ class EvalSandbox {
 }
 module.exports = EvalSandbox;
 
-},{"./lib/sandbox.js":10}],3:[function(require,module,exports){
+},{"./lib/sandbox":10}],3:[function(require,module,exports){
 "use strict";
-const glslTransforms = require('./glsl/glsl-functions.js');
-const GlslSource = require('./glsl-source.js');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const glsl_functions_js_1 = __importDefault(require("./glsl/glsl-functions.js"));
+const GlslSource = require('./glsl-source');
 class GeneratorFactory {
     constructor({ defaultUniforms, defaultOutput, extendTransforms = [], changeListener = () => { }, } = {}) {
         this.defaultOutput = defaultOutput;
@@ -99,7 +103,7 @@ class GeneratorFactory {
             return class extends GlslSource {
             };
         })();
-        let functions = glslTransforms;
+        let functions = glsl_functions_js_1.default;
         // add user definied transforms
         if (Array.isArray(this.extendTransforms)) {
             functions.concat(this.extendTransforms);
@@ -224,11 +228,11 @@ function processGlsl(obj) {
 }
 module.exports = GeneratorFactory;
 
-},{"./glsl-source.js":4,"./glsl/glsl-functions.js":6}],4:[function(require,module,exports){
+},{"./glsl-source":4,"./glsl/glsl-functions.js":6}],4:[function(require,module,exports){
 "use strict";
-const generateGlsl = require('./glsl-utils.js').generateGlsl;
+const generateGlsl = require('./glsl-utils').generateGlsl;
 // const glslTransforms = require('./glsl/glsl-functions.ts')
-const utilityGlsl = require('./glsl/utility-functions.js');
+const utilityGlsl = require('./glsl/utility-functions');
 var GlslSource = function (obj) {
     this.transforms = [];
     this.transforms.push(obj);
@@ -339,11 +343,11 @@ GlslSource.prototype.compile = function (transforms) {
 };
 module.exports = GlslSource;
 
-},{"./glsl-utils.js":5,"./glsl/utility-functions.js":7}],5:[function(require,module,exports){
+},{"./glsl-utils":5,"./glsl/utility-functions":7}],5:[function(require,module,exports){
 "use strict";
 // converts a tree of javascript functions to a shader
 // Add extra functionality to Array.prototype for generating sequences in time
-const arrayUtils = require('./lib/array-utils.js');
+const arrayUtils = require('./lib/array-utils');
 // [WIP] how to treat different dimensions (?)
 const DEFAULT_CONVERSIONS = {
     float: {
@@ -575,7 +579,7 @@ function formatArguments(transform, startIndex) {
     });
 }
 
-},{"./lib/array-utils.js":8}],6:[function(require,module,exports){
+},{"./lib/array-utils":8}],6:[function(require,module,exports){
 "use strict";
 /*
 Format for adding functions to hydra. For each entry in this file, hydra automatically generates a glsl function and javascript function with the same name. You can also ass functions dynamically using setFunction(object).
@@ -646,7 +650,8 @@ const types = {
 }
 
 */
-module.exports = [
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = [
     {
         name: 'noise',
         type: 'src',
@@ -1732,7 +1737,7 @@ module.exports = {
 // WIP utils for working with arrays
 // Possibly should be integrated with lfo extension, etc.
 // to do: transform time rather than array values, similar to working with coordinates in hydra
-var easing = require('./easing-functions.js');
+var easing = require('./easing-functions');
 var map = (num, in_min, in_max, out_min, out_max) => {
     return ((num - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
 };
@@ -1793,7 +1798,7 @@ module.exports = {
     },
 };
 
-},{"./easing-functions.js":9}],9:[function(require,module,exports){
+},{"./easing-functions":9}],9:[function(require,module,exports){
 "use strict";
 // from https://gist.github.com/gre/1650294
 module.exports = {

@@ -1,6 +1,6 @@
 "use strict";
 // handles code evaluation and attaching relevant objects to global and evaluation contexts
-const Sandbox = require('./lib/sandbox.js');
+const Sandbox = require('./lib/sandbox');
 class EvalSandbox {
     constructor(parent, makeGlobal, userProps = []) {
         this.makeGlobal = makeGlobal;

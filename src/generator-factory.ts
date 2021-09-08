@@ -1,5 +1,5 @@
-const glslTransforms = require('./glsl/glsl-functions.js');
-const GlslSource = require('./glsl-source.js');
+import glslTransforms from './glsl/glsl-functions.js';
+const GlslSource = require('./glsl-source');
 
 class GeneratorFactory {
   constructor({

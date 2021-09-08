@@ -4,7 +4,7 @@
 
 module.exports = mouseListen;
 
-var mouse = require('./mouse-event.js');
+var mouse = require('./mouse-event');
 
 function mouseListen(element, callback) {
   if (!callback) {

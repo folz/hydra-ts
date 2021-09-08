@@ -1,13 +1,13 @@
-const Output = require('./src/output.js');
+const Output = require('./src/output');
 const loop = require('raf-loop');
-const Source = require('./src/hydra-source.js');
-const Mouse = require('./src/lib/mouse.js')();
-const Audio = require('./src/lib/audio.js');
-const VidRecorder = require('./src/lib/video-recorder.js');
-const ArrayUtils = require('./src/lib/array-utils.js');
+const Source = require('./src/hydra-source');
+const Mouse = require('./src/lib/mouse')();
+const Audio = require('./src/lib/audio');
+const VidRecorder = require('./src/lib/video-recorder');
+const ArrayUtils = require('./src/lib/array-utils');
 const Sandbox = require('./src/eval-sandbox.ts');
 
-const Generator = require('./src/generator-factory.js');
+const Generator = require('./src/generator-factory');
 
 // to do: add ability to pass in certain uniforms and transforms
 class HydraRenderer {

@@ -2,7 +2,7 @@
 // WIP utils for working with arrays
 // Possibly should be integrated with lfo extension, etc.
 // to do: transform time rather than array values, similar to working with coordinates in hydra
-var easing = require('./easing-functions.js');
+var easing = require('./easing-functions');
 var map = (num, in_min, in_max, out_min, out_max) => {
     return ((num - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
 };

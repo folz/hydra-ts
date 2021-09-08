@@ -1,6 +1,6 @@
 "use strict";
-const Webcam = require('./lib/webcam.js');
-const Screen = require('./lib/screenmedia.js');
+const Webcam = require('./lib/webcam');
+const Screen = require('./lib/screenmedia');
 class HydraSource {
     constructor({ regl, width, height, pb, label = '' }) {
         this.label = label;

@@ -1,6 +1,10 @@
 "use strict";
-const glslTransforms = require('./glsl/glsl-functions.js');
-const GlslSource = require('./glsl-source.js');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const glsl_functions_js_1 = __importDefault(require("./glsl/glsl-functions.js"));
+const GlslSource = require('./glsl-source');
 class GeneratorFactory {
     constructor({ defaultUniforms, defaultOutput, extendTransforms = [], changeListener = () => { }, } = {}) {
         this.defaultOutput = defaultOutput;
@@ -20,7 +24,7 @@ class GeneratorFactory {
             return class extends GlslSource {
             };
         })();
-        let functions = glslTransforms;
+        let functions = glsl_functions_js_1.default;
         // add user definied transforms
         if (Array.isArray(this.extendTransforms)) {
             functions.concat(this.extendTransforms);

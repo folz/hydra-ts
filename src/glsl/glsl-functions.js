@@ -68,7 +68,8 @@ const types = {
 }
 
 */
-module.exports = [
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = [
     {
         name: 'noise',
         type: 'src',

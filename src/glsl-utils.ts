@@ -1,7 +1,7 @@
 // converts a tree of javascript functions to a shader
 
 // Add extra functionality to Array.prototype for generating sequences in time
-const arrayUtils = require('./lib/array-utils.js');
+const arrayUtils = require('./lib/array-utils');
 
 // [WIP] how to treat different dimensions (?)
 const DEFAULT_CONVERSIONS = {

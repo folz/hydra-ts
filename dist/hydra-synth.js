@@ -1,14 +1,14 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Hydra = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-const Output = require('./src/output.js');
+const Output = require('./src/output');
 const loop = require('raf-loop');
-const Source = require('./src/hydra-source.js');
-const Mouse = require('./src/lib/mouse.js')();
-const Audio = require('./src/lib/audio.js');
-const VidRecorder = require('./src/lib/video-recorder.js');
-const ArrayUtils = require('./src/lib/array-utils.js');
+const Source = require('./src/hydra-source');
+const Mouse = require('./src/lib/mouse')();
+const Audio = require('./src/lib/audio');
+const VidRecorder = require('./src/lib/video-recorder');
+const ArrayUtils = require('./src/lib/array-utils');
 const Sandbox = require('./src/eval-sandbox.ts');
 
-const Generator = require('./src/generator-factory.js');
+const Generator = require('./src/generator-factory');
 
 // to do: add ability to pass in certain uniforms and transforms
 class HydraRenderer {
@@ -448,7 +448,7 @@ class HydraRenderer {
 
 module.exports = HydraRenderer;
 
-},{"./src/eval-sandbox.ts":11,"./src/generator-factory.js":12,"./src/hydra-source.js":17,"./src/lib/array-utils.js":18,"./src/lib/audio.js":19,"./src/lib/mouse.js":22,"./src/lib/video-recorder.js":25,"./src/output.js":27,"raf-loop":7,"regl":9}],2:[function(require,module,exports){
+},{"./src/eval-sandbox.ts":11,"./src/generator-factory":12,"./src/hydra-source":17,"./src/lib/array-utils":18,"./src/lib/audio":19,"./src/lib/mouse":22,"./src/lib/video-recorder":25,"./src/output":27,"raf-loop":7,"regl":9}],2:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -1523,7 +1523,7 @@ module.exports =
 },{}],11:[function(require,module,exports){
 // handles code evaluation and attaching relevant objects to global and evaluation contexts
 
-const Sandbox = require('./lib/sandbox.js');
+const Sandbox = require('./lib/sandbox');
 
 class EvalSandbox {
   constructor(parent, makeGlobal, userProps = []) {
@@ -1567,10 +1567,14 @@ class EvalSandbox {
 
 module.exports = EvalSandbox;
 
-},{"./lib/sandbox.js":23}],12:[function(require,module,exports){
+},{"./lib/sandbox":23}],12:[function(require,module,exports){
 "use strict";
-const glslTransforms = require('./glsl/glsl-functions.js');
-const GlslSource = require('./glsl-source.js');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const glsl_functions_js_1 = __importDefault(require("./glsl/glsl-functions.js"));
+const GlslSource = require('./glsl-source');
 class GeneratorFactory {
     constructor({ defaultUniforms, defaultOutput, extendTransforms = [], changeListener = () => { }, } = {}) {
         this.defaultOutput = defaultOutput;
@@ -1590,7 +1594,7 @@ class GeneratorFactory {
             return class extends GlslSource {
             };
         })();
-        let functions = glslTransforms;
+        let functions = glsl_functions_js_1.default;
         // add user definied transforms
         if (Array.isArray(this.extendTransforms)) {
             functions.concat(this.extendTransforms);
@@ -1715,11 +1719,11 @@ function processGlsl(obj) {
 }
 module.exports = GeneratorFactory;
 
-},{"./glsl-source.js":13,"./glsl/glsl-functions.js":15}],13:[function(require,module,exports){
+},{"./glsl-source":13,"./glsl/glsl-functions.js":15}],13:[function(require,module,exports){
 "use strict";
-const generateGlsl = require('./glsl-utils.js').generateGlsl;
+const generateGlsl = require('./glsl-utils').generateGlsl;
 // const glslTransforms = require('./glsl/glsl-functions.ts')
-const utilityGlsl = require('./glsl/utility-functions.js');
+const utilityGlsl = require('./glsl/utility-functions');
 var GlslSource = function (obj) {
     this.transforms = [];
     this.transforms.push(obj);
@@ -1830,11 +1834,11 @@ GlslSource.prototype.compile = function (transforms) {
 };
 module.exports = GlslSource;
 
-},{"./glsl-utils.js":14,"./glsl/utility-functions.js":16}],14:[function(require,module,exports){
+},{"./glsl-utils":14,"./glsl/utility-functions":16}],14:[function(require,module,exports){
 "use strict";
 // converts a tree of javascript functions to a shader
 // Add extra functionality to Array.prototype for generating sequences in time
-const arrayUtils = require('./lib/array-utils.js');
+const arrayUtils = require('./lib/array-utils');
 // [WIP] how to treat different dimensions (?)
 const DEFAULT_CONVERSIONS = {
     float: {
@@ -2066,7 +2070,7 @@ function formatArguments(transform, startIndex) {
     });
 }
 
-},{"./lib/array-utils.js":18}],15:[function(require,module,exports){
+},{"./lib/array-utils":18}],15:[function(require,module,exports){
 "use strict";
 /*
 Format for adding functions to hydra. For each entry in this file, hydra automatically generates a glsl function and javascript function with the same name. You can also ass functions dynamically using setFunction(object).
@@ -2137,7 +2141,8 @@ const types = {
 }
 
 */
-module.exports = [
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = [
     {
         name: 'noise',
         type: 'src',
@@ -3220,8 +3225,8 @@ module.exports = {
 
 },{}],17:[function(require,module,exports){
 "use strict";
-const Webcam = require('./lib/webcam.js');
-const Screen = require('./lib/screenmedia.js');
+const Webcam = require('./lib/webcam');
+const Screen = require('./lib/screenmedia');
 class HydraSource {
     constructor({ regl, width, height, pb, label = '' }) {
         this.label = label;
@@ -3336,12 +3341,12 @@ class HydraSource {
 }
 module.exports = HydraSource;
 
-},{"./lib/screenmedia.js":24,"./lib/webcam.js":26}],18:[function(require,module,exports){
+},{"./lib/screenmedia":24,"./lib/webcam":26}],18:[function(require,module,exports){
 "use strict";
 // WIP utils for working with arrays
 // Possibly should be integrated with lfo extension, etc.
 // to do: transform time rather than array values, similar to working with coordinates in hydra
-var easing = require('./easing-functions.js');
+var easing = require('./easing-functions');
 var map = (num, in_min, in_max, out_min, out_max) => {
     return ((num - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
 };
@@ -3402,7 +3407,7 @@ module.exports = {
     },
 };
 
-},{"./easing-functions.js":20}],19:[function(require,module,exports){
+},{"./easing-functions":20}],19:[function(require,module,exports){
 "use strict";
 const Meyda = require('meyda');
 class Audio {
@@ -3727,7 +3732,7 @@ exports.y = mouseRelativeY;
 // based on https://github.com/mikolalysenko/mouse-change
 'use strict';
 module.exports = mouseListen;
-var mouse = require('./mouse-event.js');
+var mouse = require('./mouse-event');
 function mouseListen(element, callback) {
     if (!callback) {
         callback = element;
@@ -3900,7 +3905,7 @@ function mouseListen(element, callback) {
     return result;
 }
 
-},{"./mouse-event.js":21}],23:[function(require,module,exports){
+},{"./mouse-event":21}],23:[function(require,module,exports){
 "use strict";
 // attempt custom evaluation sandbox for hydra functions
 // for now, just avoids polluting the global namespace

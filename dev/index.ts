@@ -1,7 +1,7 @@
 const Hydra = require('../index.ts');
 const loop = require('raf-loop');
 
-const HydraShaders = require('./../shader-generator.js');
+const HydraShaders = require('./../shader-generator');
 
 function init() {
   ///  exampleNonGlobal()

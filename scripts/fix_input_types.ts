@@ -1,4 +1,4 @@
-const functions = require('./glsl-functions.js');
+const functions = require('./glsl-functions');
 const fs = require('fs');
 
 // eslint-disable-next-line no-unused-vars
