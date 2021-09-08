@@ -1,0 +1,9 @@
+{
+  "exclude": ["dist"],
+  "extends": "@tsconfig/recommended/tsconfig.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "maxNodeModuleJsDepth": 1
+  }
+}
