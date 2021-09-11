@@ -68,7 +68,22 @@ const types = {
 
 */
 
-export default [
+export type TransformType = 'src' | 'color' | 'combine' | 'coord' | 'combineCoord';
+
+export interface TransformInput {
+  type: string;
+  name: string;
+  default?: unknown;
+}
+
+export interface Transform {
+  name: string;
+  type: TransformType;
+  inputs: TransformInput[];
+  glsl: string;
+}
+
+const transforms: Transform[] = [
   {
     name: 'noise',
     type: 'src',
@@ -1037,3 +1052,5 @@ export default [
     glsl: `   return vec4(_c0.a * scale + offset);`,
   },
 ];
+
+export default transforms;

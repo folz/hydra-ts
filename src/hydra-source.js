@@ -100,7 +100,7 @@ class HydraSource {
         this.src = null;
         this.tex = this.regl.texture({ shape: [1, 1] });
     }
-    tick() {
+    tick(dt) {
         //  console.log(this.src, this.tex.width, this.tex.height)
         if (this.src !== null && this.dynamic === true) {
             if (this.src.videoWidth && this.src.videoWidth !== this.tex.width) {

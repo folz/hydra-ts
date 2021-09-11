@@ -1,4 +1,7 @@
 {
   "exclude": ["dist"],
-  "extends": "@tsconfig/recommended/tsconfig.json"
+  "extends": "@tsconfig/recommended/tsconfig.json",
+  "compilerOptions": {
+    "module": "CommonJS"
+  }
 }

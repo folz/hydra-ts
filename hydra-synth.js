@@ -357,9 +357,10 @@ class HydraRenderer {
     }
     // dt in ms
     tick(dt) {
+        var _a;
         this.sandbox.tick();
         if (this.detectAudio === true)
-            this.synth.a.tick();
+            (_a = this.synth.a) === null || _a === void 0 ? void 0 : _a.tick();
         //  let updateInterval = 1000/this.synth.fps // ms
         if (this.synth.update) {
             try {
@@ -387,7 +388,7 @@ class HydraRenderer {
                     resolution: [this.canvas.width, this.canvas.height],
                 });
             }
-            if (this.isRenderingAll) {
+            if (this.isRenderingAll && this.renderAll) {
                 this.renderAll({
                     tex0: this.o[0].getCurrent(),
                     tex1: this.o[1].getCurrent(),
@@ -404,7 +405,7 @@ class HydraRenderer {
             }
             this.timeSinceLastUpdate = 0;
         }
-        if (this.saveFrame === true) {
+        if (this.saveFrame) {
             this.canvasToImage();
             this.saveFrame = false;
         }

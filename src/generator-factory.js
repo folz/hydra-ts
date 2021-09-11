@@ -7,23 +7,18 @@ const glsl_functions_js_1 = __importDefault(require("./glsl/glsl-functions.js"))
 const glsl_source_1 = __importDefault(require("./glsl-source"));
 class GeneratorFactory {
     constructor({ defaultUniforms, defaultOutput, extendTransforms = [], changeListener = () => { }, } = {}) {
+        this.generators = {};
+        this.glslTransforms = {};
+        this.sourceClass = createSourceClass();
         this.defaultOutput = defaultOutput;
         this.defaultUniforms = defaultUniforms;
         this.changeListener = changeListener;
         this.extendTransforms = extendTransforms;
-        this.generators = {};
-        this.init();
-    }
-    init() {
-        this.glslTransforms = {};
         this.generators = Object.entries(this.generators).reduce((prev, [method]) => {
             this.changeListener({ type: 'remove', synth: this, method });
             return prev;
         }, {});
-        this.sourceClass = (() => {
-            return class extends glsl_source_1.default {
-            };
-        })();
+        this.sourceClass = createSourceClass();
         let functions = glsl_functions_js_1.default;
         // add user definied transforms
         if (Array.isArray(this.extendTransforms)) {
@@ -63,6 +58,7 @@ class GeneratorFactory {
             this._addMethod(obj.name, processedGlsl);
     }
 }
+exports.default = GeneratorFactory;
 const typeLookup = {
     src: {
         returnType: 'vec4',
@@ -124,27 +120,28 @@ const typeLookup = {
 // }`
 function processGlsl(obj) {
     let t = typeLookup[obj.type];
-    if (t) {
-        let baseArgs = t.args.map((arg) => arg).join(', ');
-        // @todo: make sure this works for all input types, add validation
-        let customArgs = obj.inputs.map((input) => `${input.type} ${input.name}`).join(', ');
-        let args = `${baseArgs}${customArgs.length > 0 ? ', ' + customArgs : ''}`;
-        //  console.log('args are ', args)
-        let glslFunction = `
+    if (!t) {
+        console.warn(`type ${obj.type} not recognized`, obj);
+        return undefined;
+    }
+    let baseArgs = t.args.map((arg) => arg).join(', ');
+    // @todo: make sure this works for all input types, add validation
+    let customArgs = obj.inputs.map((input) => `${input.type} ${input.name}`).join(', ');
+    let args = `${baseArgs}${customArgs.length > 0 ? ', ' + customArgs : ''}`;
+    let glslFunction = `
   ${t.returnType} ${obj.name}(${args}) {
       ${obj.glsl}
   }
 `;
-        // add extra input to beginning for backward combatibility @todo update compiler so this is no longer necessary
-        if (obj.type === 'combine' || obj.type === 'combineCoord')
-            obj.inputs.unshift({
-                name: 'color',
-                type: 'vec4',
-            });
-        return Object.assign({}, obj, { glsl: glslFunction });
-    }
-    else {
-        console.warn(`type ${obj.type} not recognized`, obj);
-    }
+    // add extra input to beginning for backward combatibility @todo update compiler so this is no longer necessary
+    if (obj.type === 'combine' || obj.type === 'combineCoord')
+        obj.inputs.unshift({
+            name: 'color',
+            type: 'vec4',
+        });
+    return Object.assign(Object.assign({}, obj), { glsl: glslFunction });
 }
-exports.default = GeneratorFactory;
+function createSourceClass() {
+    return class extends glsl_source_1.default {
+    };
+}

@@ -11,7 +11,7 @@ import REGL, { DrawCommand, Framebuffer, Regl } from 'regl';
 
 import Generator from './src/generator-factory';
 
-type Precision = 'lowp' | 'mediump' | 'highp';
+export type Precision = 'lowp' | 'mediump' | 'highp';
 
 type ReglProps = {
   tex0: Framebuffer;
@@ -20,7 +20,7 @@ type ReglProps = {
   tex3: Framebuffer;
 };
 
-interface Synth {
+export interface Synth {
   time: number;
   bpm: number;
   width: number;
@@ -37,6 +37,7 @@ interface Synth {
   hush: any;
   screencap?: () => void;
   vidRecorder?: VidRecorder;
+  a?: Audio;
 }
 
 interface HydraRendererOptions {
@@ -51,7 +52,7 @@ interface HydraRendererOptions {
   enableStreamCapture?: boolean;
   canvas?: HTMLCanvasElement;
   precision?: Precision;
-  extendTransforms?: Record<any, any>;
+  extendTransforms?: Record<any, any> | Record<any, any>[];
 }
 
 // to do: add ability to pass in certain uniforms and transforms
@@ -67,7 +68,7 @@ class HydraRenderer implements HydraRendererOptions {
   precision;
   extendTransforms;
   saveFrame: boolean;
-  captureStream: any;
+  captureStream: MediaStream | null;
   generator?: Generator;
   sandbox: Sandbox;
   imageCallback?: (blob: Blob) => void;
@@ -75,9 +76,9 @@ class HydraRenderer implements HydraRendererOptions {
   renderAll: DrawCommand | false;
   renderFbo: DrawCommand;
   isRenderingAll: boolean;
-  s: typeof Source[];
-  o: typeof Output[];
-  output: typeof Output;
+  s: Source[];
+  o: Output[];
+  output: Output;
 
   constructor({
     pb = null,
@@ -462,7 +463,7 @@ class HydraRenderer implements HydraRendererOptions {
   // dt in ms
   tick(dt: number) {
     this.sandbox.tick();
-    if (this.detectAudio === true) this.synth.a.tick();
+    if (this.detectAudio === true) this.synth.a?.tick();
     //  let updateInterval = 1000/this.synth.fps // ms
     if (this.synth.update) {
       try {
@@ -490,7 +491,7 @@ class HydraRenderer implements HydraRendererOptions {
           resolution: [this.canvas.width, this.canvas.height],
         });
       }
-      if (this.isRenderingAll) {
+      if (this.isRenderingAll && this.renderAll) {
         this.renderAll({
           tex0: this.o[0].getCurrent(),
           tex1: this.o[1].getCurrent(),
@@ -506,7 +507,7 @@ class HydraRenderer implements HydraRendererOptions {
       }
       this.timeSinceLastUpdate = 0;
     }
-    if (this.saveFrame === true) {
+    if (this.saveFrame) {
       this.canvasToImage();
       this.saveFrame = false;
     }

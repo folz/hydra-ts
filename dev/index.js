@@ -31,8 +31,10 @@ function init() {
     //  exampleCustomCanvas()
     var hydra = new index_1.default({ detectAudio: false, canvas: canvas });
     //  window.hydra = hydra
-    shape()
+    osc()
+        .layer(shape()
         .scroll(() => mouse.x / width, () => mouse.y / height)
+        .mask(shape().scroll(() => mouse.x / width, () => mouse.y / height)))
         .out();
     // gradient(0.4).out()
     //  voronoi().out()

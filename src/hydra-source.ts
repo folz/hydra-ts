@@ -80,13 +80,13 @@ class HydraSource implements HydraSourceOptions {
     };
   }
 
-  initStream(streamName) {
+  initStream(streamName: string) {
     //  console.log("initing stream!", streamName)
     let self = this;
     if (streamName && this.pb) {
       this.pb.initSource(streamName);
 
-      this.pb.on('got video', function (nick, video) {
+      this.pb.on('got video', function (nick: string, video) {
         if (nick === streamName) {
           self.src = video;
           self.dynamic = true;
@@ -108,7 +108,7 @@ class HydraSource implements HydraSourceOptions {
       .catch((err) => console.log('could not get screen', err));
   }
 
-  resize(width, height) {
+  resize(width: number, height: number) {
     this.width = width;
     this.height = height;
   }
@@ -123,7 +123,7 @@ class HydraSource implements HydraSourceOptions {
     this.tex = this.regl.texture({ shape: [1, 1] });
   }
 
-  tick() {
+  tick(dt?: number) {
     //  console.log(this.src, this.tex.width, this.tex.height)
     if (this.src !== null && this.dynamic === true) {
       if (this.src.videoWidth && this.src.videoWidth !== this.tex.width) {

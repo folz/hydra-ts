@@ -34,10 +34,19 @@ function init() {
   var hydra = new Hydra({ detectAudio: false, canvas: canvas });
   //  window.hydra = hydra
 
-  shape()
-    .scroll(
-      () => mouse.x / width,
-      () => mouse.y / height
+  osc()
+    .layer(
+      shape()
+        .scroll(
+          () => mouse.x / width,
+          () => mouse.y / height
+        )
+        .mask(
+          shape().scroll(
+            () => mouse.x / width,
+            () => mouse.y / height
+          )
+        )
     )
     .out();
 

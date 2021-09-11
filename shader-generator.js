@@ -10,7 +10,7 @@ class ShaderGenerator {
     constructor({ defaultUniforms = { time: 0, resolution: [1280, 720] }, customUniforms = baseUniforms, extendTransforms = [], } = {}) {
         var self = this;
         self.renderer = {};
-        var generatorOpts = {
+        this.generator = new generator_factory_1.default({
             defaultUniforms,
             extendTransforms,
             changeListener: ({ type, method, synth }) => {
@@ -24,8 +24,7 @@ class ShaderGenerator {
             defaultOutput: {
                 render: (pass) => (self.generatedCode = pass[0]),
             },
-        };
-        this.generator = new generator_factory_1.default(generatorOpts);
+        });
         this.sandbox = new eval_sandbox_1.default(this.renderer, false);
         this.initialCode = `
       ${customUniforms.map((name) => `const ${name} = () => {}`).join(';')}

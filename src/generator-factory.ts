@@ -1,19 +1,22 @@
-import glslTransforms from './glsl/glsl-functions.js';
+import glslTransforms, { Transform } from './glsl/glsl-functions.js';
 import GlslSource from './glsl-source';
+import Output from './output';
 
 interface GeneratorFactoryOptions {
-  defaultUniforms?: any;
-  defaultOutput?: any;
-  extendTransforms?: any[];
-  changeListener?: (options: any) => void;
+  defaultUniforms?: GeneratorFactory['defaultUniforms'];
+  defaultOutput?: GeneratorFactory['defaultOutput'];
+  extendTransforms?: GeneratorFactory['extendTransforms'];
+  changeListener?: GeneratorFactory['changeListener'];
 }
 
-class GeneratorFactory {
-  defaultOutput: any;
-  defaultUniforms: any;
-  changeListener: any;
-  extendTransforms: any;
-  generators: any;
+export default class GeneratorFactory {
+  defaultUniforms?: {};
+  defaultOutput?: Output;
+  extendTransforms: Transform | Transform[];
+  changeListener: (options: any) => void;
+  generators: Record<any, any> = {};
+  glslTransforms: Record<string, Transform> = {};
+  sourceClass: typeof GlslSource = createSourceClass();
 
   constructor({
     defaultUniforms,
@@ -25,19 +28,13 @@ class GeneratorFactory {
     this.defaultUniforms = defaultUniforms;
     this.changeListener = changeListener;
     this.extendTransforms = extendTransforms;
-    this.generators = {};
-    this.init();
-  }
-  init() {
-    this.glslTransforms = {};
+
     this.generators = Object.entries(this.generators).reduce((prev, [method]) => {
       this.changeListener({ type: 'remove', synth: this, method });
       return prev;
     }, {});
 
-    this.sourceClass = (() => {
-      return class extends GlslSource {};
-    })();
+    this.sourceClass = createSourceClass();
 
     let functions = glslTransforms;
 
@@ -51,7 +48,7 @@ class GeneratorFactory {
     return functions.map((transform) => this.setFunction(transform));
   }
 
-  _addMethod(method, transform) {
+  _addMethod(method: string, transform: Transform) {
     this.glslTransforms[method] = transform;
     if (transform.type === 'src') {
       const func = (...args) =>
@@ -75,7 +72,7 @@ class GeneratorFactory {
     return undefined;
   }
 
-  setFunction(obj) {
+  setFunction(obj: Transform) {
     var processedGlsl = processGlsl(obj);
     if (processedGlsl) this._addMethod(obj.name, processedGlsl);
   }
@@ -142,31 +139,38 @@ const typeLookup = {
 //  return vec4(r, g, b, 1.0);
 // }`
 
-function processGlsl(obj) {
+function processGlsl(obj: Transform): Transform | undefined {
   let t = typeLookup[obj.type];
-  if (t) {
-    let baseArgs = t.args.map((arg) => arg).join(', ');
-    // @todo: make sure this works for all input types, add validation
-    let customArgs = obj.inputs.map((input) => `${input.type} ${input.name}`).join(', ');
-    let args = `${baseArgs}${customArgs.length > 0 ? ', ' + customArgs : ''}`;
-    //  console.log('args are ', args)
 
-    let glslFunction = `
+  if (!t) {
+    console.warn(`type ${obj.type} not recognized`, obj);
+    return undefined;
+  }
+
+  let baseArgs = t.args.map((arg) => arg).join(', ');
+  // @todo: make sure this works for all input types, add validation
+  let customArgs = obj.inputs.map((input) => `${input.type} ${input.name}`).join(', ');
+  let args = `${baseArgs}${customArgs.length > 0 ? ', ' + customArgs : ''}`;
+
+  let glslFunction = `
   ${t.returnType} ${obj.name}(${args}) {
       ${obj.glsl}
   }
 `;
 
-    // add extra input to beginning for backward combatibility @todo update compiler so this is no longer necessary
-    if (obj.type === 'combine' || obj.type === 'combineCoord')
-      obj.inputs.unshift({
-        name: 'color',
-        type: 'vec4',
-      });
-    return Object.assign({}, obj, { glsl: glslFunction });
-  } else {
-    console.warn(`type ${obj.type} not recognized`, obj);
-  }
+  // add extra input to beginning for backward combatibility @todo update compiler so this is no longer necessary
+  if (obj.type === 'combine' || obj.type === 'combineCoord')
+    obj.inputs.unshift({
+      name: 'color',
+      type: 'vec4',
+    });
+
+  return {
+    ...obj,
+    glsl: glslFunction,
+  };
 }
 
-export default GeneratorFactory;
+function createSourceClass() {
+  return class extends GlslSource {};
+}

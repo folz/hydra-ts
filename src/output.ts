@@ -1,69 +1,93 @@
 //const transforms = require('./glsl-transforms')
 
-import exp from 'constants';
+import { Buffer, DrawCommand, Framebuffer2D, Regl } from 'regl';
+import { Precision } from '../hydra-synth';
 
-var Output = function ({ regl, precision, label = '', width, height }) {
-  this.regl = regl;
-  this.precision = precision;
-  this.label = label;
-  this.positionBuffer = this.regl.buffer([
-    [-2, 0],
-    [0, -2],
-    [2, 2],
-  ]);
+interface OutputOptions {
+  regl: Regl;
+  precision: Precision;
+  label: string;
+  width: number;
+  height: number;
+}
 
-  this.draw = () => {};
-  this.init();
-  this.pingPongIndex = 0;
+class Output implements OutputOptions {
+  regl;
+  precision;
+  label;
+  positionBuffer: Buffer;
+  draw: DrawCommand;
+  pingPongIndex: number;
+  fbos: Framebuffer2D[];
+  transformIndex: number;
+  fragHeader: string;
+  fragBody: string;
+  frag: string;
+  vert: string;
+  uniforms: unknown[];
 
-  // for each output, create two fbos for pingponging
-  this.fbos = Array(2)
-    .fill()
-    .map(() =>
-      this.regl.framebuffer({
-        color: this.regl.texture({
-          mag: 'nearest',
-          width: width,
-          height: height,
-          format: 'rgba',
-        }),
-        depthStencil: false,
-      })
-    );
+  constructor({ regl, precision, label = '', width, height }: OutputOptions) {
+    this.regl = regl;
+    this.precision = precision;
+    this.label = label;
+    this.positionBuffer = this.regl.buffer([
+      [-2, 0],
+      [0, -2],
+      [2, 2],
+    ]);
 
-  // array containing render passes
-  //  this.passes = []
-};
+    this.draw = () => {};
+    this.init();
+    this.pingPongIndex = 0;
 
-Output.prototype.resize = function (width, height) {
-  this.fbos.forEach((fbo) => {
-    fbo.resize(width, height);
-  });
-  //  console.log(this)
-};
+    // for each output, create two fbos for pingponging
+    this.fbos = Array(2)
+      .fill(undefined)
+      .map(() =>
+        this.regl.framebuffer({
+          color: this.regl.texture({
+            mag: 'nearest',
+            width: width,
+            height: height,
+            format: 'rgba',
+          }),
+          depthStencil: false,
+        })
+      );
 
-Output.prototype.getCurrent = function () {
-  return this.fbos[this.pingPongIndex];
-};
+    // array containing render passes
+    //  this.passes = []  }
+  }
 
-Output.prototype.getTexture = function () {
-  var index = this.pingPongIndex ? 0 : 1;
-  return this.fbos[index];
-};
+  resize(width: number, height: number) {
+    this.fbos.forEach((fbo) => {
+      fbo.resize(width, height);
+    });
+    //  console.log(this)
+  }
 
-Output.prototype.init = function () {
-  //  console.log('clearing')
-  this.transformIndex = 0;
-  this.fragHeader = `
+  getCurrent() {
+    return this.fbos[this.pingPongIndex];
+  }
+
+  getTexture() {
+    var index = this.pingPongIndex ? 0 : 1;
+    return this.fbos[index];
+  }
+
+  init() {
+    //  console.log('clearing')
+    this.transformIndex = 0;
+    this.fragHeader = `
   precision ${this.precision} float;
 
   uniform float time;
   varying vec2 uv;
   `;
 
-  this.fragBody = ``;
+    this.fragBody = ``;
 
-  this.vert = `
+    this.vert = `
   precision ${this.precision} float;
   attribute vec2 position;
   varying vec2 uv;
@@ -73,15 +97,15 @@ Output.prototype.init = function () {
     gl_Position = vec4(2.0 * position - 1.0, 0, 1);
   }`;
 
-  this.attributes = {
-    position: this.positionBuffer,
-  };
-  this.uniforms = {
-    time: this.regl.prop('time'),
-    resolution: this.regl.prop('resolution'),
-  };
+    this.attributes = {
+      position: this.positionBuffer,
+    };
+    this.uniforms = {
+      time: this.regl.prop('time'),
+      resolution: this.regl.prop('resolution'),
+    };
 
-  this.frag = `
+    this.frag = `
        ${this.fragHeader}
 
       void main () {
@@ -91,38 +115,39 @@ Output.prototype.init = function () {
         gl_FragColor = c;
       }
   `;
-  return this;
-};
+    return this;
+  }
 
-Output.prototype.render = function (passes) {
-  let pass = passes[0];
-  //console.log('pass', pass, this.pingPongIndex)
-  var self = this;
-  var uniforms = Object.assign(pass.uniforms, {
-    prevBuffer: () => {
-      //var index = this.pingPongIndex ? 0 : 1
-      //   var index = self.pingPong[(passIndex+1)%2]
-      //  console.log('ping pong', self.pingPongIndex)
-      return self.fbos[self.pingPongIndex];
-    },
-  });
+  render(passes) {
+    let pass = passes[0];
+    //console.log('pass', pass, this.pingPongIndex)
+    var self = this;
+    var uniforms = Object.assign(pass.uniforms, {
+      prevBuffer: () => {
+        //var index = this.pingPongIndex ? 0 : 1
+        //   var index = self.pingPong[(passIndex+1)%2]
+        //  console.log('ping pong', self.pingPongIndex)
+        return self.fbos[self.pingPongIndex];
+      },
+    });
 
-  self.draw = self.regl({
-    frag: pass.frag,
-    vert: self.vert,
-    attributes: self.attributes,
-    uniforms: uniforms,
-    count: 3,
-    framebuffer: () => {
-      self.pingPongIndex = self.pingPongIndex ? 0 : 1;
-      return self.fbos[self.pingPongIndex];
-    },
-  });
-};
+    self.draw = self.regl({
+      frag: pass.frag,
+      vert: self.vert,
+      attributes: self.attributes,
+      uniforms: uniforms,
+      count: 3,
+      framebuffer: () => {
+        self.pingPongIndex = self.pingPongIndex ? 0 : 1;
+        return self.fbos[self.pingPongIndex];
+      },
+    });
+  }
 
-Output.prototype.tick = function (props) {
-  //  console.log(props)
-  this.draw(props);
-};
+  tick(props: {}) {
+    //  console.log(props)
+    this.draw(props);
+  }
+}
 
 export default Output;

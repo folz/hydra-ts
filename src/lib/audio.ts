@@ -47,7 +47,7 @@ class Audio {
     document.body.appendChild(this.canvas);
 
     this.isDrawing = isDrawing;
-    this.ctx = this.canvas.getContext('2d');
+    this.ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
     this.ctx.fillStyle = '#DFFFFF';
     this.ctx.strokeStyle = '#0ff';
     this.ctx.lineWidth = 0.5;
@@ -76,7 +76,7 @@ class Audio {
       .catch((err) => console.log('ERROR', err));
   }
 
-  detectBeat(level) {
+  detectBeat(level: number) {
     //console.log(level,   this.beat._cutoff)
     if (level > this.beat._cutoff && level > this.beat.threshold) {
       this.onBeat();

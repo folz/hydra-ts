@@ -69,7 +69,7 @@ const types = {
 
 */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = [
+const transforms = [
     {
         name: 'noise',
         type: 'src',
@@ -1038,3 +1038,4 @@ exports.default = [
         glsl: `   return vec4(_c0.a * scale + offset);`,
     },
 ];
+exports.default = transforms;

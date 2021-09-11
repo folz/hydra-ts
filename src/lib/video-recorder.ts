@@ -1,5 +1,12 @@
 class VideoRecorder {
-  constructor(stream) {
+  mediaSource: MediaSource;
+  stream: MediaStream;
+  output: HTMLVideoElement;
+  sourceBuffer: SourceBuffer;
+  recordedBlobs: Blob[];
+  mediaRecorder: MediaRecorder;
+
+  constructor(stream: MediaStream) {
     this.mediaSource = new MediaSource();
     this.stream = stream;
 
