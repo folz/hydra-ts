@@ -1,11 +1,6 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const glsl_utils_1 = __importDefault(require("./glsl-utils"));
+import generateGlsl from './glsl-utils';
 // const glslTransforms = require('./glsl/glsl-functions')
-const utility_functions_1 = __importDefault(require("./glsl/utility-functions"));
+import utilityGlsl from './glsl/utility-functions';
 class GlslSource {
     constructor(obj) {
         this.transforms = [];
@@ -63,7 +58,7 @@ class GlslSource {
         return passes;
     }
     compile(transforms) {
-        var shaderInfo = (0, glsl_utils_1.default)(transforms);
+        var shaderInfo = generateGlsl(transforms);
         var uniforms = {};
         shaderInfo.uniforms.forEach((uniform) => {
             uniforms[uniform.name] = uniform.value;
@@ -87,7 +82,7 @@ class GlslSource {
   varying vec2 uv;
   uniform sampler2D prevBuffer;
 
-  ${Object.values(utility_functions_1.default)
+  ${Object.values(utilityGlsl)
             .map((transform) => {
             //  console.log(transform.glsl)
             return `
@@ -116,4 +111,4 @@ class GlslSource {
         };
     }
 }
-exports.default = GlslSource;
+export default GlslSource;

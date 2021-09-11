@@ -1,10 +1,5 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const shader_generator_1 = __importDefault(require("./../shader-generator"));
-const shader = new shader_generator_1.default();
+import HydraShaders from './../shader-generator';
+const shader = new HydraShaders();
 let x = shader.eval('osc().out()');
 console.log(x.frag, x.uniforms);
 let y = shader.eval(`

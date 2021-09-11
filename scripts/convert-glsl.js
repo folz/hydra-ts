@@ -1,10 +1,5 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const glsl_functions_1 = __importDefault(require("../src/glsl/glsl-functions"));
-const fs_1 = __importDefault(require("fs"));
+import functions from '../src/glsl/glsl-functions';
+import fs from 'fs';
 // eslint-disable-next-line no-unused-vars
 let glslFunctions = [];
 // eslint-disable-next-line no-unused-vars
@@ -31,17 +26,17 @@ const typeLookup = {
     },
 };
 var output = `export default [
-  ${Object.keys(glsl_functions_1.default)
+  ${Object.keys(functions)
     .map((key) => {
-    var inputs = glsl_functions_1.default[key].inputs;
-    var res = glsl_functions_1.default[key].glsl.split('\n');
+    var inputs = functions[key].inputs;
+    var res = functions[key].glsl.split('\n');
     res.splice(0, 1);
     res.splice(res.length - 1, 1);
     var trimmed = res.map((str) => str.trim());
     var str = `${trimmed.join('\n')}`;
     return `{
   name: '${key}',
-  type: '${glsl_functions_1.default[key].type}',
+  type: '${functions[key].type}',
   inputs: [
     ${inputs
         .map((input) => `{
@@ -79,4 +74,4 @@ var output = `export default [
 // //  console.log('  ')
 //   return str
 // })}`
-fs_1.default.writeFileSync('./converted-functions.js', output, 'utf-8');
+fs.writeFileSync('./converted-functions.js', output, 'utf-8');

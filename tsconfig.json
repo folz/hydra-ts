@@ -2,6 +2,6 @@
   "exclude": ["dist"],
   "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
-    "module": "CommonJS"
+    "module": "ES2020"
   }
 }

@@ -1,6 +1,5 @@
 // https://github.com/mikolalysenko/mouse-event
 'use strict';
-Object.defineProperty(exports, "__esModule", { value: true });
 function mouseButtons(ev) {
     if (typeof ev === 'object') {
         if ('buttons' in ev) {
@@ -53,7 +52,7 @@ function mouseRelativeY(ev) {
     }
     return 0;
 }
-exports.default = {
+export default {
     buttons: mouseButtons,
     element: mouseElement,
     x: mouseRelativeX,

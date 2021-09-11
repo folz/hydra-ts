@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const { JSDOM } = require('jsdom');
 const gl = require('gl');
 const mock = require('mock-require');
@@ -69,7 +67,7 @@ function mockRegl(dimensions = { width: 100, height: 100 }) {
     });
     return { reset: () => mock.stop('regl') };
 }
-exports.default = {
+export default {
     DummyOutput,
     prepareForHydra,
     mockRegl,

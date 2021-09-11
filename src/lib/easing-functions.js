@@ -1,7 +1,5 @@
-"use strict";
 // from https://gist.github.com/gre/1650294
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = {
+export default {
     // no easing, no acceleration
     linear: function (t) {
         return t;

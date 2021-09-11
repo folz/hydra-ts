@@ -1,11 +1,7 @@
 // based on https://github.com/mikolalysenko/mouse-change
 'use strict';
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = mouseListen;
-const mouse_event_1 = __importDefault(require("./mouse-event"));
+export default mouseListen;
+import mouse from './mouse-event';
 function mouseListen(element, callback) {
     if (!callback) {
         callback = element;
@@ -42,8 +38,8 @@ function mouseListen(element, callback) {
         return changed;
     }
     function handleEvent(nextButtons, ev) {
-        var nextX = mouse_event_1.default.x(ev);
-        var nextY = mouse_event_1.default.y(ev);
+        var nextX = mouse.x(ev);
+        var nextY = mouse.y(ev);
         if ('buttons' in ev) {
             nextButtons = ev.buttons | 0;
         }
@@ -71,7 +67,7 @@ function mouseListen(element, callback) {
         }
     }
     function handleMouseMove(ev) {
-        if (mouse_event_1.default.buttons(ev) === 0) {
+        if (mouse.buttons(ev) === 0) {
             handleEvent(0, ev);
         }
         else {
@@ -79,10 +75,10 @@ function mouseListen(element, callback) {
         }
     }
     function handleMouseDown(ev) {
-        handleEvent(buttonState | mouse_event_1.default.buttons(ev), ev);
+        handleEvent(buttonState | mouse.buttons(ev), ev);
     }
     function handleMouseUp(ev) {
-        handleEvent(buttonState & ~mouse_event_1.default.buttons(ev), ev);
+        handleEvent(buttonState & ~mouse.buttons(ev), ev);
     }
     function attachListeners() {
         if (attached) {

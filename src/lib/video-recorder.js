@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 class VideoRecorder {
     constructor(stream) {
         this.mediaSource = new MediaSource();
@@ -78,4 +76,4 @@ class VideoRecorder {
         }
     }
 }
-exports.default = VideoRecorder;
+export default VideoRecorder;

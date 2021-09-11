@@ -1,11 +1,6 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const glsl_functions_js_1 = __importDefault(require("./glsl/glsl-functions.js"));
-const glsl_source_1 = __importDefault(require("./glsl-source"));
-class GeneratorFactory {
+import glslTransforms from './glsl/glsl-functions.js';
+import GlslSource from './glsl-source';
+export default class GeneratorFactory {
     constructor({ defaultUniforms, defaultOutput, extendTransforms = [], changeListener = () => { }, } = {}) {
         this.generators = {};
         this.glslTransforms = {};
@@ -19,7 +14,7 @@ class GeneratorFactory {
             return prev;
         }, {});
         this.sourceClass = createSourceClass();
-        let functions = glsl_functions_js_1.default;
+        let functions = glslTransforms;
         // add user definied transforms
         if (Array.isArray(this.extendTransforms)) {
             functions.concat(this.extendTransforms);
@@ -58,7 +53,6 @@ class GeneratorFactory {
             this._addMethod(obj.name, processedGlsl);
     }
 }
-exports.default = GeneratorFactory;
 const typeLookup = {
     src: {
         returnType: 'vec4',
@@ -142,6 +136,6 @@ function processGlsl(obj) {
     return Object.assign(Object.assign({}, obj), { glsl: glslFunction });
 }
 function createSourceClass() {
-    return class extends glsl_source_1.default {
+    return class extends GlslSource {
     };
 }

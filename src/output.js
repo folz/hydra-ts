@@ -1,6 +1,4 @@
-"use strict";
 //const transforms = require('./glsl-transforms')
-Object.defineProperty(exports, "__esModule", { value: true });
 class Output {
     constructor({ regl, precision, label = '', width, height }) {
         this.regl = regl;
@@ -109,4 +107,4 @@ class Output {
         this.draw(props);
     }
 }
-exports.default = Output;
+export default Output;
