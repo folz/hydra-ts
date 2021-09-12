@@ -5,7 +5,7 @@ const baseUniforms = ['s0', 's1', 's2', 's3', 'o0', 'o1', 'o2']; // names of uni
 
 export default class ShaderGenerator {
   generator: Generator;
-  renderer: unknown;
+  renderer: Record<string, any>;
   sandbox: Sandbox;
   initialCode: string;
   generatedCode: unknown;
@@ -15,8 +15,9 @@ export default class ShaderGenerator {
     customUniforms = baseUniforms,
     extendTransforms = [],
   } = {}) {
+    this.renderer = {};
+
     var self = this;
-    self.renderer = {};
 
     this.generator = new Generator({
       defaultUniforms,
@@ -28,6 +29,7 @@ export default class ShaderGenerator {
           // pass
         }
       },
+      // @ts-ignore
       defaultOutput: {
         render: (pass) => (self.generatedCode = pass[0]),
       },

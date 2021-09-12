@@ -4,6 +4,7 @@
 // basic sdf shapes
 // repeat
 // iq color palletes
+// @ts-ignore
 import glsl from 'glslify';
 
 export default {

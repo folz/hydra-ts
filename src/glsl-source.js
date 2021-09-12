@@ -4,12 +4,11 @@ import utilityGlsl from './glsl/utility-functions';
 class GlslSource {
     constructor(obj) {
         this.transforms = [];
+        this.type = 'GlslSource';
         this.transforms.push(obj);
         this.defaultOutput = obj.defaultOutput;
         this.synth = obj.synth;
-        this.type = 'GlslSource';
         this.defaultUniforms = obj.defaultUniforms;
-        return this;
     }
     addTransform(obj) {
         this.transforms.push(obj);
@@ -17,7 +16,6 @@ class GlslSource {
     out(_output) {
         var output = _output || this.defaultOutput;
         var glsl = this.glsl(output);
-        this.synth.currentFunctions = [];
         // output.renderPasses(glsl)
         if (output)
             try {
@@ -53,8 +51,9 @@ class GlslSource {
                 transforms.push(transform);
             }
         });
-        if (transforms.length > 0)
+        if (transforms.length > 0) {
             passes.push(this.compile(transforms));
+        }
         return passes;
     }
     compile(transforms) {
@@ -107,7 +106,7 @@ class GlslSource {
   `;
         return {
             frag: frag,
-            uniforms: Object.assign({}, this.defaultUniforms, uniforms),
+            uniforms: Object.assign(Object.assign({}, this.defaultUniforms), uniforms),
         };
     }
 }

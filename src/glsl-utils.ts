@@ -2,6 +2,8 @@
 
 // Add extra functionality to Array.prototype for generating sequences in time
 import arrayUtils from './lib/array-utils';
+import { TransformApplication } from './glsl-source';
+import { TransformDefinitionInput } from './glsl/glsl-functions';
 
 // [WIP] how to treat different dimensions (?)
 const DEFAULT_CONVERSIONS = {
@@ -9,10 +11,19 @@ const DEFAULT_CONVERSIONS = {
     vec4: { name: 'sum', args: [[1, 1, 1, 1]] },
     vec2: { name: 'sum', args: [[1, 1]] },
   },
-};
+  vec4: undefined,
+  sampler2D: undefined,
+  texture: undefined,
+} as const;
 
-export default function (transforms) {
-  var shaderParams = {
+interface ShaderParams {
+  uniforms: TypedArg[];
+  glslFunctions: TransformApplication[];
+  fragColor: string;
+}
+
+export default function (transforms: TransformApplication[]) {
+  var shaderParams: ShaderParams = {
     uniforms: [], // list of uniforms used in shader
     glslFunctions: [], // list of functions used in shader
     fragColor: '',
@@ -21,17 +32,22 @@ export default function (transforms) {
   var gen = generateGlsl(transforms, shaderParams)('st');
   shaderParams.fragColor = gen;
   // remove uniforms with duplicate names
-  let uniforms = {};
+  let uniforms: Record<string, TypedArg> = {};
   shaderParams.uniforms.forEach((uniform) => (uniforms[uniform.name] = uniform));
   shaderParams.uniforms = Object.values(uniforms);
   return shaderParams;
 }
 
+type GlslGenerator = (uv: string) => string;
+
 // recursive function for generating shader string from object containing functions and user arguments. Order of functions in string depends on type of function
 // to do: improve variable names
-function generateGlsl(transforms, shaderParams) {
+function generateGlsl(
+  transforms: TransformApplication[],
+  shaderParams: ShaderParams
+): GlslGenerator {
   // transform function that outputs a shader string corresponding to gl_FragColor
-  var fragColor = () => '';
+  var fragColor: GlslGenerator = () => '';
   // var uniforms = []
   // var glslFunctions = []
   transforms.forEach((transform) => {
@@ -57,7 +73,7 @@ function generateGlsl(transforms, shaderParams) {
       // combining two generated shader strings (i.e. for blend, mult, add funtions)
       var f1 =
         inputs[0].value && inputs[0].value.transforms
-          ? (uv) => `${generateGlsl(inputs[0].value.transforms, shaderParams)(uv)}`
+          ? (uv: string) => `${generateGlsl(inputs[0].value.transforms, shaderParams)(uv)}`
           : inputs[0].isUniform
           ? () => inputs[0].name
           : () => inputs[0].value;
@@ -68,7 +84,7 @@ function generateGlsl(transforms, shaderParams) {
       // eslint-disable-next-line no-redeclare
       var f1 =
         inputs[0].value && inputs[0].value.transforms
-          ? (uv) => `${generateGlsl(inputs[0].value.transforms, shaderParams)(uv)}`
+          ? (uv: string) => `${generateGlsl(inputs[0].value.transforms, shaderParams)(uv)}`
           : inputs[0].isUniform
           ? () => inputs[0].name
           : () => inputs[0].value;
@@ -84,7 +100,12 @@ function generateGlsl(transforms, shaderParams) {
 }
 
 // assembles a shader string containing the arguments and the function name, i.e. 'osc(uv, frequency)'
-function shaderString(uv, method, inputs, shaderParams) {
+function shaderString(
+  uv: string,
+  method: TransformApplication['name'],
+  inputs: TypedArg[],
+  shaderParams: ShaderParams
+) {
   const str = inputs
     .map((input) => {
       if (input.isUniform) {
@@ -101,14 +122,14 @@ function shaderString(uv, method, inputs, shaderParams) {
 }
 
 // check whether array
-function contains(object, arr) {
+function contains(object: TransformApplication, arr: TransformApplication[]) {
   for (var i = 0; i < arr.length; i++) {
     if (object.name == arr[i].name) return true;
   }
   return false;
 }
 
-function fillArrayWithDefaults(arr, len) {
+function fillArrayWithDefaults(arr: any[], len: number) {
   // fill the array with default values if it's too short
   while (arr.length < len) {
     if (arr.length === 3) {
@@ -121,7 +142,7 @@ function fillArrayWithDefaults(arr, len) {
   return arr.slice(0, len);
 }
 
-const ensure_decimal_dot = (val) => {
+const ensure_decimal_dot = (val: any) => {
   val = val.toString();
   if (val.indexOf('.') < 0) {
     val += '.';
@@ -129,7 +150,15 @@ const ensure_decimal_dot = (val) => {
   return val;
 };
 
-function formatArguments(transform, startIndex) {
+export interface TypedArg {
+  value: TransformDefinitionInput['default'];
+  type: TransformDefinitionInput['type'];
+  isUniform: boolean;
+  name: TransformDefinitionInput['name'];
+  vecLen: number;
+}
+
+function formatArguments(transform: TransformApplication, startIndex: number): TypedArg[] {
   //  console.log('processing args', transform, startIndex)
   const defaultArgs = transform.transform.inputs;
   const userArgs = transform.userArgs;
@@ -223,6 +252,7 @@ function formatArguments(transform, startIndex) {
         // if passing in a texture reference, when function asks for vec4, convert to vec4
         if (typedArg.value.getTexture && input.type === 'vec4') {
           var x1 = typedArg.value;
+          // @ts-ignore
           // eslint-disable-next-line no-undef
           typedArg.value = src(x1);
           typedArg.isUniform = false;

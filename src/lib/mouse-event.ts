@@ -2,6 +2,7 @@
 
 'use strict';
 
+// @ts-ignore
 function mouseButtons(ev) {
   if (typeof ev === 'object') {
     if ('buttons' in ev) {
@@ -30,10 +31,12 @@ function mouseButtons(ev) {
   return 0;
 }
 
+// @ts-ignore
 function mouseElement(ev) {
   return ev.target || ev.srcElement || window;
 }
 
+// @ts-ignore
 function mouseRelativeX(ev) {
   if (typeof ev === 'object') {
     if ('pageX' in ev) {
@@ -43,6 +46,7 @@ function mouseRelativeX(ev) {
   return 0;
 }
 
+// @ts-ignore
 function mouseRelativeY(ev) {
   if (typeof ev === 'object') {
     if ('pageY' in ev) {

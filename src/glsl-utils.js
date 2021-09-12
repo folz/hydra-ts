@@ -7,6 +7,9 @@ const DEFAULT_CONVERSIONS = {
         vec4: { name: 'sum', args: [[1, 1, 1, 1]] },
         vec2: { name: 'sum', args: [[1, 1]] },
     },
+    vec4: undefined,
+    sampler2D: undefined,
+    texture: undefined,
 };
 export default function (transforms) {
     var shaderParams = {
@@ -213,6 +216,7 @@ function formatArguments(transform, startIndex) {
                 // if passing in a texture reference, when function asks for vec4, convert to vec4
                 if (typedArg.value.getTexture && input.type === 'vec4') {
                     var x1 = typedArg.value;
+                    // @ts-ignore
                     // eslint-disable-next-line no-undef
                     typedArg.value = src(x1);
                     typedArg.isUniform = false;

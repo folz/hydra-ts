@@ -1,7 +1,9 @@
 {
-  "exclude": ["dist"],
+  "exclude": ["dev", "dist", "test"],
   "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
-    "module": "ES2020"
+    "declaration": true,
+    "module": "ES2020",
+    "moduleResolution": "Node"
   }
 }

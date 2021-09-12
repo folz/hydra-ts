@@ -28,15 +28,20 @@ const typeLookup = {
 var output = `export default [
   ${Object.keys(functions)
     .map((key) => {
+    // @ts-ignore
     var inputs = functions[key].inputs;
+    // @ts-ignore
     var res = functions[key].glsl.split('\n');
     res.splice(0, 1);
     res.splice(res.length - 1, 1);
+    // @ts-ignore
     var trimmed = res.map((str) => str.trim());
     var str = `${trimmed.join('\n')}`;
     return `{
   name: '${key}',
-  type: '${functions[key].type}',
+  type: '${
+    // @ts-ignore
+    functions[key].type}',
   inputs: [
     ${inputs
         .map((input) => `{

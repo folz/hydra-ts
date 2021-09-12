@@ -3,20 +3,20 @@ import Screen from './lib/screenmedia';
 import { Regl, Texture2D } from 'regl';
 
 interface HydraSourceOptions {
+  regl: HydraSource['regl'];
+  width: HydraSource['width'];
+  height: HydraSource['height'];
+  pb: HydraSource['pb'];
+  label: HydraSource['label'];
+}
+
+export default class HydraSource {
   regl: Regl;
   width: number;
   height: number;
   pb: any;
   label: string;
-}
-
-class HydraSource implements HydraSourceOptions {
-  regl;
-  width;
-  height;
-  pb;
-  label;
-  src: any | null;
+  src: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | CanvasRenderingContext2D | null;
   dynamic: boolean;
   tex: Texture2D;
 
@@ -34,7 +34,7 @@ class HydraSource implements HydraSourceOptions {
     this.pb = pb;
   }
 
-  init(opts) {
+  init(opts: { src: HydraSource['src']; dynamic: boolean }) {
     if (opts.src) {
       this.src = opts.src;
       this.tex = this.regl.texture(this.src);
@@ -46,9 +46,10 @@ class HydraSource implements HydraSourceOptions {
     const self = this;
     Webcam(index)
       .then((response) => {
+        // @ts-ignore
         self.src = response.video;
         self.dynamic = true;
-        self.tex = self.regl.texture(self.src);
+        self.tex = self.regl.texture(response.video);
       })
       .catch((err) => console.log('could not get camera', err));
   }
@@ -86,7 +87,7 @@ class HydraSource implements HydraSourceOptions {
     if (streamName && this.pb) {
       this.pb.initSource(streamName);
 
-      this.pb.on('got video', function (nick: string, video) {
+      this.pb.on('got video', function (nick: string, video: HTMLVideoElement) {
         if (nick === streamName) {
           self.src = video;
           self.dynamic = true;
@@ -114,9 +115,9 @@ class HydraSource implements HydraSourceOptions {
   }
 
   clear() {
-    if (this.src && this.src.srcObject) {
-      if (this.src.srcObject.getTracks) {
-        this.src.srcObject.getTracks().forEach((track) => track.stop());
+    if (this.src && 'srcObject' in this.src && this.src.srcObject) {
+      if ('getTracks' in this.src.srcObject && this.src.srcObject.getTracks) {
+        this.src.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
       }
     }
     this.src = null;
@@ -125,13 +126,12 @@ class HydraSource implements HydraSourceOptions {
 
   tick(dt?: number) {
     //  console.log(this.src, this.tex.width, this.tex.height)
-    if (this.src !== null && this.dynamic === true) {
-      if (this.src.videoWidth && this.src.videoWidth !== this.tex.width) {
-        console.log(this.src.videoWidth, this.src.videoHeight, this.tex.width, this.tex.height);
+    if (this.src !== null && this.dynamic) {
+      if ('videoWidth' in this.src && this.src.videoWidth !== this.tex.width) {
         this.tex.resize(this.src.videoWidth, this.src.videoHeight);
       }
 
-      if (this.src.width && this.src.width !== this.tex.width) {
+      if ('width' in this.src && this.src.width !== this.tex.width) {
         this.tex.resize(this.src.width, this.src.height);
       }
 
@@ -143,5 +143,3 @@ class HydraSource implements HydraSourceOptions {
     return this.tex;
   }
 }
-
-export default HydraSource;

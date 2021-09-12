@@ -1,10 +1,11 @@
 import glslTransforms from './glsl/glsl-functions.js';
 import GlslSource from './glsl-source';
 export default class GeneratorFactory {
-    constructor({ defaultUniforms, defaultOutput, extendTransforms = [], changeListener = () => { }, } = {}) {
+    constructor({ defaultUniforms = {}, defaultOutput, extendTransforms = [], changeListener = () => { }, }) {
         this.generators = {};
         this.glslTransforms = {};
         this.sourceClass = createSourceClass();
+        this.type = 'GeneratorFactory';
         this.defaultOutput = defaultOutput;
         this.defaultUniforms = defaultUniforms;
         this.changeListener = changeListener;
@@ -22,7 +23,7 @@ export default class GeneratorFactory {
         else if (typeof this.extendTransforms === 'object' && this.extendTransforms.type) {
             functions.push(this.extendTransforms);
         }
-        return functions.map((transform) => this.setFunction(transform));
+        functions.map((transform) => this.setFunction(transform));
     }
     _addMethod(method, transform) {
         this.glslTransforms[method] = transform;
@@ -40,8 +41,14 @@ export default class GeneratorFactory {
             return func;
         }
         else {
+            // @ts-ignore
             this.sourceClass.prototype[method] = function (...args) {
-                this.transforms.push({ name: method, transform: transform, userArgs: args });
+                this.transforms.push({
+                    defaultOutput: this.defaultOutput,
+                    name: method,
+                    transform: transform,
+                    userArgs: args,
+                });
                 return this;
             };
         }
@@ -74,6 +81,7 @@ const typeLookup = {
         returnType: 'vec2',
         args: ['vec2 _st', 'vec4 _c0'],
     },
+    renderpass: undefined,
 };
 // expects glsl of format
 // {

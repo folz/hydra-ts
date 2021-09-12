@@ -1,29 +1,31 @@
-import glslTransforms, { Transform } from './glsl/glsl-functions.js';
+import glslTransforms, { TransformDefinition } from './glsl/glsl-functions.js';
 import GlslSource from './glsl-source';
 import Output from './output';
+import { Uniforms } from 'regl';
 
 interface GeneratorFactoryOptions {
   defaultUniforms?: GeneratorFactory['defaultUniforms'];
-  defaultOutput?: GeneratorFactory['defaultOutput'];
+  defaultOutput: GeneratorFactory['defaultOutput'];
   extendTransforms?: GeneratorFactory['extendTransforms'];
   changeListener?: GeneratorFactory['changeListener'];
 }
 
 export default class GeneratorFactory {
-  defaultUniforms?: {};
-  defaultOutput?: Output;
-  extendTransforms: Transform | Transform[];
+  defaultUniforms: Uniforms;
+  defaultOutput: Output;
+  extendTransforms: TransformDefinition | TransformDefinition[];
   changeListener: (options: any) => void;
-  generators: Record<any, any> = {};
-  glslTransforms: Record<string, Transform> = {};
+  generators: Record<string, () => GlslSource> = {};
+  glslTransforms: Record<string, TransformDefinition> = {};
   sourceClass: typeof GlslSource = createSourceClass();
+  type = 'GeneratorFactory' as const;
 
   constructor({
-    defaultUniforms,
+    defaultUniforms = {},
     defaultOutput,
     extendTransforms = [],
     changeListener = () => {},
-  }: GeneratorFactoryOptions = {}) {
+  }: GeneratorFactoryOptions) {
     this.defaultOutput = defaultOutput;
     this.defaultUniforms = defaultUniforms;
     this.changeListener = changeListener;
@@ -45,13 +47,13 @@ export default class GeneratorFactory {
       functions.push(this.extendTransforms);
     }
 
-    return functions.map((transform) => this.setFunction(transform));
+    functions.map((transform) => this.setFunction(transform));
   }
 
-  _addMethod(method: string, transform: Transform) {
+  _addMethod(method: string, transform: TransformDefinition) {
     this.glslTransforms[method] = transform;
     if (transform.type === 'src') {
-      const func = (...args) =>
+      const func = (...args: any[]) =>
         new this.sourceClass({
           name: method,
           transform: transform,
@@ -64,15 +66,21 @@ export default class GeneratorFactory {
       this.changeListener({ type: 'add', synth: this, method });
       return func;
     } else {
-      this.sourceClass.prototype[method] = function (...args) {
-        this.transforms.push({ name: method, transform: transform, userArgs: args });
+      // @ts-ignore
+      this.sourceClass.prototype[method] = function (...args: any[]) {
+        this.transforms.push({
+          defaultOutput: this.defaultOutput,
+          name: method,
+          transform: transform,
+          userArgs: args,
+        });
         return this;
       };
     }
     return undefined;
   }
 
-  setFunction(obj: Transform) {
+  setFunction(obj: TransformDefinition) {
     var processedGlsl = processGlsl(obj);
     if (processedGlsl) this._addMethod(obj.name, processedGlsl);
   }
@@ -99,6 +107,7 @@ const typeLookup = {
     returnType: 'vec2',
     args: ['vec2 _st', 'vec4 _c0'],
   },
+  renderpass: undefined,
 };
 // expects glsl of format
 // {
@@ -139,7 +148,7 @@ const typeLookup = {
 //  return vec4(r, g, b, 1.0);
 // }`
 
-function processGlsl(obj: Transform): Transform | undefined {
+function processGlsl(obj: TransformDefinition): TransformDefinition | undefined {
   let t = typeLookup[obj.type];
 
   if (!t) {

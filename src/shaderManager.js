@@ -33,17 +33,15 @@ export default function (defaultOutput, precision) {
         var pass = {
             frag: frag,
             uniforms: output.uniforms,
-            // eslint-disable-next-line no-undef
-            precision: precisionValue,
+            precision: precision,
         };
         console.log('rendering', pass);
         var passes = [];
         passes.push(pass);
-        output.renderPasses([pass]);
         // var uniformObj = {}
         // this.uniforms.forEach((uniform) => { uniformObj[uniform.name] = uniform.value })
         // output.uniforms = Object.assign(output.uniforms, uniformObj)
-        output.render();
+        output.render([pass]);
     };
     return Frag;
 }

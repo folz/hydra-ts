@@ -1,15 +1,17 @@
 import Output from './src/output';
+// @ts-ignore
 import loop from 'raf-loop';
 import Source from './src/hydra-source';
 import createMouse from './src/lib/mouse';
-const Mouse = createMouse();
-import Audio from './src/lib/audio';
 import VidRecorder from './src/lib/video-recorder';
 import ArrayUtils from './src/lib/array-utils';
 import Sandbox from './src/eval-sandbox';
 import REGL, { DrawCommand, Framebuffer, Regl } from 'regl';
 
 import Generator from './src/generator-factory';
+import { TransformDefinition } from './src/glsl/glsl-functions';
+
+const Mouse = createMouse();
 
 export type Precision = 'lowp' | 'mediump' | 'highp';
 
@@ -18,6 +20,7 @@ type ReglProps = {
   tex1: Framebuffer;
   tex2: Framebuffer;
   tex3: Framebuffer;
+  resolution: [number, number];
 };
 
 export interface Synth {
@@ -37,48 +40,52 @@ export interface Synth {
   hush: any;
   screencap?: () => void;
   vidRecorder?: VidRecorder;
-  a?: Audio;
+  [name: string]: any;
 }
 
 interface HydraRendererOptions {
-  pb?: any | null;
-  width?: number;
-  height?: number;
+  pb?: HydraRenderer['pb'];
+  width?: HydraRenderer['width'];
+  height?: HydraRenderer['height'];
   numSources?: number;
   numOutputs?: number;
   makeGlobal?: boolean;
   autoLoop?: boolean;
-  detectAudio?: boolean;
+  detectAudio?: HydraRenderer['detectAudio'];
   enableStreamCapture?: boolean;
-  canvas?: HTMLCanvasElement;
-  precision?: Precision;
-  extendTransforms?: Record<any, any> | Record<any, any>[];
+  canvas?: HydraRenderer['canvas'];
+  precision?: HydraRenderer['precision'];
+  extendTransforms?: HydraRenderer['extendTransforms'];
 }
 
 // to do: add ability to pass in certain uniforms and transforms
 class HydraRenderer implements HydraRendererOptions {
-  pb;
-  width;
-  height;
-  detectAudio;
+  pb?: any | null;
+  width: number;
+  height: number;
+  detectAudio?: boolean;
   canvas: HTMLCanvasElement;
   synth: Synth;
   timeSinceLastUpdate;
   _time;
-  precision;
-  extendTransforms;
+  precision: Precision;
+  extendTransforms: TransformDefinition | TransformDefinition[];
   saveFrame: boolean;
   captureStream: MediaStream | null;
   generator?: Generator;
   sandbox: Sandbox;
-  imageCallback?: (blob: Blob) => void;
+  imageCallback?: (blob: Blob | null) => void;
+  // @ts-ignore
   regl: Regl;
   renderAll: DrawCommand | false;
+  // @ts-ignore
   renderFbo: DrawCommand;
-  isRenderingAll: boolean;
-  s: Source[];
-  o: Output[];
+  isRenderingAll: boolean = false;
+  s: Source[] = [];
+  o: Output[] = [];
+  // @ts-ignore
   output: Output;
+  [name: string]: any;
 
   constructor({
     pb = null,
@@ -92,7 +99,7 @@ class HydraRenderer implements HydraRendererOptions {
     enableStreamCapture = true,
     canvas,
     precision,
-    extendTransforms = {}, // add your own functions on init
+    extendTransforms = [], // add your own functions on init
   }: HydraRendererOptions = {}) {
     ArrayUtils.init();
 
@@ -103,7 +110,19 @@ class HydraRenderer implements HydraRendererOptions {
     this.renderAll = false;
     this.detectAudio = detectAudio;
 
-    this._initCanvas(canvas);
+    if (canvas) {
+      this.canvas = canvas;
+      this.width = canvas.width;
+      this.height = canvas.height;
+    } else {
+      this.canvas = document.createElement('canvas');
+      this.canvas.width = this.width;
+      this.canvas.height = this.height;
+      this.canvas.style.width = '100%';
+      this.canvas.style.height = '100%';
+      this.canvas.style.imageRendering = 'pixelated';
+      document.body.appendChild(this.canvas);
+    }
 
     // object that contains all properties that will be made available on the global context and during local evaluation
     this.synth = {
@@ -173,8 +192,6 @@ class HydraRenderer implements HydraRendererOptions {
       }
     }
 
-    if (detectAudio) this._initAudio();
-
     if (autoLoop) loop(this.tick.bind(this)).start();
 
     // final argument is properties that the user can set, all others are treated as read-only
@@ -239,43 +256,6 @@ class HydraRenderer implements HydraRendererOptions {
       document.body.removeChild(a);
       window.URL.revokeObjectURL(a.href);
     }, 300);
-  }
-
-  _initAudio() {
-    // eslint-disable-next-line no-unused-vars
-    const that = this;
-    this.synth.a = new Audio({
-      numBins: 4,
-      // changeListener: ({audio}) => {
-      //   that.a = audio.bins.map((_, index) =>
-      //     (scale = 1, offset = 0) => () => (audio.fft[index] * scale + offset)
-      //   )
-      //
-      //   if (that.makeGlobal) {
-      //     that.a.forEach((a, index) => {
-      //       const aname = `a${index}`
-      //       window[aname] = a
-      //     })
-      //   }
-      // }
-    });
-  }
-
-  // create main output canvas and add to screen
-  _initCanvas(canvas?: HTMLCanvasElement) {
-    if (canvas) {
-      this.canvas = canvas;
-      this.width = canvas.width;
-      this.height = canvas.height;
-    } else {
-      this.canvas = document.createElement('canvas');
-      this.canvas.width = this.width;
-      this.canvas.height = this.height;
-      this.canvas.style.width = '100%';
-      this.canvas.style.height = '100%';
-      this.canvas.style.imageRendering = 'pixelated';
-      document.body.appendChild(this.canvas);
-    }
   }
 
   _initRegl() {
@@ -392,7 +372,7 @@ class HydraRenderer implements HydraRendererOptions {
   _initOutputs(numOutputs: number) {
     const self = this;
     this.o = Array(numOutputs)
-      .fill()
+      .fill(undefined)
       .map((el, index) => {
         var o = new Output({
           regl: this.regl,
@@ -418,7 +398,7 @@ class HydraRenderer implements HydraRendererOptions {
     }
   }
 
-  createSource(i) {
+  createSource(i: number) {
     let s = new Source({
       regl: this.regl,
       pb: this.pb,
@@ -437,7 +417,15 @@ class HydraRenderer implements HydraRendererOptions {
       defaultOutput: this.o[0],
       defaultUniforms: this.o[0].uniforms,
       extendTransforms: this.extendTransforms,
-      changeListener: ({ type, method, synth }) => {
+      changeListener: ({
+        type,
+        method,
+        synth,
+      }: {
+        type: string;
+        method: string;
+        synth: Generator;
+      }) => {
         if (type === 'add') {
           self.synth[method] = synth.generators[method];
           if (self.sandbox) self.sandbox.add(method);
@@ -451,7 +439,7 @@ class HydraRenderer implements HydraRendererOptions {
     this.synth.setFunction = this.generator.setFunction.bind(this.generator);
   }
 
-  _render(output: typeof Output) {
+  _render(output: Output) {
     if (output) {
       this.output = output;
       this.isRenderingAll = false;
@@ -463,7 +451,6 @@ class HydraRenderer implements HydraRendererOptions {
   // dt in ms
   tick(dt: number) {
     this.sandbox.tick();
-    if (this.detectAudio === true) this.synth.a?.tick();
     //  let updateInterval = 1000/this.synth.fps // ms
     if (this.synth.update) {
       try {

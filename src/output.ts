@@ -1,30 +1,40 @@
 //const transforms = require('./glsl-transforms')
 
-import { Buffer, DrawCommand, Framebuffer2D, Regl } from 'regl';
+import { Attributes, Buffer, DrawCommand, Framebuffer2D, Regl, Uniforms } from 'regl';
 import { Precision } from '../hydra-synth';
+import { CompiledTransform } from './glsl-source';
 
 interface OutputOptions {
-  regl: Regl;
-  precision: Precision;
-  label: string;
+  regl: Output['regl'];
+  precision: Output['precision'];
+  label: Output['label'];
   width: number;
   height: number;
 }
 
-class Output implements OutputOptions {
-  regl;
-  precision;
-  label;
+class Output {
+  regl: Regl;
+  precision: Precision;
+  label: string;
   positionBuffer: Buffer;
   draw: DrawCommand;
   pingPongIndex: number;
   fbos: Framebuffer2D[];
+  // @ts-ignore
   transformIndex: number;
+  // @ts-ignore
   fragHeader: string;
+  // @ts-ignore
   fragBody: string;
+  // @ts-ignore
   frag: string;
+  // @ts-ignore
   vert: string;
-  uniforms: unknown[];
+  // @ts-ignore
+  uniforms: Uniforms;
+  // @ts-ignore
+  attributes: Attributes;
+  id?: number;
 
   constructor({ regl, precision, label = '', width, height }: OutputOptions) {
     this.regl = regl;
@@ -36,6 +46,7 @@ class Output implements OutputOptions {
       [2, 2],
     ]);
 
+    // @ts-ignore
     this.draw = () => {};
     this.init();
     this.pingPongIndex = 0;
@@ -101,7 +112,9 @@ class Output implements OutputOptions {
       position: this.positionBuffer,
     };
     this.uniforms = {
+      // @ts-ignore
       time: this.regl.prop('time'),
+      // @ts-ignore
       resolution: this.regl.prop('resolution'),
     };
 
@@ -118,7 +131,7 @@ class Output implements OutputOptions {
     return this;
   }
 
-  render(passes) {
+  render(passes: CompiledTransform[]) {
     let pass = passes[0];
     //console.log('pass', pass, this.pingPongIndex)
     var self = this;

@@ -1,41 +1,44 @@
-import generateGlsl from './glsl-utils';
+import generateGlsl, { TypedArg } from './glsl-utils';
 
 // const glslTransforms = require('./glsl/glsl-functions')
 import utilityGlsl from './glsl/utility-functions';
-import { Synth } from '../hydra-synth';
 import GeneratorFactory from './generator-factory';
+import Output from './output';
+import { Uniforms } from 'regl';
+import { TransformDefinition } from './glsl/glsl-functions';
 
-interface GlslSourceOptions {
-  defaultOutput: any;
-  synth: Synth | GeneratorFactory;
-  defaultUniforms: any;
+export interface TransformApplication {
+  defaultOutput: GlslSource['defaultOutput'];
+  defaultUniforms?: GlslSource['defaultUniforms'];
+  name: string;
+  synth?: GlslSource['synth'];
+  transform: TransformDefinition;
+  userArgs: any[];
 }
 
-class GlslSource implements GlslSourceOptions {
-  transforms: GlslSourceOptions[];
-  defaultOutput;
-  synth;
-  type: 'GlslSource';
-  defaultUniforms;
+export type CompiledTransform = ReturnType<GlslSource['compile']>;
 
-  constructor(obj: GlslSourceOptions) {
-    this.transforms = [];
+class GlslSource {
+  defaultOutput: Output;
+  defaultUniforms?: Uniforms;
+  synth?: GeneratorFactory;
+  transforms: TransformApplication[] = [];
+  type = 'GlslSource' as const;
+
+  constructor(obj: TransformApplication) {
     this.transforms.push(obj);
     this.defaultOutput = obj.defaultOutput;
     this.synth = obj.synth;
-    this.type = 'GlslSource';
     this.defaultUniforms = obj.defaultUniforms;
-    return this;
   }
 
-  addTransform(obj: GlslSourceOptions) {
+  addTransform(obj: TransformApplication) {
     this.transforms.push(obj);
   }
 
-  out(_output) {
+  out(_output: Output) {
     var output = _output || this.defaultOutput;
     var glsl = this.glsl(output);
-    this.synth.currentFunctions = [];
     // output.renderPasses(glsl)
     if (output)
       try {
@@ -45,12 +48,12 @@ class GlslSource implements GlslSourceOptions {
       }
   }
 
-  glsl(output?: unknown) {
+  glsl(output?: Output): CompiledTransform[] {
     //var output = _output || this.defaultOutput
     // uniforms included in all shaders
     //  this.defaultUniforms = output.uniforms
-    var passes = [];
-    var transforms = [];
+    var passes: CompiledTransform[] = [];
+    var transforms: TransformApplication[] = [];
     //  console.log('output', output)
     this.transforms.forEach((transform) => {
       if (transform.transform.type === 'renderpass') {
@@ -71,14 +74,16 @@ class GlslSource implements GlslSourceOptions {
       }
     });
 
-    if (transforms.length > 0) passes.push(this.compile(transforms));
+    if (transforms.length > 0) {
+      passes.push(this.compile(transforms));
+    }
 
     return passes;
   }
 
-  compile(transforms) {
+  compile(transforms: TransformApplication[]) {
     var shaderInfo = generateGlsl(transforms);
-    var uniforms = {};
+    var uniforms: Record<TypedArg['name'], TypedArg['value']> = {};
     shaderInfo.uniforms.forEach((uniform) => {
       uniforms[uniform.name] = uniform.value;
     });
@@ -128,7 +133,7 @@ class GlslSource implements GlslSourceOptions {
 
     return {
       frag: frag,
-      uniforms: Object.assign({}, this.defaultUniforms, uniforms),
+      uniforms: { ...this.defaultUniforms, ...uniforms },
     };
   }
 }

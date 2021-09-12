@@ -6,12 +6,12 @@ class VideoRecorder {
         this.output = document.createElement('video');
         this.output.autoplay = true;
         this.output.loop = true;
+        this.recordedBlobs = [];
         let self = this;
         this.mediaSource.addEventListener('sourceopen', () => {
             console.log('MediaSource opened');
             self.sourceBuffer = self.mediaSource.addSourceBuffer('video/webm; codecs="vp8"');
-            // eslint-disable-next-line no-undef
-            console.log('Source buffer: ', sourceBuffer);
+            console.log('Source buffer: ', self.sourceBuffer);
         });
     }
     start() {
@@ -31,7 +31,7 @@ class VideoRecorder {
             catch (e1) {
                 console.log('Unable to create MediaRecorder with options Object: ', e1);
                 try {
-                    options = 'video/vp8'; // Chrome 47
+                    options = { mimeType: 'video/vp8' }; // Chrome 47
                     this.mediaRecorder = new MediaRecorder(this.stream, options);
                 }
                 catch (e2) {
@@ -50,12 +50,14 @@ class VideoRecorder {
         console.log('MediaRecorder started', this.mediaRecorder);
     }
     stop() {
-        this.mediaRecorder.stop();
+        var _a;
+        (_a = this.mediaRecorder) === null || _a === void 0 ? void 0 : _a.stop();
     }
     _handleStop() {
+        var _a;
         //const superBuffer = new Blob(recordedBlobs, {type: 'video/webm'})
         // const blob = new Blob(this.recordedBlobs, {type: 'video/webm;codecs=h264'})
-        const blob = new Blob(this.recordedBlobs, { type: this.mediaRecorder.mimeType });
+        const blob = new Blob(this.recordedBlobs, { type: (_a = this.mediaRecorder) === null || _a === void 0 ? void 0 : _a.mimeType });
         const url = window.URL.createObjectURL(blob);
         this.output.src = url;
         const a = document.createElement('a');
@@ -70,6 +72,7 @@ class VideoRecorder {
             window.URL.revokeObjectURL(url);
         }, 300);
     }
+    // @ts-ignore
     _handleDataAvailable(event) {
         if (event.data && event.data.size > 0) {
             this.recordedBlobs.push(event.data);

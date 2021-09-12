@@ -1,25 +1,41 @@
 import Output from './src/output';
+// @ts-ignore
 import loop from 'raf-loop';
 import Source from './src/hydra-source';
 import createMouse from './src/lib/mouse';
-const Mouse = createMouse();
-import Audio from './src/lib/audio';
 import VidRecorder from './src/lib/video-recorder';
 import ArrayUtils from './src/lib/array-utils';
 import Sandbox from './src/eval-sandbox';
 import REGL from 'regl';
 import Generator from './src/generator-factory';
+const Mouse = createMouse();
 // to do: add ability to pass in certain uniforms and transforms
 class HydraRenderer {
-    constructor({ pb = null, width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, autoLoop = true, detectAudio = true, enableStreamCapture = true, canvas, precision, extendTransforms = {}, // add your own functions on init
+    constructor({ pb = null, width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, autoLoop = true, detectAudio = true, enableStreamCapture = true, canvas, precision, extendTransforms = [], // add your own functions on init
      } = {}) {
+        this.isRenderingAll = false;
+        this.s = [];
+        this.o = [];
         ArrayUtils.init();
         this.pb = pb;
         this.width = width;
         this.height = height;
         this.renderAll = false;
         this.detectAudio = detectAudio;
-        this._initCanvas(canvas);
+        if (canvas) {
+            this.canvas = canvas;
+            this.width = canvas.width;
+            this.height = canvas.height;
+        }
+        else {
+            this.canvas = document.createElement('canvas');
+            this.canvas.width = this.width;
+            this.canvas.height = this.height;
+            this.canvas.style.width = '100%';
+            this.canvas.style.height = '100%';
+            this.canvas.style.imageRendering = 'pixelated';
+            document.body.appendChild(this.canvas);
+        }
         // object that contains all properties that will be made available on the global context and during local evaluation
         this.synth = {
             time: 0,
@@ -79,8 +95,6 @@ class HydraRenderer {
                 console.error(e);
             }
         }
-        if (detectAudio)
-            this._initAudio();
         if (autoLoop)
             loop(this.tick.bind(this)).start();
         // final argument is properties that the user can set, all others are treated as read-only
@@ -138,42 +152,6 @@ class HydraRenderer {
             document.body.removeChild(a);
             window.URL.revokeObjectURL(a.href);
         }, 300);
-    }
-    _initAudio() {
-        // eslint-disable-next-line no-unused-vars
-        const that = this;
-        this.synth.a = new Audio({
-            numBins: 4,
-            // changeListener: ({audio}) => {
-            //   that.a = audio.bins.map((_, index) =>
-            //     (scale = 1, offset = 0) => () => (audio.fft[index] * scale + offset)
-            //   )
-            //
-            //   if (that.makeGlobal) {
-            //     that.a.forEach((a, index) => {
-            //       const aname = `a${index}`
-            //       window[aname] = a
-            //     })
-            //   }
-            // }
-        });
-    }
-    // create main output canvas and add to screen
-    _initCanvas(canvas) {
-        if (canvas) {
-            this.canvas = canvas;
-            this.width = canvas.width;
-            this.height = canvas.height;
-        }
-        else {
-            this.canvas = document.createElement('canvas');
-            this.canvas.width = this.width;
-            this.canvas.height = this.height;
-            this.canvas.style.width = '100%';
-            this.canvas.style.height = '100%';
-            this.canvas.style.imageRendering = 'pixelated';
-            document.body.appendChild(this.canvas);
-        }
     }
     _initRegl() {
         this.regl = REGL({
@@ -285,7 +263,7 @@ class HydraRenderer {
     _initOutputs(numOutputs) {
         const self = this;
         this.o = Array(numOutputs)
-            .fill()
+            .fill(undefined)
             .map((el, index) => {
             var o = new Output({
                 regl: this.regl,
@@ -326,7 +304,7 @@ class HydraRenderer {
             defaultOutput: this.o[0],
             defaultUniforms: this.o[0].uniforms,
             extendTransforms: this.extendTransforms,
-            changeListener: ({ type, method, synth }) => {
+            changeListener: ({ type, method, synth, }) => {
                 if (type === 'add') {
                     self.synth[method] = synth.generators[method];
                     if (self.sandbox)
@@ -352,10 +330,7 @@ class HydraRenderer {
     }
     // dt in ms
     tick(dt) {
-        var _a;
         this.sandbox.tick();
-        if (this.detectAudio === true)
-            (_a = this.synth.a) === null || _a === void 0 ? void 0 : _a.tick();
         //  let updateInterval = 1000/this.synth.fps // ms
         if (this.synth.update) {
             try {

@@ -4,9 +4,26 @@
 
 import easing from './easing-functions';
 
-var map = (num, in_min, in_max, out_min, out_max) => {
+var map = (num: number, in_min: number, in_max: number, out_min: number, out_max: number) => {
   return ((num - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
 };
+
+type Easing = keyof typeof easing;
+
+declare global {
+  interface Array<T> {
+    _speed: number;
+    _smooth: number;
+    _ease: (t: number) => number;
+    _offset: number;
+
+    fast(speed: number): this;
+    smooth(smooth: number): this;
+    ease(ease: Easing): this;
+    offset(offset: number): this;
+    fit(low: number, high: number): this;
+  }
+}
 
 export default {
   init: () => {
@@ -54,7 +71,7 @@ export default {
 
   getValue:
     (arr = []) =>
-    ({ time, bpm }) => {
+    ({ time, bpm }: any) => {
       let speed = arr._speed ? arr._speed : 1;
       let smooth = arr._smooth ? arr._smooth : 0;
       let index = time * speed * (bpm / 60) + (arr._offset || 0);
@@ -65,6 +82,7 @@ export default {
         let currValue = arr[Math.floor(_index % arr.length)];
         let nextValue = arr[Math.floor((_index + 1) % arr.length)];
         let t = Math.min((_index % 1) / smooth, 1);
+        // @ts-ignore
         return ease(t) * (nextValue - currValue) + currValue;
       } else {
         return arr[Math.floor(index % arr.length)];

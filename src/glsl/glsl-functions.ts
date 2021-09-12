@@ -68,22 +68,38 @@ const types = {
 
 */
 
-export type TransformType = 'src' | 'color' | 'combine' | 'coord' | 'combineCoord';
+import { Texture2D } from 'regl';
+import HydraSource from '../hydra-source';
 
-export interface TransformInput {
-  type: string;
+export type TransformDefinitionType =
+  | 'src'
+  | 'color'
+  | 'combine'
+  | 'coord'
+  | 'combineCoord'
+  | 'renderpass';
+
+type TransformDefinitionInputType = 'float' | 'sampler2D' | 'vec4' | 'texture';
+
+export interface TransformDefinitionInput {
+  type: TransformDefinitionInputType;
   name: string;
-  default?: unknown;
+  default?:
+    | (number | number[])
+    | ((context: any, props: any) => number | number[])
+    | string
+    | Texture2D
+    | HydraSource;
 }
 
-export interface Transform {
+export interface TransformDefinition {
   name: string;
-  type: TransformType;
-  inputs: TransformInput[];
+  type: TransformDefinitionType;
+  inputs: TransformDefinitionInput[];
   glsl: string;
 }
 
-const transforms: Transform[] = [
+const transforms: TransformDefinition[] = [
   {
     name: 'noise',
     type: 'src',

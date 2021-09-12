@@ -2,9 +2,9 @@ class VideoRecorder {
   mediaSource: MediaSource;
   stream: MediaStream;
   output: HTMLVideoElement;
-  sourceBuffer: SourceBuffer;
+  sourceBuffer?: SourceBuffer;
   recordedBlobs: Blob[];
-  mediaRecorder: MediaRecorder;
+  mediaRecorder?: MediaRecorder;
 
   constructor(stream: MediaStream) {
     this.mediaSource = new MediaSource();
@@ -15,12 +15,13 @@ class VideoRecorder {
     this.output.autoplay = true;
     this.output.loop = true;
 
+    this.recordedBlobs = [];
+
     let self = this;
     this.mediaSource.addEventListener('sourceopen', () => {
       console.log('MediaSource opened');
       self.sourceBuffer = self.mediaSource.addSourceBuffer('video/webm; codecs="vp8"');
-      // eslint-disable-next-line no-undef
-      console.log('Source buffer: ', sourceBuffer);
+      console.log('Source buffer: ', self.sourceBuffer);
     });
   }
 
@@ -28,7 +29,7 @@ class VideoRecorder {
     //  let options = {mimeType: 'video/webm'};
 
     //   let options = {mimeType: 'video/webm;codecs=h264'};
-    let options = { mimeType: 'video/webm;codecs=vp9' };
+    let options: MediaRecorderOptions = { mimeType: 'video/webm;codecs=vp9' };
 
     this.recordedBlobs = [];
     try {
@@ -41,7 +42,7 @@ class VideoRecorder {
       } catch (e1) {
         console.log('Unable to create MediaRecorder with options Object: ', e1);
         try {
-          options = 'video/vp8'; // Chrome 47
+          options = { mimeType: 'video/vp8' }; // Chrome 47
           this.mediaRecorder = new MediaRecorder(this.stream, options);
         } catch (e2) {
           alert(
@@ -62,13 +63,13 @@ class VideoRecorder {
   }
 
   stop() {
-    this.mediaRecorder.stop();
+    this.mediaRecorder?.stop();
   }
 
   _handleStop() {
     //const superBuffer = new Blob(recordedBlobs, {type: 'video/webm'})
     // const blob = new Blob(this.recordedBlobs, {type: 'video/webm;codecs=h264'})
-    const blob = new Blob(this.recordedBlobs, { type: this.mediaRecorder.mimeType });
+    const blob = new Blob(this.recordedBlobs, { type: this.mediaRecorder?.mimeType });
     const url = window.URL.createObjectURL(blob);
     this.output.src = url;
 
@@ -87,6 +88,7 @@ class VideoRecorder {
     }, 300);
   }
 
+  // @ts-ignore
   _handleDataAvailable(event) {
     if (event.data && event.data.size > 0) {
       this.recordedBlobs.push(event.data);

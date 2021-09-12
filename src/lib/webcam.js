@@ -17,12 +17,11 @@ function Webcam(deviceId) {
         const video = document.createElement('video');
         //  video.src = window.URL.createObjectURL(stream)
         video.srcObject = stream;
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             video.addEventListener('loadedmetadata', () => {
                 video.play().then(() => resolve({ video: video }));
             });
         });
-    })
-        .catch(console.log.bind(console));
+    });
 }
 export default Webcam;

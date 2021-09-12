@@ -1,7 +1,7 @@
 // attempt custom evaluation sandbox for hydra functions
 // for now, just avoids polluting the global namespace
 // should probably be replaced with an abstract syntax tree
-export default () => {
+export default (parent) => {
     var initialCode = ``;
     var sandbox = createSandbox(initialCode);
     var addToContext = (name, object) => {

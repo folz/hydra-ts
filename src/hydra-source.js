@@ -1,6 +1,6 @@
 import Webcam from './lib/webcam';
 import Screen from './lib/screenmedia';
-class HydraSource {
+export default class HydraSource {
     constructor({ regl, width, height, pb, label = '' }) {
         this.label = label;
         this.regl = regl;
@@ -26,9 +26,10 @@ class HydraSource {
         const self = this;
         Webcam(index)
             .then((response) => {
+            // @ts-ignore
             self.src = response.video;
             self.dynamic = true;
-            self.tex = self.regl.texture(self.src);
+            self.tex = self.regl.texture(response.video);
         })
             .catch((err) => console.log('could not get camera', err));
     }
@@ -87,8 +88,8 @@ class HydraSource {
         this.height = height;
     }
     clear() {
-        if (this.src && this.src.srcObject) {
-            if (this.src.srcObject.getTracks) {
+        if (this.src && 'srcObject' in this.src && this.src.srcObject) {
+            if ('getTracks' in this.src.srcObject && this.src.srcObject.getTracks) {
                 this.src.srcObject.getTracks().forEach((track) => track.stop());
             }
         }
@@ -97,12 +98,11 @@ class HydraSource {
     }
     tick(dt) {
         //  console.log(this.src, this.tex.width, this.tex.height)
-        if (this.src !== null && this.dynamic === true) {
-            if (this.src.videoWidth && this.src.videoWidth !== this.tex.width) {
-                console.log(this.src.videoWidth, this.src.videoHeight, this.tex.width, this.tex.height);
+        if (this.src !== null && this.dynamic) {
+            if ('videoWidth' in this.src && this.src.videoWidth !== this.tex.width) {
                 this.tex.resize(this.src.videoWidth, this.src.videoHeight);
             }
-            if (this.src.width && this.src.width !== this.tex.width) {
+            if ('width' in this.src && this.src.width !== this.tex.width) {
                 this.tex.resize(this.src.width, this.src.height);
             }
             this.tex.subimage(this.src);
@@ -112,4 +112,3 @@ class HydraSource {
         return this.tex;
     }
 }
-export default HydraSource;
