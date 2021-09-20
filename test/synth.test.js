@@ -2,7 +2,7 @@ import Synth from '../hydra-synth';
 import transforms from '../src/glsl/glsl-functions';
 import REGL from 'regl';
 import gl from 'gl';
-describe('Synth', function () {
+describe.skip('Synth', function () {
     let regl;
     beforeEach(function () {
         regl = REGL(gl(800, 600));

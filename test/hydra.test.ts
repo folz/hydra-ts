@@ -5,7 +5,7 @@ import HydraSynth from '../index';
 
 import transforms from '../src/glsl/glsl-functions';
 
-describe('HydraSynth', function () {
+describe.skip('HydraSynth', function () {
   let regl;
 
   beforeEach(function () {
