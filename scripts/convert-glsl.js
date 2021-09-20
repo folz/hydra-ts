@@ -1,64 +1,63 @@
-const functions = require('./../src/glsl/glsl-functions.js');
-const fs = require('fs');
-
+import functions from '../src/glsl/glsl-functions';
+import fs from 'fs';
 // eslint-disable-next-line no-unused-vars
 let glslFunctions = [];
-
 // eslint-disable-next-line no-unused-vars
 const typeLookup = {
-  src: {
-    returnType: 'vec4',
-    args: ['vec2 _st'],
-  },
-  coord: {
-    returnType: 'vec2',
-    args: ['vec2 _st'],
-  },
-  color: {
-    returnType: 'vec4',
-    args: ['vec4 _c0'],
-  },
-  combine: {
-    returnType: 'vec4',
-    args: ['vec4 _c0', 'vec4 _c1'],
-  },
-  combineCoords: {
-    returnType: 'vec2',
-    args: ['vec2 _st', 'vec4 c0'],
-  },
+    src: {
+        returnType: 'vec4',
+        args: ['vec2 _st'],
+    },
+    coord: {
+        returnType: 'vec2',
+        args: ['vec2 _st'],
+    },
+    color: {
+        returnType: 'vec4',
+        args: ['vec4 _c0'],
+    },
+    combine: {
+        returnType: 'vec4',
+        args: ['vec4 _c0', 'vec4 _c1'],
+    },
+    combineCoords: {
+        returnType: 'vec2',
+        args: ['vec2 _st', 'vec4 c0'],
+    },
 };
-
-var output = `module.exports = [
+var output = `export default [
   ${Object.keys(functions)
     .map((key) => {
-      var inputs = functions[key].inputs;
-      var res = functions[key].glsl.split('\n');
-      res.splice(0, 1);
-      res.splice(res.length - 1, 1);
-      var trimmed = res.map((str) => str.trim());
-      var str = `${trimmed.join('\n')}`;
-      return `{
+    // @ts-ignore
+    var inputs = functions[key].inputs;
+    // @ts-ignore
+    var res = functions[key].glsl.split('\n');
+    res.splice(0, 1);
+    res.splice(res.length - 1, 1);
+    // @ts-ignore
+    var trimmed = res.map((str) => str.trim());
+    var str = `${trimmed.join('\n')}`;
+    return `{
   name: '${key}',
-  type: '${functions[key].type}',
+  type: '${
+    // @ts-ignore
+    functions[key].type}',
   inputs: [
     ${inputs
-      .map(
-        (input) => `{
+        .map((input) => `{
       type: '${input.type}',
       name: '${input.name}',
       default: '${input.default}'
-    }`
-      )
-      .join(',\n')}
+    }`)
+        .join(',\n')}
   ],
   glsl:
 \`${str}\`
 }`;
-    })
+})
     .join(',\n')}
 ]`;
-
-// var output = `module.exports = [
+// var output = `export default [
 //   ${Object.keys(functions).map((key) => {
 // //  console.log(key)
 //
@@ -80,5 +79,4 @@ var output = `module.exports = [
 // //  console.log('  ')
 //   return str
 // })}`
-
 fs.writeFileSync('./converted-functions.js', output, 'utf-8');

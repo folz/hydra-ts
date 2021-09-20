@@ -1,57 +1,64 @@
 // https://github.com/mikolalysenko/mouse-event
-
 'use strict';
-
+// @ts-ignore
 function mouseButtons(ev) {
-  if (typeof ev === 'object') {
-    if ('buttons' in ev) {
-      return ev.buttons;
-    } else if ('which' in ev) {
-      var b = ev.which;
-      if (b === 2) {
-        return 4;
-      } else if (b === 3) {
-        return 2;
-      } else if (b > 0) {
-        return 1 << (b - 1);
-      }
-    } else if ('button' in ev) {
-      // eslint-disable-next-line no-redeclare
-      var b = ev.button;
-      if (b === 1) {
-        return 4;
-      } else if (b === 2) {
-        return 2;
-      } else if (b >= 0) {
-        return 1 << b;
-      }
+    if (typeof ev === 'object') {
+        if ('buttons' in ev) {
+            return ev.buttons;
+        }
+        else if ('which' in ev) {
+            var b = ev.which;
+            if (b === 2) {
+                return 4;
+            }
+            else if (b === 3) {
+                return 2;
+            }
+            else if (b > 0) {
+                return 1 << (b - 1);
+            }
+        }
+        else if ('button' in ev) {
+            // eslint-disable-next-line no-redeclare
+            var b = ev.button;
+            if (b === 1) {
+                return 4;
+            }
+            else if (b === 2) {
+                return 2;
+            }
+            else if (b >= 0) {
+                return 1 << b;
+            }
+        }
     }
-  }
-  return 0;
+    return 0;
 }
-exports.buttons = mouseButtons;
-
+// @ts-ignore
 function mouseElement(ev) {
-  return ev.target || ev.srcElement || window;
+    return ev.target || ev.srcElement || window;
 }
-exports.element = mouseElement;
-
+// @ts-ignore
 function mouseRelativeX(ev) {
-  if (typeof ev === 'object') {
-    if ('pageX' in ev) {
-      return ev.pageX;
+    if (typeof ev === 'object') {
+        if ('pageX' in ev) {
+            return ev.pageX;
+        }
     }
-  }
-  return 0;
+    return 0;
 }
-exports.x = mouseRelativeX;
-
+// @ts-ignore
 function mouseRelativeY(ev) {
-  if (typeof ev === 'object') {
-    if ('pageY' in ev) {
-      return ev.pageY;
+    if (typeof ev === 'object') {
+        if ('pageY' in ev) {
+            return ev.pageY;
+        }
     }
-  }
-  return 0;
+    return 0;
 }
-exports.y = mouseRelativeY;
+export default {
+    buttons: mouseButtons,
+    element: mouseElement,
+    x: mouseRelativeX,
+    y: mouseRelativeY,
+};

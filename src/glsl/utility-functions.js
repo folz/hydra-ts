@@ -1,16 +1,15 @@
 // functions that are only used within other functions
-
-module.exports = {
-  _luminance: {
-    type: 'util',
-    glsl: `float _luminance(vec3 rgb){
+export default {
+    _luminance: {
+        type: 'util',
+        glsl: `float _luminance(vec3 rgb){
       const vec3 W = vec3(0.2125, 0.7154, 0.0721);
       return dot(rgb, W);
     }`,
-  },
-  _noise: {
-    type: 'util',
-    glsl: `
+    },
+    _noise: {
+        type: 'util',
+        glsl: `
     //	Simplex 3D Noise
     //	by Ian McEwan, Ashima Arts
     vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
@@ -85,11 +84,10 @@ module.exports = {
                                   dot(p2,x2), dot(p3,x3) ) );
   }
     `,
-  },
-
-  _rgbToHsv: {
-    type: 'util',
-    glsl: `vec3 _rgbToHsv(vec3 c){
+    },
+    _rgbToHsv: {
+        type: 'util',
+        glsl: `vec3 _rgbToHsv(vec3 c){
             vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
             vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
             vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
@@ -98,13 +96,13 @@ module.exports = {
             float e = 1.0e-10;
             return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
         }`,
-  },
-  _hsvToRgb: {
-    type: 'util',
-    glsl: `vec3 _hsvToRgb(vec3 c){
+    },
+    _hsvToRgb: {
+        type: 'util',
+        glsl: `vec3 _hsvToRgb(vec3 c){
         vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
         vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
         return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
     }`,
-  },
+    },
 };

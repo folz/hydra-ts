@@ -1,4 +1,3 @@
-const Synth = require('./hydra-synth.js');
-//const ShaderGenerator = require('./shader-generator.js')
-
-module.exports = Synth;
+import Synth from './hydra-synth';
+//const ShaderGenerator = require('./shader-generator')
+export default Synth;
