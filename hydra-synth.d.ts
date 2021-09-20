@@ -20,7 +20,7 @@ export interface Synth {
     mouse: typeof Mouse;
     render: any;
     setResolution: any;
-    update: any;
+    update?: (dt: number) => void;
     hush: any;
     screencap?: () => void;
     vidRecorder?: VidRecorder;
@@ -36,7 +36,7 @@ interface HydraRendererOptions {
     autoLoop?: boolean;
     detectAudio?: HydraRenderer['detectAudio'];
     enableStreamCapture?: boolean;
-    canvas?: HydraRenderer['canvas'];
+    regl: HydraRenderer['regl'];
     precision?: HydraRenderer['precision'];
     extendTransforms?: HydraRenderer['extendTransforms'];
 }
@@ -45,7 +45,6 @@ declare class HydraRenderer implements HydraRendererOptions {
     width: number;
     height: number;
     detectAudio?: boolean;
-    canvas: HTMLCanvasElement;
     synth: Synth;
     timeSinceLastUpdate: number;
     _time: number;
@@ -64,7 +63,7 @@ declare class HydraRenderer implements HydraRendererOptions {
     o: Output[];
     output: Output;
     [name: string]: any;
-    constructor({ pb, width, height, numSources, numOutputs, makeGlobal, autoLoop, detectAudio, enableStreamCapture, canvas, precision, extendTransforms, }?: HydraRendererOptions);
+    constructor({ pb, width, height, numSources, numOutputs, makeGlobal, autoLoop, detectAudio, enableStreamCapture, precision, regl, extendTransforms, }: HydraRendererOptions);
     eval(code: string): void;
     getScreenImage(callback: HydraRenderer['imageCallback']): void;
     hush(): void;

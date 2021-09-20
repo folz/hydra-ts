@@ -1,44 +1,50 @@
-const { DummyOutput } = require('./lib/util');
+import Synth from '../hydra-synth';
 
-const Synth = require('../hydra-synth');
+import transforms from '../src/glsl/glsl-functions';
+import REGL from 'regl';
+import gl from 'gl';
 
-describe.skip('Synth', function () {
+describe('Synth', function () {
+  let regl;
+
+  beforeEach(function () {
+    regl = REGL(gl(800, 600));
+  });
+
   it('Sets the seq prototype on Array', () => {
-    expect(Array.prototype).toEqual(expect.arrayContaining('fast'));
+    expect(Array.prototype).toEqual(expect.arrayContaining(['fast']));
 
     expect(Array.prototype.fast).toBeInstanceOf('function');
   });
 
   it('Contains all transforms', () => {
-    const transforms = require('../src/glsl/glsl-functions');
     const srcNames = Object.entries(transforms)
       .filter(([, transform]) => transform.type === 'src')
       .map(([name]) => name);
 
     const events = [];
-    const dummyOutput = new DummyOutput();
-    const synth = new Synth(dummyOutput, {}, (e) => events.push(e));
+    const synth = new Synth({ regl, enableStreamCapture: false }, {}, (e) => events.push(e));
 
     expect(synth.generators).toEqual(expect.arrayContaining(srcNames));
 
-    expect(events.filter(({ type }) => type === 'add').map(({ method }) => method)).toEqual(srcNames);
+    expect(events.filter(({ type }) => type === 'add').map(({ method }) => method)).toEqual(
+      srcNames
+    );
   });
 
   it('Can be extended', () => {
-    const transforms = require('../src/glsl/glsl-functions');
     const srcNames = Object.entries(transforms)
       .filter(([, transform]) => transform.type === 'src')
       .map(([name]) => name);
 
     const events = [];
-    const dummyOutput = new DummyOutput();
-    const synth = new Synth(dummyOutput, 'invalid', (e) => events.push(e));
+    const synth = new Synth({ regl, enableStreamCapture: false }, 'invalid', (e) => events.push(e));
 
     expect(synth.generators).toEqual(expect.arrayContaining(srcNames));
 
-    expect(
-      events.filter(({ type }) => type === 'add').map(({ method }) => method)
-    ).toEqual(srcNames);
+    expect(events.filter(({ type }) => type === 'add').map(({ method }) => method)).toEqual(
+      srcNames
+    );
 
     [
       {
@@ -62,13 +68,13 @@ describe.skip('Synth', function () {
       events.length = 0;
       synth.init();
 
-      expect(
-        events.filter(({ type }) => type === 'remove').map(({ method }) => method)
-      ).toEqual(srcNames);
+      expect(events.filter(({ type }) => type === 'remove').map(({ method }) => method)).toEqual(
+        srcNames
+      );
 
-      expect(
-        events.filter(({ type }) => type === 'add').map(({ method }) => method)
-      ).toEqual(expect.arrayContaining([...srcNames, 'foo']));
+      expect(events.filter(({ type }) => type === 'add').map(({ method }) => method)).toEqual(
+        expect.arrayContaining([...srcNames, 'foo'])
+      );
     });
 
     synth.setFunction('bar', {
@@ -81,23 +87,22 @@ describe.skip('Synth', function () {
   });
 
   it('Can create function chains', () => {
-    const dummyOutput = new DummyOutput();
-    const synth = new Synth(dummyOutput);
+    const synth = new Synth({ regl, enableStreamCapture: false });
 
     expect(() => {
-      synth.generators.solid().repeatX().out(dummyOutput);
+      synth.generators.solid().repeatX().out();
     }).not.toThrow();
   });
 
-  it('Sets up uniforms properly', () => {
-    const dummyOutput = new DummyOutput();
-    const synth = new Synth(dummyOutput);
+  it.skip('Sets up uniforms properly', () => {
+    const dummyOutput = { passes: [[{ uniforms: [] }]] };
+    const synth = new Synth({ regl, enableStreamCapture: false });
 
     expect(() => {
       synth.generators
         .solid(0, () => 1, 2)
         .repeatX(() => 3)
-        .out(dummyOutput);
+        .out();
     }).not.toThrow();
 
     expect(dummyOutput.passes).toHaveLength(1);

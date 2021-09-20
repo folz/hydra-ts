@@ -6,7 +6,7 @@ import createMouse from './src/lib/mouse';
 import VidRecorder from './src/lib/video-recorder';
 import ArrayUtils from './src/lib/array-utils';
 import Sandbox from './src/eval-sandbox';
-import REGL, { DrawCommand, Framebuffer, Regl } from 'regl';
+import { DrawCommand, Framebuffer, Regl } from 'regl';
 
 import Generator from './src/generator-factory';
 import { TransformDefinition } from './src/glsl/glsl-functions';
@@ -36,7 +36,7 @@ export interface Synth {
   mouse: typeof Mouse;
   render: any;
   setResolution: any;
-  update: any;
+  update?: (dt: number) => void;
   hush: any;
   screencap?: () => void;
   vidRecorder?: VidRecorder;
@@ -53,7 +53,7 @@ interface HydraRendererOptions {
   autoLoop?: boolean;
   detectAudio?: HydraRenderer['detectAudio'];
   enableStreamCapture?: boolean;
-  canvas?: HydraRenderer['canvas'];
+  regl: HydraRenderer['regl'];
   precision?: HydraRenderer['precision'];
   extendTransforms?: HydraRenderer['extendTransforms'];
 }
@@ -64,7 +64,6 @@ class HydraRenderer implements HydraRendererOptions {
   width: number;
   height: number;
   detectAudio?: boolean;
-  canvas: HTMLCanvasElement;
   synth: Synth;
   timeSinceLastUpdate;
   _time;
@@ -97,10 +96,10 @@ class HydraRenderer implements HydraRendererOptions {
     autoLoop = true,
     detectAudio = true,
     enableStreamCapture = true,
-    canvas,
     precision,
+    regl,
     extendTransforms = [], // add your own functions on init
-  }: HydraRendererOptions = {}) {
+  }: HydraRendererOptions) {
     ArrayUtils.init();
 
     this.pb = pb;
@@ -110,19 +109,7 @@ class HydraRenderer implements HydraRendererOptions {
     this.renderAll = false;
     this.detectAudio = detectAudio;
 
-    if (canvas) {
-      this.canvas = canvas;
-      this.width = canvas.width;
-      this.height = canvas.height;
-    } else {
-      this.canvas = document.createElement('canvas');
-      this.canvas.width = this.width;
-      this.canvas.height = this.height;
-      this.canvas.style.width = '100%';
-      this.canvas.style.height = '100%';
-      this.canvas.style.imageRendering = 'pixelated';
-      document.body.appendChild(this.canvas);
-    }
+    this.regl = regl;
 
     // object that contains all properties that will be made available on the global context and during local evaluation
     this.synth = {
@@ -183,7 +170,7 @@ class HydraRenderer implements HydraRendererOptions {
 
     if (enableStreamCapture) {
       try {
-        this.captureStream = this.canvas.captureStream(25);
+        this.captureStream = this.regl._gl.canvas.captureStream(25);
         // to do: enable capture stream of specific sources and outputs
         this.synth.vidRecorder = new VidRecorder(this.captureStream);
       } catch (e) {
@@ -218,8 +205,8 @@ class HydraRenderer implements HydraRendererOptions {
 
   setResolution(width: number, height: number) {
     //  console.log(width, height)
-    this.canvas.width = width;
-    this.canvas.height = height;
+    this.regl._gl.canvas.width = width;
+    this.regl._gl.canvas.height = height;
     this.width = width;
     this.height = height;
     this.o.forEach((output) => {
@@ -229,7 +216,7 @@ class HydraRenderer implements HydraRendererOptions {
       source.resize(width, height);
     });
     this.regl._refresh();
-    console.log(this.canvas.width);
+    console.log(this.regl._gl.canvas.width);
   }
 
   canvasToImage() {
@@ -242,7 +229,7 @@ class HydraRenderer implements HydraRendererOptions {
     }-${d.getDate()}-${d.getHours()}.${d.getMinutes()}.${d.getSeconds()}.png`;
     document.body.appendChild(a);
     var self = this;
-    this.canvas.toBlob((blob) => {
+    this.regl._gl.canvas.toBlob((blob) => {
       if (self.imageCallback) {
         self.imageCallback(blob);
         delete self.imageCallback;
@@ -259,20 +246,6 @@ class HydraRenderer implements HydraRendererOptions {
   }
 
   _initRegl() {
-    this.regl = REGL({
-      //  profile: true,
-      canvas: this.canvas,
-      pixelRatio: 1, //,
-      // extensions: [
-      //   'oes_texture_half_float',
-      //   'oes_texture_half_float_linear'
-      // ],
-      // optionalExtensions: [
-      //   'oes_texture_float',
-      //   'oes_texture_float_linear'
-      //]
-    });
-
     // This clears the color buffer to black and the depth buffer to 1
     this.regl.clear({
       color: [0, 0, 0, 1],
@@ -469,13 +442,13 @@ class HydraRenderer implements HydraRendererOptions {
       for (let i = 0; i < this.s.length; i++) {
         this.s[i].tick(this.synth.time);
       }
-      //  console.log(this.canvas.width, this.canvas.height)
+      //  console.log(this.regl._gl.canvas.width, this.regl._gl.canvas.height)
       for (let i = 0; i < this.o.length; i++) {
         this.o[i].tick({
           time: this.synth.time,
           mouse: this.synth.mouse,
           bpm: this.synth.bpm,
-          resolution: [this.canvas.width, this.canvas.height],
+          resolution: [this.regl._gl.canvas.width, this.regl._gl.canvas.height],
         });
       }
       if (this.isRenderingAll && this.renderAll) {
@@ -484,12 +457,12 @@ class HydraRenderer implements HydraRendererOptions {
           tex1: this.o[1].getCurrent(),
           tex2: this.o[2].getCurrent(),
           tex3: this.o[3].getCurrent(),
-          resolution: [this.canvas.width, this.canvas.height],
+          resolution: [this.regl._gl.canvas.width, this.regl._gl.canvas.height],
         });
       } else {
         this.renderFbo({
           tex0: this.output.getCurrent(),
-          resolution: [this.canvas.width, this.canvas.height],
+          resolution: [this.regl._gl.canvas.width, this.regl._gl.canvas.height],
         });
       }
       this.timeSinceLastUpdate = 0;

@@ -1,23 +1,24 @@
-"use strict";
-const { prepareForHydra, mockRegl } = require('./lib/util');
-describe.skip('Transforms', function () {
+import HydraSynth from '../index';
+import REGL from 'regl';
+import gl from 'gl';
+describe('Transforms', function () {
     const dimensions = {
         width: 100,
         height: 100,
     };
-    let mocked;
-    before(function () {
-        mocked = mockRegl(dimensions);
-    });
-    after(function () {
-        mocked.reset();
+    let regl;
+    beforeEach(function () {
+        regl = REGL(gl(800, 600));
     });
     describe('src transforms', function () {
         describe('solid', function () {
             it('Fills the buffer completely with the expected value', function () {
-                const { canvas } = prepareForHydra();
-                const HydraSynth = require('../index');
-                const hydra = new HydraSynth({ autoLoop: false, makeGlobal: false, canvas });
+                const hydra = new HydraSynth({
+                    autoLoop: false,
+                    makeGlobal: false,
+                    regl,
+                    enableStreamCapture: false,
+                });
                 hydra.synth.generators.solid(1, 0, 1, 0.5).out(hydra.o[0]);
                 hydra.tick();
                 const pixels = hydra.regl.read();
