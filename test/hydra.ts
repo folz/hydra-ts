@@ -1,4 +1,3 @@
-const { expect } = require('chai');
 const { prepareForHydra, mockRegl } = require('./lib/util');
 
 describe.skip('HydraSynth', function () {
@@ -24,9 +23,9 @@ describe.skip('HydraSynth', function () {
   it('Sets up basic infrastructure', function () {
     const hydra = new HydraSynth({ autoLoop: false, makeGlobal: false, canvas });
 
-    expect(hydra).to.be.an('object').and.to.include.keys(['s', 'a', 'audio', 'bpm']);
+    expect(hydra).toEqual(expect.arrayContaining(['s', 'a', 'audio', 'bpm']));
 
-    expect(hydra.bpm).to.be.a('number').and.to.be.equal(60);
+    expect(hydra.bpm).toBeInstanceOf('number').and.toBe(60);
   });
 
   describe('makeGlobal', function () {
@@ -38,7 +37,7 @@ describe.skip('HydraSynth', function () {
 
       const new_keys = Object.keys(global.window).filter((x) => prev_keys.indexOf(x) < 0);
 
-      expect(new_keys).to.have.lengthOf(0);
+      expect(new_keys).toHaveLength(0);
     });
 
     it('Creates expected global variables if set to true', function () {
@@ -50,9 +49,8 @@ describe.skip('HydraSynth', function () {
 
       const new_keys = Object.keys(global.window).filter((x) => prev_keys.indexOf(x) < 0);
 
-      expect(new_keys)
-        .to.be.an('array')
-        .and.to.include.members([
+      expect(new_keys).toBeInstanceOf('array')
+        .and.toEqual(expect.arrayContaining([
           ...Object.entries(transforms)
             .filter(([, transform]) => transform.type === 'src')
             .map(([name]) => name),
@@ -70,7 +68,7 @@ describe.skip('HydraSynth', function () {
           'render',
           'screencap',
           'vidRecorder',
-        ]);
+        ]));
     });
   });
 });

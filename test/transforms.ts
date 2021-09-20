@@ -1,4 +1,3 @@
-const { expect } = require('chai');
 const { prepareForHydra, mockRegl } = require('./lib/util');
 
 describe.skip('Transforms', function () {
@@ -30,10 +29,10 @@ describe.skip('Transforms', function () {
         const pixels = hydra.regl.read();
 
         for (let i = 0; i < dimensions.width * dimensions.height; i++) {
-          expect(pixels[i * 4 + 0]).to.equal(255);
-          expect(pixels[i * 4 + 1]).to.equal(0);
-          expect(pixels[i * 4 + 2]).to.equal(255);
-          expect(pixels[i * 4 + 3]).to.equal(128);
+          expect(pixels[i * 4 + 0]).toBe(255);
+          expect(pixels[i * 4 + 1]).toBe(0);
+          expect(pixels[i * 4 + 2]).toBe(255);
+          expect(pixels[i * 4 + 3]).toBe(128);
         }
       });
     });
