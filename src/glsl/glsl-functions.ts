@@ -81,16 +81,47 @@ export type TransformDefinitionType =
 
 type TransformDefinitionInputType = 'float' | 'sampler2D' | 'vec4' | 'texture';
 
-export interface TransformDefinitionInput {
+export interface ITransformDefinitionInput {
   type: TransformDefinitionInputType;
   name: string;
   default?:
-    | (number | number[])
+    | number
+    | number[]
     | ((context: any, props: any) => number | number[])
     | string
     | Texture2D
     | HydraSource;
 }
+
+type TransformDefinitionInputTypeFloat = {
+  type: 'float';
+  default?: number | number[] | ((context: any, props: any) => number | number[]);
+};
+
+type TransformDefinitionInputTypeSampler2D = {
+  type: 'sampler2D';
+  default?: Texture2D | number;
+};
+
+type TransformDefinitionInputTypeVec4 = {
+  type: 'vec4';
+  default?: string | number;
+};
+
+type TransformDefinitionInputTypeTexture = {
+  type: 'texture';
+  default?: Texture2D;
+};
+
+export type TransformDefinitionInputUnion =
+  | TransformDefinitionInputTypeFloat
+  | TransformDefinitionInputTypeSampler2D
+  | TransformDefinitionInputTypeVec4
+  | TransformDefinitionInputTypeTexture;
+
+export type TransformDefinitionInput = TransformDefinitionInputUnion & {
+  name: string;
+};
 
 export interface TransformDefinition {
   name: string;
