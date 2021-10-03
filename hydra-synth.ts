@@ -1,6 +1,5 @@
 import Output from './src/output';
-// @ts-ignore
-import loop from 'raf-loop';
+import { Loop } from './src/loop';
 import Source from './src/hydra-source';
 import createMouse from './src/lib/mouse';
 import VidRecorder from './src/lib/video-recorder';
@@ -179,7 +178,9 @@ class HydraRenderer implements HydraRendererOptions {
       }
     }
 
-    if (autoLoop) loop(this.tick.bind(this)).start();
+    if (autoLoop) {
+      new Loop(this.tick.bind(this)).start();
+    }
 
     // final argument is properties that the user can set, all others are treated as read-only
     this.sandbox = new Sandbox(this.synth, makeGlobal, ['speed', 'update', 'bpm', 'fps']);
