@@ -73,7 +73,6 @@ class HydraRenderer implements HydraRendererOptions {
   generator?: Generator;
   sandbox: Sandbox;
   imageCallback?: (blob: Blob | null) => void;
-  // @ts-ignore
   regl: Regl;
   renderAll: DrawCommand | false;
   // @ts-ignore

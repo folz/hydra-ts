@@ -88,8 +88,7 @@ class VideoRecorder {
     }, 300);
   }
 
-  // @ts-ignore
-  _handleDataAvailable(event) {
+  _handleDataAvailable(event: BlobEvent) {
     if (event.data && event.data.size > 0) {
       this.recordedBlobs.push(event.data);
     }

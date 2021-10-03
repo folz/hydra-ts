@@ -72,7 +72,6 @@ class VideoRecorder {
             window.URL.revokeObjectURL(url);
         }, 300);
     }
-    // @ts-ignore
     _handleDataAvailable(event) {
         if (event.data && event.data.size > 0) {
             this.recordedBlobs.push(event.data);

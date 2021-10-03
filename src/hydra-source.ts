@@ -46,7 +46,6 @@ export default class HydraSource {
     const self = this;
     Webcam(index)
       .then((response) => {
-        // @ts-ignore
         self.src = response.video;
         self.dynamic = true;
         self.tex = self.regl.texture(response.video);

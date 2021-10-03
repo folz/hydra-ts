@@ -9,6 +9,6 @@ declare class VideoRecorder {
     start(): void;
     stop(): void;
     _handleStop(): void;
-    _handleDataAvailable(event: any): void;
+    _handleDataAvailable(event: BlobEvent): void;
 }
 export default VideoRecorder;
