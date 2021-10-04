@@ -1,6 +1,5 @@
-import Synth from './hydra-synth';
-//const ShaderGenerator = require('./shader-generator')
+import { HydraRenderer } from './hydra-synth';
 
-export default Synth;
+export default HydraRenderer;
 
 export { TransformDefinition } from './src/glsl/glsl-functions';

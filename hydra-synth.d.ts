@@ -1,10 +1,10 @@
-import Output from './src/output';
+import { Output } from './src/output';
 import { Loop } from './src/loop';
-import Source from './src/hydra-source';
-import VidRecorder from './src/lib/video-recorder';
-import Sandbox from './src/eval-sandbox';
+import { HydraSource as Source } from './src/hydra-source';
+import { VideoRecorder as VidRecorder } from './src/lib/video-recorder';
+import { EvalSandbox as Sandbox } from './src/eval-sandbox';
 import { DrawCommand, Regl } from 'regl';
-import Generator from './src/generator-factory';
+import { GeneratorFactory as Generator } from './src/generator-factory';
 import { TransformDefinition } from './src/glsl/glsl-functions';
 declare const Mouse: any;
 export declare type Precision = 'lowp' | 'mediump' | 'highp';
@@ -41,7 +41,7 @@ interface HydraRendererOptions {
     precision?: HydraRenderer['precision'];
     extendTransforms?: HydraRenderer['extendTransforms'];
 }
-declare class HydraRenderer implements HydraRendererOptions {
+export declare class HydraRenderer implements HydraRendererOptions {
     pb?: any | null;
     width: number;
     height: number;
@@ -77,4 +77,4 @@ declare class HydraRenderer implements HydraRendererOptions {
     _render: (output: Output) => void;
     tick: (dt: number) => void;
 }
-export default HydraRenderer;
+export {};

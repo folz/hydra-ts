@@ -1,6 +1,6 @@
-import glslTransforms from './glsl/glsl-functions.js';
-import GlslSource from './glsl-source';
-export default class GeneratorFactory {
+import { transforms as glslTransforms } from './glsl/glsl-functions.js';
+import { GlslSource } from './glsl-source';
+export class GeneratorFactory {
     constructor({ defaultUniforms = {}, defaultOutput, extendTransforms = [], changeListener = () => { }, }) {
         this.generators = {};
         this.glslTransforms = {};

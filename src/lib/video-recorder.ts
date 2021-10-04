@@ -1,4 +1,4 @@
-class VideoRecorder {
+export class VideoRecorder {
   mediaSource: MediaSource;
   stream: MediaStream;
   output: HTMLVideoElement;
@@ -94,5 +94,3 @@ class VideoRecorder {
     }
   }
 }
-
-export default VideoRecorder;

@@ -1,4 +1,4 @@
-declare class VideoRecorder {
+export declare class VideoRecorder {
     mediaSource: MediaSource;
     stream: MediaStream;
     output: HTMLVideoElement;
@@ -11,4 +11,3 @@ declare class VideoRecorder {
     _handleStop(): void;
     _handleDataAvailable(event: BlobEvent): void;
 }
-export default VideoRecorder;

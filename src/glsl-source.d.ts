@@ -1,5 +1,5 @@
-import GeneratorFactory from './generator-factory';
-import Output from './output';
+import { GeneratorFactory } from './generator-factory';
+import { Output } from './output';
 import { Uniforms } from 'regl';
 import { TransformDefinition } from './glsl/glsl-functions';
 export interface TransformApplication {
@@ -11,7 +11,7 @@ export interface TransformApplication {
     userArgs: any[];
 }
 export declare type CompiledTransform = ReturnType<GlslSource['compile']>;
-declare class GlslSource {
+export declare class GlslSource {
     defaultOutput: Output;
     defaultUniforms?: Uniforms;
     synth?: GeneratorFactory;
@@ -28,4 +28,3 @@ declare class GlslSource {
         };
     };
 }
-export default GlslSource;

@@ -67,7 +67,7 @@ const types = {
 }
 
 */
-const transforms = [
+export const transforms = [
     {
         name: 'noise',
         type: 'src',
@@ -1082,4 +1082,3 @@ const transforms = [
         glsl: `   return vec4(_c0.a * scale + offset);`,
     },
 ];
-export default transforms;

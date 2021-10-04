@@ -22,7 +22,7 @@ interface ShaderParams {
   fragColor: string;
 }
 
-export default function (transforms: TransformApplication[]) {
+export function compileGlsl(transforms: TransformApplication[]) {
   var shaderParams: ShaderParams = {
     uniforms: [], // list of uniforms used in shader
     glslFunctions: [], // list of functions used in shader

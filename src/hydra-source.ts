@@ -1,5 +1,5 @@
-import Webcam from './lib/webcam';
-import Screen from './lib/screenmedia';
+import { Webcam } from './lib/webcam';
+import { Screen } from './lib/screenmedia';
 import { Regl, Texture2D } from 'regl';
 
 interface HydraSourceOptions {
@@ -10,7 +10,7 @@ interface HydraSourceOptions {
   label: HydraSource['label'];
 }
 
-export default class HydraSource {
+export class HydraSource {
   regl: Regl;
   width: number;
   height: number;

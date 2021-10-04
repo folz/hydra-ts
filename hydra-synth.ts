@@ -1,13 +1,13 @@
-import Output from './src/output';
+import { Output } from './src/output';
 import { Loop } from './src/loop';
-import Source from './src/hydra-source';
+import { HydraSource as Source } from './src/hydra-source';
 import createMouse from './src/lib/mouse';
-import VidRecorder from './src/lib/video-recorder';
+import { VideoRecorder as VidRecorder } from './src/lib/video-recorder';
 import ArrayUtils from './src/lib/array-utils';
-import Sandbox from './src/eval-sandbox';
+import { EvalSandbox as Sandbox } from './src/eval-sandbox';
 import { DrawCommand, Framebuffer, Regl } from 'regl';
 
-import Generator from './src/generator-factory';
+import { GeneratorFactory as Generator } from './src/generator-factory';
 import { TransformDefinition } from './src/glsl/glsl-functions';
 
 const Mouse = createMouse();
@@ -58,7 +58,7 @@ interface HydraRendererOptions {
 }
 
 // to do: add ability to pass in certain uniforms and transforms
-class HydraRenderer implements HydraRendererOptions {
+export class HydraRenderer implements HydraRendererOptions {
   pb?: any | null;
   width: number;
   height: number;
@@ -455,5 +455,3 @@ class HydraRenderer implements HydraRendererOptions {
     }
   };
 }
-
-export default HydraRenderer;

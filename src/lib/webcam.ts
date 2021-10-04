@@ -1,6 +1,6 @@
 //const enumerateDevices = require('enumerate-devices')
 
-function Webcam(deviceId: number): Promise<{ video: HTMLVideoElement }> {
+export function Webcam(deviceId: number): Promise<{ video: HTMLVideoElement }> {
   return navigator.mediaDevices
     .enumerateDevices()
     .then((devices) => devices.filter((devices) => devices.kind === 'videoinput'))
@@ -25,5 +25,3 @@ function Webcam(deviceId: number): Promise<{ video: HTMLVideoElement }> {
       });
     });
 }
-
-export default Webcam;

@@ -12,7 +12,7 @@ interface OutputOptions {
   height: number;
 }
 
-class Output {
+export class Output {
   regl: Regl;
   precision: Precision;
   label: string;
@@ -162,5 +162,3 @@ class Output {
     this.draw(props);
   }
 }
-
-export default Output;

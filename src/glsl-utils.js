@@ -11,7 +11,7 @@ const DEFAULT_CONVERSIONS = {
     sampler2D: undefined,
     texture: undefined,
 };
-export default function (transforms) {
+export function compileGlsl(transforms) {
     var shaderParams = {
         uniforms: [],
         glslFunctions: [],

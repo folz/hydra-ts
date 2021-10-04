@@ -1,6 +1,6 @@
-import glslTransforms, { TransformDefinition } from './glsl/glsl-functions.js';
-import GlslSource from './glsl-source';
-import Output from './output';
+import { transforms as glslTransforms, TransformDefinition } from './glsl/glsl-functions.js';
+import { GlslSource } from './glsl-source';
+import { Output } from './output';
 import { Uniforms } from 'regl';
 
 interface GeneratorFactoryOptions {
@@ -10,7 +10,7 @@ interface GeneratorFactoryOptions {
   changeListener?: GeneratorFactory['changeListener'];
 }
 
-export default class GeneratorFactory {
+export class GeneratorFactory {
   defaultUniforms: Uniforms;
   defaultOutput: Output;
   extendTransforms: TransformDefinition | TransformDefinition[];

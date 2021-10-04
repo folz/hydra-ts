@@ -5,7 +5,7 @@ interface ShaderParams {
     glslFunctions: TransformApplication[];
     fragColor: string;
 }
-export default function (transforms: TransformApplication[]): ShaderParams;
+export declare function compileGlsl(transforms: TransformApplication[]): ShaderParams;
 export interface TypedArg {
     value: TransformDefinitionInput['default'];
     type: TransformDefinitionInput['type'];

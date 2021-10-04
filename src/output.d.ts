@@ -8,7 +8,7 @@ interface OutputOptions {
     width: number;
     height: number;
 }
-declare class Output {
+export declare class Output {
     regl: Regl;
     precision: Precision;
     label: string;
@@ -32,4 +32,4 @@ declare class Output {
     render(passes: CompiledTransform[]): void;
     tick(props: {}): void;
 }
-export default Output;
+export {};

@@ -1,7 +1,6 @@
-import generateGlsl from './glsl-utils';
-// const glslTransforms = require('./glsl/glsl-functions')
+import { compileGlsl as generateGlsl } from './glsl-utils';
 import utilityGlsl from './glsl/utility-functions';
-class GlslSource {
+export class GlslSource {
     constructor(obj) {
         this.transforms = [];
         this.type = 'GlslSource';
@@ -110,4 +109,3 @@ class GlslSource {
         };
     }
 }
-export default GlslSource;

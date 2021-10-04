@@ -69,7 +69,7 @@ const types = {
 */
 
 import { Texture2D } from 'regl';
-import HydraSource from '../hydra-source';
+import { HydraSource } from '../hydra-source';
 
 export type TransformDefinitionType =
   | 'src'
@@ -130,7 +130,7 @@ export interface TransformDefinition {
   glsl: string;
 }
 
-const transforms: TransformDefinition[] = [
+export const transforms: TransformDefinition[] = [
   {
     name: 'noise',
     type: 'src',
@@ -1145,5 +1145,3 @@ const transforms: TransformDefinition[] = [
     glsl: `   return vec4(_c0.a * scale + offset);`,
   },
 ];
-
-export default transforms;

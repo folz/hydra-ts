@@ -1,14 +1,14 @@
-import Output from './src/output';
+import { Output } from './src/output';
 import { Loop } from './src/loop';
-import Source from './src/hydra-source';
+import { HydraSource as Source } from './src/hydra-source';
 import createMouse from './src/lib/mouse';
-import VidRecorder from './src/lib/video-recorder';
+import { VideoRecorder as VidRecorder } from './src/lib/video-recorder';
 import ArrayUtils from './src/lib/array-utils';
-import Sandbox from './src/eval-sandbox';
-import Generator from './src/generator-factory';
+import { EvalSandbox as Sandbox } from './src/eval-sandbox';
+import { GeneratorFactory as Generator } from './src/generator-factory';
 const Mouse = createMouse();
 // to do: add ability to pass in certain uniforms and transforms
-class HydraRenderer {
+export class HydraRenderer {
     constructor({ pb = null, width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, autoLoop = true, detectAudio = true, enableStreamCapture = true, precision, regl, extendTransforms = [], // add your own functions on init
      }) {
         this.isRenderingAll = false;
@@ -337,4 +337,3 @@ class HydraRenderer {
         this.synth.setFunction = this.generator.setFunction.bind(this.generator);
     }
 }
-export default HydraRenderer;

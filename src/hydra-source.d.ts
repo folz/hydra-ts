@@ -6,7 +6,7 @@ interface HydraSourceOptions {
     pb: HydraSource['pb'];
     label: HydraSource['label'];
 }
-export default class HydraSource {
+export declare class HydraSource {
     regl: Regl;
     width: number;
     height: number;

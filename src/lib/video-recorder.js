@@ -1,4 +1,4 @@
-class VideoRecorder {
+export class VideoRecorder {
     constructor(stream) {
         this.mediaSource = new MediaSource();
         this.stream = stream;
@@ -78,4 +78,3 @@ class VideoRecorder {
         }
     }
 }
-export default VideoRecorder;

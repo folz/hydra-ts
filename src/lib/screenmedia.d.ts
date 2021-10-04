@@ -1,3 +1,3 @@
-export default function (options?: DisplayMediaStreamConstraints): Promise<{
+export declare function Screen(options?: DisplayMediaStreamConstraints): Promise<{
     video: HTMLVideoElement;
 }>;

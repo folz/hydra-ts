@@ -1,6 +1,6 @@
-import Webcam from './lib/webcam';
-import Screen from './lib/screenmedia';
-export default class HydraSource {
+import { Webcam } from './lib/webcam';
+import { Screen } from './lib/screenmedia';
+export class HydraSource {
     constructor({ regl, width, height, pb, label = '' }) {
         this.label = label;
         this.regl = regl;

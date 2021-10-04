@@ -1,5 +1,5 @@
 //const transforms = require('./glsl-transforms')
-class Output {
+export class Output {
     constructor({ regl, precision, label = '', width, height }) {
         this.regl = regl;
         this.precision = precision;
@@ -110,4 +110,3 @@ class Output {
         this.draw(props);
     }
 }
-export default Output;

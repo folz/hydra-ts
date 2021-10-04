@@ -2,7 +2,7 @@
 
 import Sandbox from './lib/sandbox';
 
-export default class EvalSandbox {
+export class EvalSandbox {
   makeGlobal: boolean;
   parent: Record<string, any>;
   sandbox: ReturnType<typeof Sandbox>;

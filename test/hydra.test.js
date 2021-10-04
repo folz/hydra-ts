@@ -1,7 +1,7 @@
 import REGL from 'regl';
 import gl from 'gl';
 import HydraSynth from '../index';
-import transforms from '../src/glsl/glsl-functions';
+import { transforms } from '../src/glsl/glsl-functions';
 describe.skip('HydraSynth', function () {
     let regl;
     beforeEach(function () {

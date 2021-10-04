@@ -1,4 +1,4 @@
-export default function (options?: DisplayMediaStreamConstraints) {
+export function Screen(options?: DisplayMediaStreamConstraints) {
   return new Promise<{ video: HTMLVideoElement }>(function (resolve, reject) {
     //  async function startCapture(displayMediaOptions) {
     navigator.mediaDevices

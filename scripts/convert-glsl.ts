@@ -1,4 +1,4 @@
-import functions, { TransformDefinitionInput } from '../src/glsl/glsl-functions';
+import { transforms as functions, TransformDefinitionInput } from '../src/glsl/glsl-functions';
 import fs from 'fs';
 
 // eslint-disable-next-line no-unused-vars

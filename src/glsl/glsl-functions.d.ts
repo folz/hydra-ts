@@ -1,5 +1,5 @@
 import { Texture2D } from 'regl';
-import HydraSource from '../hydra-source';
+import { HydraSource } from '../hydra-source';
 export declare type TransformDefinitionType = 'src' | 'color' | 'combine' | 'coord' | 'combineCoord' | 'renderpass';
 declare type TransformDefinitionInputType = 'float' | 'sampler2D' | 'vec4' | 'texture';
 export interface ITransformDefinitionInput {
@@ -33,5 +33,5 @@ export interface TransformDefinition {
     inputs: TransformDefinitionInput[];
     glsl: string;
 }
-declare const transforms: TransformDefinition[];
-export default transforms;
+export declare const transforms: TransformDefinition[];
+export {};

@@ -1,5 +1,5 @@
 import Synth from '../hydra-synth';
-import transforms from '../src/glsl/glsl-functions';
+import { transforms } from '../src/glsl/glsl-functions';
 import REGL from 'regl';
 import gl from 'gl';
 describe.skip('Synth', function () {

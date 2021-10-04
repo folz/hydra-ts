@@ -1,9 +1,7 @@
-import generateGlsl, { TypedArg } from './glsl-utils';
-
-// const glslTransforms = require('./glsl/glsl-functions')
+import { compileGlsl as generateGlsl, TypedArg } from './glsl-utils';
 import utilityGlsl from './glsl/utility-functions';
-import GeneratorFactory from './generator-factory';
-import Output from './output';
+import { GeneratorFactory } from './generator-factory';
+import { Output } from './output';
 import { Uniforms } from 'regl';
 import { TransformDefinition } from './glsl/glsl-functions';
 
@@ -18,7 +16,7 @@ export interface TransformApplication {
 
 export type CompiledTransform = ReturnType<GlslSource['compile']>;
 
-class GlslSource {
+export class GlslSource {
   defaultOutput: Output;
   defaultUniforms?: Uniforms;
   synth?: GeneratorFactory;
@@ -137,5 +135,3 @@ class GlslSource {
     };
   }
 }
-
-export default GlslSource;
