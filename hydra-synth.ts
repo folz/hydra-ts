@@ -91,7 +91,7 @@ export class HydraRenderer implements HydraRendererOptions {
         fps: 0,
       },
       speed: 1,
-      render: this._render,
+      render: this.render,
       setResolution: this.setResolution,
       hush: this.hush,
     };
@@ -240,10 +240,9 @@ export class HydraRenderer implements HydraRendererOptions {
         //  }
       },
     });
-    this.synth.setFunction = this.generator.setFunction;
   }
 
-  _render = (output: Output) => {
+  render = (output: Output) => {
     if (output) {
       this.output = output;
     } else {

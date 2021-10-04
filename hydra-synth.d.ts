@@ -54,7 +54,7 @@ export declare class HydraRenderer implements HydraRendererOptions {
     _initSources(numSources: number): void;
     createSource(i: number): HydraSource;
     _generateGlslTransforms(): void;
-    _render: (output: Output) => void;
+    render: (output: Output) => void;
     tick: (dt: number) => void;
 }
 export {};

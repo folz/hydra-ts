@@ -30,7 +30,7 @@ export class HydraRenderer {
             });
             this.regl._refresh();
         };
-        this._render = (output) => {
+        this.render = (output) => {
             if (output) {
                 this.output = output;
             }
@@ -77,7 +77,7 @@ export class HydraRenderer {
                 fps: 0,
             },
             speed: 1,
-            render: this._render,
+            render: this.render,
             setResolution: this.setResolution,
             hush: this.hush,
         };
@@ -184,6 +184,5 @@ export class HydraRenderer {
                 //  }
             },
         });
-        this.synth.setFunction = this.generator.setFunction;
     }
 }
