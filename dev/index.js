@@ -16,6 +16,7 @@ const hydra = new Hydra({
     detectAudio: false,
     regl,
 });
+const { src, solid, o0, o1, s0, render } = hydra.synth;
 s0.initImage(jelly);
 const base = src(s0)
     .rotate(0.1, 0.05)

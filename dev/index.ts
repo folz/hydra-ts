@@ -21,6 +21,8 @@ const hydra = new Hydra({
   regl,
 });
 
+const { src, solid, o0, o1, s0, render } = hydra.synth;
+
 s0.initImage(jelly);
 
 const base = src(s0)
