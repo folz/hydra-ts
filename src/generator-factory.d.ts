@@ -14,10 +14,10 @@ export declare class GeneratorFactory {
     defaultOutput: Output;
     defaultUniforms: Uniforms;
     generators: Record<string, () => GlslSource>;
-    glslTransforms: Record<string, TransformDefinition>;
+    glslTransforms: Record<string, ProcessedTransformDefinition>;
     sourceClass: typeof GlslSource;
     constructor({ defaultUniforms, defaultOutput, changeListener, transforms, }: GeneratorFactoryOptions);
-    _addMethod(method: string, transform: TransformDefinition): void;
+    _addMethod(method: string, transform: ProcessedTransformDefinition): void;
     setFunction: (obj: TransformDefinition) => void;
 }
 export declare function processGlsl(obj: TransformDefinition): ProcessedTransformDefinition;

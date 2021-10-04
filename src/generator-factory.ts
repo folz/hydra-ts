@@ -16,7 +16,7 @@ export class GeneratorFactory {
   defaultOutput: Output;
   defaultUniforms: Uniforms;
   generators: Record<string, () => GlslSource> = {};
-  glslTransforms: Record<string, TransformDefinition> = {};
+  glslTransforms: Record<string, ProcessedTransformDefinition> = {};
   sourceClass: typeof GlslSource = createSourceClass();
 
   constructor({
@@ -37,7 +37,7 @@ export class GeneratorFactory {
     transforms.map((transform) => this.setFunction(transform));
   }
 
-  _addMethod(method: string, transform: TransformDefinition) {
+  _addMethod(method: string, transform: ProcessedTransformDefinition) {
     this.glslTransforms[method] = transform;
 
     // TODO: Pass in precision directly; don't infer from defaultOutput

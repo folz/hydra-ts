@@ -1,5 +1,5 @@
 import { Uniforms } from 'regl';
-import { TransformDefinition } from './glsl/glsl-functions';
+import { ProcessedTransformDefinition } from './glsl/glsl-functions';
 import { utilityFunctions } from './glsl/utility-functions';
 import { compileGlsl, TypedArg } from './glsl-utils';
 import { Output } from './output';
@@ -9,7 +9,7 @@ export interface TransformApplication {
   defaultUniforms?: GlslSource['defaultUniforms'];
   name: string;
   precision: Precision;
-  transform: TransformDefinition;
+  transform: ProcessedTransformDefinition;
   userArgs: any[];
 }
 

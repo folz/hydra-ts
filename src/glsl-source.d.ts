@@ -1,12 +1,12 @@
 import { Uniforms } from 'regl';
-import { TransformDefinition } from './glsl/glsl-functions';
+import { ProcessedTransformDefinition } from './glsl/glsl-functions';
 import { Output } from './output';
 import { Precision } from '../hydra-synth';
 export interface TransformApplication {
     defaultUniforms?: GlslSource['defaultUniforms'];
     name: string;
     precision: Precision;
-    transform: TransformDefinition;
+    transform: ProcessedTransformDefinition;
     userArgs: any[];
 }
 export declare type CompiledTransform = ReturnType<GlslSource['compile']>;
