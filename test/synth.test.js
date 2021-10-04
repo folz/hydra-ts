@@ -1,4 +1,4 @@
-import Synth from '../hydra-synth';
+import { HydraRenderer as Synth } from '../hydra-synth';
 import { transforms } from '../src/glsl/glsl-functions';
 import REGL from 'regl';
 import gl from 'gl';
@@ -16,7 +16,7 @@ describe.skip('Synth', function () {
             .filter(([, transform]) => transform.type === 'src')
             .map(([name]) => name);
         const events = [];
-        const synth = new Synth({ regl, enableStreamCapture: false }, {}, (e) => events.push(e));
+        const synth = new Synth({ regl }, {}, (e) => events.push(e));
         expect(synth.generators).toEqual(expect.arrayContaining(srcNames));
         expect(events.filter(({ type }) => type === 'add').map(({ method }) => method)).toEqual(srcNames);
     });
@@ -25,7 +25,7 @@ describe.skip('Synth', function () {
             .filter(([, transform]) => transform.type === 'src')
             .map(([name]) => name);
         const events = [];
-        const synth = new Synth({ regl, enableStreamCapture: false }, 'invalid', (e) => events.push(e));
+        const synth = new Synth({ regl }, 'invalid', (e) => events.push(e));
         expect(synth.generators).toEqual(expect.arrayContaining(srcNames));
         expect(events.filter(({ type }) => type === 'add').map(({ method }) => method)).toEqual(srcNames);
         [
@@ -58,14 +58,14 @@ describe.skip('Synth', function () {
         expect(synth.generators).toEqual(expect.arrayContaining('bar'));
     });
     it('Can create function chains', () => {
-        const synth = new Synth({ regl, enableStreamCapture: false });
+        const synth = new Synth({ regl });
         expect(() => {
             synth.generators.solid().repeatX().out();
         }).not.toThrow();
     });
     it.skip('Sets up uniforms properly', () => {
         const dummyOutput = { passes: [[{ uniforms: [] }]] };
-        const synth = new Synth({ regl, enableStreamCapture: false });
+        const synth = new Synth({ regl });
         expect(() => {
             synth.generators
                 .solid(0, () => 1, 2)

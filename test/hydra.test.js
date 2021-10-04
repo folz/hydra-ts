@@ -12,7 +12,6 @@ describe.skip('HydraSynth', function () {
             autoLoop: false,
             makeGlobal: false,
             regl,
-            enableStreamCapture: false,
         });
         // expect(hydra).toEqual(expect.arrayContaining(['s', 'a', 'audio', 'bpm']));
         expect(hydra.bpm).toEqual(60);
@@ -25,7 +24,6 @@ describe.skip('HydraSynth', function () {
                 autoLoop: false,
                 makeGlobal: false,
                 regl,
-                enableStreamCapture: false,
             });
             const new_keys = Object.keys(window).filter((x) => prev_keys.indexOf(x) < 0);
             expect(new_keys).toHaveLength(0);
@@ -36,7 +34,6 @@ describe.skip('HydraSynth', function () {
                 autoLoop: false,
                 makeGlobal: true,
                 regl,
-                enableStreamCapture: false,
             });
             const new_keys = Object.keys(window).filter((x) => prev_keys.indexOf(x) < 0);
             expect(new_keys).toEqual(expect.arrayContaining([
@@ -54,7 +51,6 @@ describe.skip('HydraSynth', function () {
                 'a',
                 'synth',
                 'render',
-                'screencap',
                 'vidRecorder',
             ]));
         });

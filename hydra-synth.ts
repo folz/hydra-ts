@@ -1,7 +1,6 @@
 import { Output } from './src/output';
 import { Loop } from './src/loop';
 import { HydraSource } from './src/hydra-source';
-import { VideoRecorder } from './src/lib/video-recorder';
 import ArrayUtils from './src/lib/array-utils';
 import { EvalSandbox } from './src/eval-sandbox';
 import { DrawCommand, Framebuffer, Regl } from 'regl';
@@ -31,9 +30,7 @@ export interface Synth {
   render: any;
   setResolution: any;
   update?: (dt: number) => void;
-  hush: any;
-  screencap?: () => void;
-  vidRecorder?: VideoRecorder;
+  hush: () => void;
   [name: string]: any;
 }
 
@@ -45,7 +42,6 @@ interface HydraRendererOptions {
   makeGlobal?: boolean;
   autoLoop?: boolean;
   detectAudio?: HydraRenderer['detectAudio'];
-  enableStreamCapture?: boolean;
   regl: HydraRenderer['regl'];
   precision?: HydraRenderer['precision'];
 }
@@ -59,8 +55,6 @@ export class HydraRenderer implements HydraRendererOptions {
   timeSinceLastUpdate;
   _time;
   precision: Precision;
-  saveFrame: boolean;
-  captureStream: MediaStream | null;
   generator?: GeneratorFactory;
   sandbox: EvalSandbox;
   imageCallback?: (blob: Blob | null) => void;
@@ -84,7 +78,6 @@ export class HydraRenderer implements HydraRendererOptions {
     makeGlobal = true,
     autoLoop = true,
     detectAudio = true,
-    enableStreamCapture = true,
     precision,
     regl,
   }: HydraRendererOptions) {
@@ -128,33 +121,12 @@ export class HydraRenderer implements HydraRendererOptions {
       this.precision = isIOS ? 'highp' : 'mediump';
     }
 
-    // boolean to store when to save screenshot
-    this.saveFrame = false;
-
-    // if stream capture is enabled, this object contains the capture stream
-    this.captureStream = null;
-
     this.generator = undefined;
 
     this._initRegl();
     this._initOutputs(numOutputs);
     this._initSources(numSources);
     this._generateGlslTransforms();
-
-    this.synth.screencap = () => {
-      this.saveFrame = true;
-    };
-
-    if (enableStreamCapture) {
-      try {
-        this.captureStream = this.regl._gl.canvas.captureStream(24);
-        // to do: enable capture stream of specific sources and outputs
-        this.synth.vidRecorder = new VideoRecorder(this.captureStream);
-      } catch (e) {
-        console.warn('[hydra-synth warning]\nnew MediaSource() is not currently supported on iOS.');
-        console.error(e);
-      }
-    }
 
     this.loop = new Loop(this.tick);
     if (autoLoop) {
@@ -188,32 +160,6 @@ export class HydraRenderer implements HydraRendererOptions {
     this.regl._refresh();
     console.log(this.regl._gl.canvas.width);
   };
-
-  canvasToImage() {
-    const a = document.createElement('a');
-    a.style.display = 'none';
-
-    let d = new Date();
-    a.download = `hydra-${d.getFullYear()}-${
-      d.getMonth() + 1
-    }-${d.getDate()}-${d.getHours()}.${d.getMinutes()}.${d.getSeconds()}.png`;
-    document.body.appendChild(a);
-    const self = this;
-    this.regl._gl.canvas.toBlob((blob) => {
-      if (self.imageCallback) {
-        self.imageCallback(blob);
-        delete self.imageCallback;
-      } else {
-        a.href = URL.createObjectURL(blob);
-        console.log(a.href);
-        a.click();
-      }
-    }, 'image/png');
-    setTimeout(() => {
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(a.href);
-    }, 300);
-  }
 
   _initRegl() {
     // This clears the color buffer to black and the depth buffer to 1
@@ -427,10 +373,6 @@ export class HydraRenderer implements HydraRendererOptions {
         });
       }
       this.timeSinceLastUpdate = 0;
-    }
-    if (this.saveFrame) {
-      this.canvasToImage();
-      this.saveFrame = false;
     }
   };
 }

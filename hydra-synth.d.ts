@@ -1,7 +1,6 @@
 import { Output } from './src/output';
 import { Loop } from './src/loop';
 import { HydraSource } from './src/hydra-source';
-import { VideoRecorder } from './src/lib/video-recorder';
 import { EvalSandbox } from './src/eval-sandbox';
 import { DrawCommand, Regl } from 'regl';
 import { GeneratorFactory } from './src/generator-factory';
@@ -19,9 +18,7 @@ export interface Synth {
     render: any;
     setResolution: any;
     update?: (dt: number) => void;
-    hush: any;
-    screencap?: () => void;
-    vidRecorder?: VideoRecorder;
+    hush: () => void;
     [name: string]: any;
 }
 interface HydraRendererOptions {
@@ -32,7 +29,6 @@ interface HydraRendererOptions {
     makeGlobal?: boolean;
     autoLoop?: boolean;
     detectAudio?: HydraRenderer['detectAudio'];
-    enableStreamCapture?: boolean;
     regl: HydraRenderer['regl'];
     precision?: HydraRenderer['precision'];
 }
@@ -44,8 +40,6 @@ export declare class HydraRenderer implements HydraRendererOptions {
     timeSinceLastUpdate: number;
     _time: number;
     precision: Precision;
-    saveFrame: boolean;
-    captureStream: MediaStream | null;
     generator?: GeneratorFactory;
     sandbox: EvalSandbox;
     imageCallback?: (blob: Blob | null) => void;
@@ -58,10 +52,9 @@ export declare class HydraRenderer implements HydraRendererOptions {
     output: Output;
     loop: Loop;
     [name: string]: any;
-    constructor({ width, height, numSources, numOutputs, makeGlobal, autoLoop, detectAudio, enableStreamCapture, precision, regl, }: HydraRendererOptions);
+    constructor({ width, height, numSources, numOutputs, makeGlobal, autoLoop, detectAudio, precision, regl, }: HydraRendererOptions);
     hush: () => void;
     setResolution: (width: number, height: number) => void;
-    canvasToImage(): void;
     _initRegl(): void;
     _initOutputs(numOutputs: number): void;
     _initSources(numSources: number): void;

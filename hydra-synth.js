@@ -1,13 +1,12 @@
 import { Output } from './src/output';
 import { Loop } from './src/loop';
 import { HydraSource } from './src/hydra-source';
-import { VideoRecorder } from './src/lib/video-recorder';
 import ArrayUtils from './src/lib/array-utils';
 import { EvalSandbox } from './src/eval-sandbox';
 import { GeneratorFactory } from './src/generator-factory';
 // to do: add ability to pass in certain uniforms and transforms
 export class HydraRenderer {
-    constructor({ width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, autoLoop = true, detectAudio = true, enableStreamCapture = true, precision, regl, }) {
+    constructor({ width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, autoLoop = true, detectAudio = true, precision, regl, }) {
         this.isRenderingAll = false;
         this.s = [];
         this.o = [];
@@ -84,10 +83,6 @@ export class HydraRenderer {
                 }
                 this.timeSinceLastUpdate = 0;
             }
-            if (this.saveFrame) {
-                this.canvasToImage();
-                this.saveFrame = false;
-            }
         };
         ArrayUtils.init();
         this.width = width;
@@ -123,58 +118,17 @@ export class HydraRenderer {
                 !window.MSStream;
             this.precision = isIOS ? 'highp' : 'mediump';
         }
-        // boolean to store when to save screenshot
-        this.saveFrame = false;
-        // if stream capture is enabled, this object contains the capture stream
-        this.captureStream = null;
         this.generator = undefined;
         this._initRegl();
         this._initOutputs(numOutputs);
         this._initSources(numSources);
         this._generateGlslTransforms();
-        this.synth.screencap = () => {
-            this.saveFrame = true;
-        };
-        if (enableStreamCapture) {
-            try {
-                this.captureStream = this.regl._gl.canvas.captureStream(24);
-                // to do: enable capture stream of specific sources and outputs
-                this.synth.vidRecorder = new VideoRecorder(this.captureStream);
-            }
-            catch (e) {
-                console.warn('[hydra-synth warning]\nnew MediaSource() is not currently supported on iOS.');
-                console.error(e);
-            }
-        }
         this.loop = new Loop(this.tick);
         if (autoLoop) {
             this.loop.start();
         }
         // final argument is properties that the user can set, all others are treated as read-only
         this.sandbox = new EvalSandbox(this.synth, makeGlobal, ['speed', 'update', 'bpm', 'fps']);
-    }
-    canvasToImage() {
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        let d = new Date();
-        a.download = `hydra-${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}-${d.getHours()}.${d.getMinutes()}.${d.getSeconds()}.png`;
-        document.body.appendChild(a);
-        const self = this;
-        this.regl._gl.canvas.toBlob((blob) => {
-            if (self.imageCallback) {
-                self.imageCallback(blob);
-                delete self.imageCallback;
-            }
-            else {
-                a.href = URL.createObjectURL(blob);
-                console.log(a.href);
-                a.click();
-            }
-        }, 'image/png');
-        setTimeout(() => {
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(a.href);
-        }, 300);
     }
     _initRegl() {
         // This clears the color buffer to black and the depth buffer to 1

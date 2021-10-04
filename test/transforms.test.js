@@ -17,7 +17,6 @@ describe.skip('Transforms', function () {
                     autoLoop: false,
                     makeGlobal: false,
                     regl,
-                    enableStreamCapture: false,
                 });
                 hydra.synth.generators.solid(1, 0, 1, 0.5).out(hydra.o[0]);
                 hydra.tick();

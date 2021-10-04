@@ -1,4 +1,4 @@
-import REGL from 'regl';
+import REGL, { Regl } from 'regl';
 import gl from 'gl';
 
 import HydraSynth from '../index';
@@ -6,7 +6,7 @@ import HydraSynth from '../index';
 import { transforms } from '../src/glsl/glsl-functions';
 
 describe.skip('HydraSynth', function () {
-  let regl;
+  let regl: Regl;
 
   beforeEach(function () {
     regl = REGL(gl(800, 600));
@@ -17,7 +17,6 @@ describe.skip('HydraSynth', function () {
       autoLoop: false,
       makeGlobal: false,
       regl,
-      enableStreamCapture: false,
     });
 
     // expect(hydra).toEqual(expect.arrayContaining(['s', 'a', 'audio', 'bpm']));
@@ -34,7 +33,6 @@ describe.skip('HydraSynth', function () {
         autoLoop: false,
         makeGlobal: false,
         regl,
-        enableStreamCapture: false,
       });
 
       const new_keys = Object.keys(window).filter((x) => prev_keys.indexOf(x) < 0);
@@ -49,7 +47,6 @@ describe.skip('HydraSynth', function () {
         autoLoop: false,
         makeGlobal: true,
         regl,
-        enableStreamCapture: false,
       });
 
       const new_keys = Object.keys(window).filter((x) => prev_keys.indexOf(x) < 0);
@@ -70,7 +67,6 @@ describe.skip('HydraSynth', function () {
           'a',
           'synth',
           'render',
-          'screencap',
           'vidRecorder',
         ]),
       );
