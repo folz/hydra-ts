@@ -1,4 +1,4 @@
-import Sandbox from './lib/sandbox';
+import { Sandbox } from './lib/sandbox';
 export declare class EvalSandbox {
     makeGlobal: boolean;
     parent: Record<string, any>;

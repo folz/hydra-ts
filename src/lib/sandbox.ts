@@ -2,7 +2,7 @@
 // for now, just avoids polluting the global namespace
 // should probably be replaced with an abstract syntax tree
 
-export default (parent: Record<string, any>) => {
+export const Sandbox = (parent: Record<string, any>) => {
   let initialCode = ``;
 
   let sandbox = createSandbox(initialCode);
