@@ -40,8 +40,9 @@ export class GeneratorFactory {
 
   _addMethod(method: string, transform: TransformDefinition) {
     this.glslTransforms[method] = transform;
+
     if (transform.type === 'src') {
-      const func = (...args: any[]) =>
+      this.generators[method] = (...args: any[]) =>
         new this.sourceClass({
           name: method,
           transform: transform,
@@ -50,9 +51,7 @@ export class GeneratorFactory {
           defaultUniforms: this.defaultUniforms,
           synth: this,
         });
-      this.generators[method] = func;
       this.changeListener({ type: 'add', synth: this, method });
-      return func;
     } else {
       // @ts-ignore
       this.sourceClass.prototype[method] = function (...args: any[]) {
@@ -65,12 +64,14 @@ export class GeneratorFactory {
         return this;
       };
     }
-    return undefined;
   }
 
   setFunction = (obj: TransformDefinition) => {
     const processedGlsl = processGlsl(obj);
-    if (processedGlsl) this._addMethod(obj.name, processedGlsl);
+
+    if (processedGlsl) {
+      this._addMethod(obj.name, processedGlsl);
+    }
   };
 }
 
@@ -97,44 +98,6 @@ const typeLookup = {
   },
   renderpass: undefined,
 };
-// expects glsl of format
-// {
-//   name: 'osc', // name that will be used to access function as well as within glsl
-//   type: 'src', // can be src: vec4(vec2 _st), coord: vec2(vec2 _st), color: vec4(vec4 _c0), combine: vec4(vec4 _c0, vec4 _c1), combineCoord: vec2(vec2 _st, vec4 _c0)
-//   inputs: [
-//     {
-//       name: 'freq',
-//       type: 'float', // 'float'   //, 'texture', 'vec4'
-//       default: 0.2
-//     },
-//     {
-//           name: 'sync',
-//           type: 'float',
-//           default: 0.1
-//         },
-//         {
-//           name: 'offset',
-//           type: 'float',
-//           default: 0.0
-//         }
-//   ],
-//  glsl: `
-//    vec2 st = _st;
-//    float r = sin((st.x-offset*2/freq+time*sync)*freq)*0.5  + 0.5;
-//    float g = sin((st.x+time*sync)*freq)*0.5 + 0.5;
-//    float b = sin((st.x+offset/freq+time*sync)*freq)*0.5  + 0.5;
-//    return vec4(r, g, b, 1.0);
-// `
-// }
-
-// // generates glsl function:
-// `vec4 osc(vec2 _st, float freq, float sync, float offset){
-//  vec2 st = _st;
-//  float r = sin((st.x-offset*2/freq+time*sync)*freq)*0.5  + 0.5;
-//  float g = sin((st.x+time*sync)*freq)*0.5 + 0.5;
-//  float b = sin((st.x+offset/freq+time*sync)*freq)*0.5  + 0.5;
-//  return vec4(r, g, b, 1.0);
-// }`
 
 function processGlsl(obj: TransformDefinition): TransformDefinition | undefined {
   let t = typeLookup[obj.type];

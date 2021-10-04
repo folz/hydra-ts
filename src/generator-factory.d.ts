@@ -16,7 +16,7 @@ export declare class GeneratorFactory {
     glslTransforms: Record<string, TransformDefinition>;
     sourceClass: typeof GlslSource;
     constructor({ defaultUniforms, defaultOutput, changeListener, transforms, }: GeneratorFactoryOptions);
-    _addMethod(method: string, transform: TransformDefinition): ((...args: any[]) => GlslSource) | undefined;
+    _addMethod(method: string, transform: TransformDefinition): void;
     setFunction: (obj: TransformDefinition) => void;
 }
 export {};
