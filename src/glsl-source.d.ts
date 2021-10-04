@@ -1,7 +1,7 @@
-import { GeneratorFactory } from './generator-factory';
-import { Output } from './output';
 import { Uniforms } from 'regl';
+import { GeneratorFactory } from './generator-factory';
 import { TransformDefinition } from './glsl/glsl-functions';
+import { Output } from './output';
 export interface TransformApplication {
     defaultOutput: GlslSource['defaultOutput'];
     defaultUniforms?: GlslSource['defaultUniforms'];
@@ -18,7 +18,7 @@ export declare class GlslSource {
     transforms: TransformApplication[];
     type: "GlslSource";
     constructor(obj: TransformApplication);
-    addTransform(obj: TransformApplication): void;
+    then(...transforms: TransformApplication[]): void;
     out(output?: Output): void;
     glsl(): CompiledTransform[];
     compile(transforms: TransformApplication[]): {

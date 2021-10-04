@@ -1,9 +1,9 @@
-import { compileGlsl, TypedArg } from './glsl-utils';
-import { utilityFunctions } from './glsl/utility-functions';
-import { GeneratorFactory } from './generator-factory';
-import { Output } from './output';
 import { Uniforms } from 'regl';
+import { GeneratorFactory } from './generator-factory';
 import { TransformDefinition } from './glsl/glsl-functions';
+import { utilityFunctions } from './glsl/utility-functions';
+import { compileGlsl, TypedArg } from './glsl-utils';
+import { Output } from './output';
 
 export interface TransformApplication {
   defaultOutput: GlslSource['defaultOutput'];
@@ -30,8 +30,8 @@ export class GlslSource {
     this.defaultUniforms = obj.defaultUniforms;
   }
 
-  addTransform(obj: TransformApplication) {
-    this.transforms.push(obj);
+  then(...transforms: TransformApplication[]) {
+    this.transforms.push(...transforms);
   }
 
   out(output: Output = this.defaultOutput) {
@@ -80,7 +80,6 @@ export class GlslSource {
 
   ${Object.values(utilityFunctions)
     .map((transform) => {
-      //  console.log(transform.glsl)
       return `
             ${transform.glsl}
           `;

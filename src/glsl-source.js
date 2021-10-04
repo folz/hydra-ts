@@ -1,5 +1,5 @@
-import { compileGlsl } from './glsl-utils';
 import { utilityFunctions } from './glsl/utility-functions';
+import { compileGlsl } from './glsl-utils';
 export class GlslSource {
     constructor(obj) {
         this.transforms = [];
@@ -9,8 +9,8 @@ export class GlslSource {
         this.synth = obj.synth;
         this.defaultUniforms = obj.defaultUniforms;
     }
-    addTransform(obj) {
-        this.transforms.push(obj);
+    then(...transforms) {
+        this.transforms.push(...transforms);
     }
     out(output = this.defaultOutput) {
         const glsl = this.glsl();
@@ -54,7 +54,6 @@ export class GlslSource {
 
   ${Object.values(utilityFunctions)
             .map((transform) => {
-            //  console.log(transform.glsl)
             return `
             ${transform.glsl}
           `;
