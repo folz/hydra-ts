@@ -6,7 +6,7 @@ import { EvalSandbox } from './src/eval-sandbox';
 import { GeneratorFactory } from './src/generator-factory';
 // to do: add ability to pass in certain uniforms and transforms
 export class HydraRenderer {
-    constructor({ width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, autoLoop = true, detectAudio = true, precision, regl, }) {
+    constructor({ width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, autoLoop = true, detectAudio = true, precision = 'mediump', regl, }) {
         this.isRenderingAll = false;
         this.s = [];
         this.o = [];
@@ -98,16 +98,7 @@ export class HydraRenderer {
         };
         this.timeSinceLastUpdate = 0;
         this._time = 0; // for internal use, only to use for deciding when to render frames
-        if (precision) {
-            this.precision = precision;
-        }
-        else {
-            let isIOS = (/iPad|iPhone|iPod/.test(navigator.platform) ||
-                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) &&
-                // @ts-ignore
-                !window.MSStream;
-            this.precision = isIOS ? 'highp' : 'mediump';
-        }
+        this.precision = precision;
         this.generator = undefined;
         this._initRegl();
         this._initOutputs(numOutputs);

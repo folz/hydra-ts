@@ -77,7 +77,7 @@ export class HydraRenderer implements HydraRendererOptions {
     makeGlobal = true,
     autoLoop = true,
     detectAudio = true,
-    precision,
+    precision = 'mediump',
     regl,
   }: HydraRendererOptions) {
     ArrayUtils.init();
@@ -107,16 +107,7 @@ export class HydraRenderer implements HydraRendererOptions {
     this.timeSinceLastUpdate = 0;
     this._time = 0; // for internal use, only to use for deciding when to render frames
 
-    if (precision) {
-      this.precision = precision;
-    } else {
-      let isIOS =
-        (/iPad|iPhone|iPod/.test(navigator.platform) ||
-          (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) &&
-        // @ts-ignore
-        !window.MSStream;
-      this.precision = isIOS ? 'highp' : 'mediump';
-    }
+    this.precision = precision;
 
     this.generator = undefined;
 
