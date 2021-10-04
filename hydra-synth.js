@@ -7,7 +7,6 @@ import { GeneratorFactory } from './src/generator-factory';
 // to do: add ability to pass in certain uniforms and transforms
 export class HydraRenderer {
     constructor({ width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, autoLoop = true, precision = 'mediump', regl, }) {
-        this.isRenderingAll = false;
         this.s = [];
         this.o = [];
         this.hush = () => {
@@ -30,15 +29,13 @@ export class HydraRenderer {
                 source.resize(width, height);
             });
             this.regl._refresh();
-            console.log(this.regl._gl.canvas.width);
         };
         this._render = (output) => {
             if (output) {
                 this.output = output;
-                this.isRenderingAll = false;
             }
             else {
-                this.isRenderingAll = true;
+                this.output = this.o[0];
             }
         };
         // dt in ms
@@ -48,31 +45,20 @@ export class HydraRenderer {
             this.timeSinceLastUpdate += dt;
             if (!this.synth.fps || this.timeSinceLastUpdate >= 1000 / this.synth.fps) {
                 this.synth.stats.fps = Math.ceil(1000 / this.timeSinceLastUpdate);
-                for (let i = 0; i < this.s.length; i++) {
-                    this.s[i].tick(this.synth.time);
-                }
-                for (let i = 0; i < this.o.length; i++) {
-                    this.o[i].tick({
+                this.s.forEach((source) => {
+                    source.tick(this.synth.time);
+                });
+                this.o.forEach((output) => {
+                    output.tick({
                         time: this.synth.time,
                         bpm: this.synth.bpm,
                         resolution: [this.regl._gl.canvas.width, this.regl._gl.canvas.height],
                     });
-                }
-                if (this.isRenderingAll && this.renderAll) {
-                    this.renderAll({
-                        tex0: this.o[0].getCurrent(),
-                        tex1: this.o[1].getCurrent(),
-                        tex2: this.o[2].getCurrent(),
-                        tex3: this.o[3].getCurrent(),
-                        resolution: [this.regl._gl.canvas.width, this.regl._gl.canvas.height],
-                    });
-                }
-                else {
-                    this.renderFbo({
-                        tex0: this.output.getCurrent(),
-                        resolution: [this.regl._gl.canvas.width, this.regl._gl.canvas.height],
-                    });
-                }
+                });
+                this.renderFbo({
+                    tex0: this.output.getCurrent(),
+                    resolution: [this.regl._gl.canvas.width, this.regl._gl.canvas.height],
+                });
                 this.timeSinceLastUpdate = 0;
             }
         };
@@ -114,60 +100,6 @@ export class HydraRenderer {
         // This clears the color buffer to black and the depth buffer to 1
         this.regl.clear({
             color: [0, 0, 0, 1],
-        });
-        this.renderAll = this.regl({
-            frag: `
-      precision ${this.precision} float;
-      varying vec2 uv;
-      uniform sampler2D tex0;
-      uniform sampler2D tex1;
-      uniform sampler2D tex2;
-      uniform sampler2D tex3;
-
-      void main () {
-        vec2 st = vec2(1.0 - uv.x, uv.y);
-        st*= vec2(2);
-        vec2 q = floor(st).xy*(vec2(2.0, 1.0));
-        int quad = int(q.x) + int(q.y);
-        st.x += step(1., mod(st.y,2.0));
-        st.y += step(1., mod(st.x,2.0));
-        st = fract(st);
-        if(quad==0){
-          gl_FragColor = texture2D(tex0, st);
-        } else if(quad==1){
-          gl_FragColor = texture2D(tex1, st);
-        } else if (quad==2){
-          gl_FragColor = texture2D(tex2, st);
-        } else {
-          gl_FragColor = texture2D(tex3, st);
-        }
-
-      }
-      `,
-            vert: `
-      precision ${this.precision} float;
-      attribute vec2 position;
-      varying vec2 uv;
-
-      void main () {
-        uv = position;
-        gl_Position = vec4(1.0 - 2.0 * position, 0, 1);
-      }`,
-            attributes: {
-                position: [
-                    [-2, 0],
-                    [0, -2],
-                    [2, 2],
-                ],
-            },
-            uniforms: {
-                tex0: this.regl.prop('tex0'),
-                tex1: this.regl.prop('tex1'),
-                tex2: this.regl.prop('tex2'),
-                tex3: this.regl.prop('tex3'),
-            },
-            count: 3,
-            depth: { enable: false },
         });
         this.renderFbo = this.regl({
             frag: `

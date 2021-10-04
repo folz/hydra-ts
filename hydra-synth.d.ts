@@ -41,9 +41,7 @@ export declare class HydraRenderer implements HydraRendererOptions {
     sandbox: EvalSandbox;
     imageCallback?: (blob: Blob | null) => void;
     regl: Regl;
-    renderAll?: DrawCommand;
     renderFbo: DrawCommand;
-    isRenderingAll: boolean;
     s: HydraSource[];
     o: Output[];
     output: Output;
