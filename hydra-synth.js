@@ -6,7 +6,7 @@ import { EvalSandbox } from './src/eval-sandbox';
 import { GeneratorFactory } from './src/generator-factory';
 // to do: add ability to pass in certain uniforms and transforms
 export class HydraRenderer {
-    constructor({ width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, autoLoop = true, precision = 'mediump', regl, }) {
+    constructor({ width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, precision = 'mediump', regl, }) {
         this.s = [];
         this.o = [];
         this.hush = () => {
@@ -90,9 +90,6 @@ export class HydraRenderer {
         this._initSources(numSources);
         this._generateGlslTransforms();
         this.loop = new Loop(this.tick);
-        if (autoLoop) {
-            this.loop.start();
-        }
         // final argument is properties that the user can set, all others are treated as read-only
         this.sandbox = new EvalSandbox(this.synth, makeGlobal, ['speed', 'bpm', 'fps']);
     }
@@ -137,7 +134,6 @@ export class HydraRenderer {
         });
     }
     _initOutputs(numOutputs) {
-        const self = this;
         this.o = Array(numOutputs)
             .fill(undefined)
             .map((el, index) => {
@@ -149,7 +145,7 @@ export class HydraRenderer {
             });
             //  o.render()
             o.id = index;
-            self.synth['o' + index] = o;
+            this.synth['o' + index] = o;
             return o;
         });
         // set default output
@@ -172,15 +168,14 @@ export class HydraRenderer {
         return s;
     }
     _generateGlslTransforms() {
-        const self = this;
         this.generator = new GeneratorFactory({
             defaultOutput: this.o[0],
             defaultUniforms: this.o[0].uniforms,
             changeListener: ({ type, method, synth, }) => {
                 if (type === 'add') {
-                    self.synth[method] = synth.generators[method];
-                    if (self.sandbox)
-                        self.sandbox.add(method);
+                    this.synth[method] = synth.generators[method];
+                    if (this.sandbox)
+                        this.sandbox.add(method);
                 }
                 else if (type === 'remove') {
                     // what to do here? dangerously deleting window methods

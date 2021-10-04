@@ -22,6 +22,7 @@ const hydra = new Hydra({
   precision: 'highp',
   regl,
 });
+hydra.loop.start();
 
 const { src, solid, o0, o1, s0, render } = hydra.synth;
 

@@ -39,7 +39,6 @@ interface HydraRendererOptions {
   numSources?: number;
   numOutputs?: number;
   makeGlobal?: boolean;
-  autoLoop?: boolean;
   regl: HydraRenderer['regl'];
   precision?: HydraRenderer['precision'];
 }
@@ -71,7 +70,6 @@ export class HydraRenderer implements HydraRendererOptions {
     numSources = 4,
     numOutputs = 4,
     makeGlobal = true,
-    autoLoop = true,
     precision = 'mediump',
     regl,
   }: HydraRendererOptions) {
@@ -111,9 +109,6 @@ export class HydraRenderer implements HydraRendererOptions {
     this._generateGlslTransforms();
 
     this.loop = new Loop(this.tick);
-    if (autoLoop) {
-      this.loop.start();
-    }
 
     // final argument is properties that the user can set, all others are treated as read-only
     this.sandbox = new EvalSandbox(this.synth, makeGlobal, ['speed', 'bpm', 'fps']);
@@ -185,7 +180,6 @@ export class HydraRenderer implements HydraRendererOptions {
   }
 
   _initOutputs(numOutputs: number) {
-    const self = this;
     this.o = Array(numOutputs)
       .fill(undefined)
       .map((el, index) => {
@@ -197,7 +191,7 @@ export class HydraRenderer implements HydraRendererOptions {
         });
         //  o.render()
         o.id = index;
-        self.synth['o' + index] = o;
+        this.synth['o' + index] = o;
         return o;
       });
 
@@ -224,7 +218,6 @@ export class HydraRenderer implements HydraRendererOptions {
   }
 
   _generateGlslTransforms() {
-    const self = this;
     this.generator = new GeneratorFactory({
       defaultOutput: this.o[0],
       defaultUniforms: this.o[0].uniforms,
@@ -238,8 +231,8 @@ export class HydraRenderer implements HydraRendererOptions {
         synth: GeneratorFactory;
       }) => {
         if (type === 'add') {
-          self.synth[method] = synth.generators[method];
-          if (self.sandbox) self.sandbox.add(method);
+          this.synth[method] = synth.generators[method];
+          if (this.sandbox) this.sandbox.add(method);
         } else if (type === 'remove') {
           // what to do here? dangerously deleting window methods
           //delete window[method]

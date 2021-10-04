@@ -26,7 +26,6 @@ interface HydraRendererOptions {
     numSources?: number;
     numOutputs?: number;
     makeGlobal?: boolean;
-    autoLoop?: boolean;
     regl: HydraRenderer['regl'];
     precision?: HydraRenderer['precision'];
 }
@@ -47,7 +46,7 @@ export declare class HydraRenderer implements HydraRendererOptions {
     output: Output;
     loop: Loop;
     [name: string]: any;
-    constructor({ width, height, numSources, numOutputs, makeGlobal, autoLoop, precision, regl, }: HydraRendererOptions);
+    constructor({ width, height, numSources, numOutputs, makeGlobal, precision, regl, }: HydraRendererOptions);
     hush: () => void;
     setResolution: (width: number, height: number) => void;
     _initRegl(): void;
