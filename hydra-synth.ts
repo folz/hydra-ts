@@ -327,7 +327,6 @@ export class HydraRenderer implements HydraRendererOptions {
           width: this.width,
           height: this.height,
           precision: this.precision,
-          label: `o${index}`,
         });
         //  o.render()
         o.id = index;
@@ -352,7 +351,6 @@ export class HydraRenderer implements HydraRendererOptions {
       pb: this.pb,
       width: this.width,
       height: this.height,
-      label: `s${i}`,
     });
     this.synth['s' + this.s.length] = s;
     this.s.push(s);

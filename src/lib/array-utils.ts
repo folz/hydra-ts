@@ -53,11 +53,6 @@ export default {
       return this;
     };
 
-    // Array.prototype.bounce = function() {
-    //   this.modifiers.bounce = true
-    //   return this
-    // }
-
     Array.prototype.fit = function (low = 0, high = 1) {
       let lowest = Math.min(...this);
       let highest = Math.max(...this);
@@ -82,7 +77,6 @@ export default {
         let currValue = arr[Math.floor(_index % arr.length)];
         let nextValue = arr[Math.floor((_index + 1) % arr.length)];
         let t = Math.min((_index % 1) / smooth, 1);
-        // @ts-ignore
         return ease(t) * (nextValue - currValue) + currValue;
       } else {
         return arr[Math.floor(index % arr.length)];

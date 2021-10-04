@@ -5,7 +5,6 @@ import { CompiledTransform } from './glsl-source';
 interface OutputOptions {
   regl: Output['regl'];
   precision: Output['precision'];
-  label: Output['label'];
   width: number;
   height: number;
 }
@@ -13,31 +12,22 @@ interface OutputOptions {
 export class Output {
   regl: Regl;
   precision: Precision;
-  label: string;
   positionBuffer: Buffer;
   draw: DrawCommand;
   pingPongIndex: number;
   fbos: Framebuffer2D[];
-  // @ts-ignore
-  transformIndex: number;
-  // @ts-ignore
-  fragHeader: string;
-  // @ts-ignore
-  fragBody: string;
-  // @ts-ignore
-  frag: string;
-  // @ts-ignore
-  vert: string;
-  // @ts-ignore
-  uniforms: Uniforms;
-  // @ts-ignore
-  attributes: Attributes;
+  transformIndex: number = 0;
+  fragHeader: string = '';
+  fragBody: string = '';
+  frag: string = '';
+  vert: string = '';
+  uniforms: Uniforms = {};
+  attributes: Attributes = {};
   id?: number;
 
-  constructor({ regl, precision, label = '', width, height }: OutputOptions) {
+  constructor({ regl, precision, width, height }: OutputOptions) {
     this.regl = regl;
     this.precision = precision;
-    this.label = label;
     this.positionBuffer = this.regl.buffer([
       [-2, 0],
       [0, -2],
@@ -129,25 +119,24 @@ export class Output {
 
   render(passes: CompiledTransform[]) {
     let pass = passes[0];
-    const self = this;
     const uniforms = Object.assign(pass.uniforms, {
       prevBuffer: () => {
         //var index = this.pingPongIndex ? 0 : 1
         //   var index = self.pingPong[(passIndex+1)%2]
         //  console.log('ping pong', self.pingPongIndex)
-        return self.fbos[self.pingPongIndex];
+        return this.fbos[this.pingPongIndex];
       },
     });
 
-    self.draw = self.regl({
+    this.draw = this.regl({
       frag: pass.frag,
-      vert: self.vert,
-      attributes: self.attributes,
+      vert: this.vert,
+      attributes: this.attributes,
       uniforms: uniforms,
       count: 3,
       framebuffer: () => {
-        self.pingPongIndex = self.pingPongIndex ? 0 : 1;
-        return self.fbos[self.pingPongIndex];
+        this.pingPongIndex = this.pingPongIndex ? 0 : 1;
+        return this.fbos[this.pingPongIndex];
       },
     });
   }

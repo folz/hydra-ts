@@ -1,8 +1,14 @@
 export class Output {
-    constructor({ regl, precision, label = '', width, height }) {
+    constructor({ regl, precision, width, height }) {
+        this.transformIndex = 0;
+        this.fragHeader = '';
+        this.fragBody = '';
+        this.frag = '';
+        this.vert = '';
+        this.uniforms = {};
+        this.attributes = {};
         this.regl = regl;
         this.precision = precision;
-        this.label = label;
         this.positionBuffer = this.regl.buffer([
             [-2, 0],
             [0, -2],
@@ -80,24 +86,23 @@ export class Output {
     }
     render(passes) {
         let pass = passes[0];
-        const self = this;
         const uniforms = Object.assign(pass.uniforms, {
             prevBuffer: () => {
                 //var index = this.pingPongIndex ? 0 : 1
                 //   var index = self.pingPong[(passIndex+1)%2]
                 //  console.log('ping pong', self.pingPongIndex)
-                return self.fbos[self.pingPongIndex];
+                return this.fbos[this.pingPongIndex];
             },
         });
-        self.draw = self.regl({
+        this.draw = this.regl({
             frag: pass.frag,
-            vert: self.vert,
-            attributes: self.attributes,
+            vert: this.vert,
+            attributes: this.attributes,
             uniforms: uniforms,
             count: 3,
             framebuffer: () => {
-                self.pingPongIndex = self.pingPongIndex ? 0 : 1;
-                return self.fbos[self.pingPongIndex];
+                this.pingPongIndex = this.pingPongIndex ? 0 : 1;
+                return this.fbos[this.pingPongIndex];
             },
         });
     }

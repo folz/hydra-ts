@@ -1,8 +1,7 @@
 import { Webcam } from './lib/webcam';
 import { Screen } from './lib/screenmedia';
 export class HydraSource {
-    constructor({ regl, width, height, pb, label = '' }) {
-        this.label = label;
+    constructor({ regl, width, height, pb }) {
         this.regl = regl;
         this.src = null;
         this.dynamic = true;

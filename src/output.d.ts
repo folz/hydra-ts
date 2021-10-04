@@ -4,14 +4,12 @@ import { CompiledTransform } from './glsl-source';
 interface OutputOptions {
     regl: Output['regl'];
     precision: Output['precision'];
-    label: Output['label'];
     width: number;
     height: number;
 }
 export declare class Output {
     regl: Regl;
     precision: Precision;
-    label: string;
     positionBuffer: Buffer;
     draw: DrawCommand;
     pingPongIndex: number;
@@ -24,7 +22,7 @@ export declare class Output {
     uniforms: Uniforms;
     attributes: Attributes;
     id?: number;
-    constructor({ regl, precision, label, width, height }: OutputOptions);
+    constructor({ regl, precision, width, height }: OutputOptions);
     resize(width: number, height: number): void;
     getCurrent(): Framebuffer2D;
     getTexture(): Framebuffer2D;

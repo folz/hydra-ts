@@ -7,7 +7,6 @@ interface HydraSourceOptions {
   width: HydraSource['width'];
   height: HydraSource['height'];
   pb: HydraSource['pb'];
-  label: HydraSource['label'];
 }
 
 export class HydraSource {
@@ -15,13 +14,11 @@ export class HydraSource {
   width: number;
   height: number;
   pb: any;
-  label: string;
   src: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | CanvasRenderingContext2D | null;
   dynamic: boolean;
   tex: Texture2D;
 
-  constructor({ regl, width, height, pb, label = '' }: HydraSourceOptions) {
-    this.label = label;
+  constructor({ regl, width, height, pb }: HydraSourceOptions) {
     this.regl = regl;
     this.src = null;
     this.dynamic = true;
