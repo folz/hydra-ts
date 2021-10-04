@@ -63,7 +63,7 @@ export class Output {
             format: 'rgba',
           }),
           depthStencil: false,
-        })
+        }),
       );
 
     // array containing render passes

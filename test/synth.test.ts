@@ -28,7 +28,7 @@ describe.skip('Synth', function () {
     expect(synth.generators).toEqual(expect.arrayContaining(srcNames));
 
     expect(events.filter(({ type }) => type === 'add').map(({ method }) => method)).toEqual(
-      srcNames
+      srcNames,
     );
   });
 
@@ -43,7 +43,7 @@ describe.skip('Synth', function () {
     expect(synth.generators).toEqual(expect.arrayContaining(srcNames));
 
     expect(events.filter(({ type }) => type === 'add').map(({ method }) => method)).toEqual(
-      srcNames
+      srcNames,
     );
 
     [
@@ -67,11 +67,11 @@ describe.skip('Synth', function () {
       synth.init();
 
       expect(events.filter(({ type }) => type === 'remove').map(({ method }) => method)).toEqual(
-        srcNames
+        srcNames,
       );
 
       expect(events.filter(({ type }) => type === 'add').map(({ method }) => method)).toEqual(
-        expect.arrayContaining([...srcNames, 'foo'])
+        expect.arrayContaining([...srcNames, 'foo']),
       );
     });
 

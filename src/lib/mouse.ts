@@ -6,7 +6,7 @@ type Callback = (
   buttonState: number,
   x: number,
   y: number,
-  mods: { shift: boolean; alt: boolean; control: boolean; meta: boolean }
+  mods: { shift: boolean; alt: boolean; control: boolean; meta: boolean },
 ) => void;
 
 type Return = {
@@ -18,7 +18,7 @@ export default function mouseListen(element?: HTMLElement | Window, callback?: C
 
 export default function mouseListen(
   element?: HTMLElement | Window | Callback,
-  callback?: Callback
+  callback?: Callback,
 ) {
   if (!callback) {
     callback = element as Callback;

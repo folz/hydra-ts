@@ -44,7 +44,7 @@ type GlslGenerator = (uv: string) => string;
 // to do: improve variable names
 function generateGlsl(
   transforms: TransformApplication[],
-  shaderParams: ShaderParams
+  shaderParams: ShaderParams,
 ): GlslGenerator {
   // transform function that outputs a shader string corresponding to gl_FragColor
   var fragColor: GlslGenerator = () => '';
@@ -90,7 +90,7 @@ function generateGlsl(
           : () => inputs[0].value;
       fragColor = (uv) =>
         `${f0(
-          `${shaderString(`${uv}, ${f1(uv)}`, transform.name, inputs.slice(1), shaderParams)}`
+          `${shaderString(`${uv}, ${f1(uv)}`, transform.name, inputs.slice(1), shaderParams)}`,
         )}`;
     }
   });
@@ -104,7 +104,7 @@ function shaderString(
   uv: string,
   method: TransformApplication['name'],
   inputs: TypedArg[],
-  shaderParams: ShaderParams
+  shaderParams: ShaderParams,
 ) {
   const str = inputs
     .map((input) => {

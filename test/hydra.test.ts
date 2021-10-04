@@ -73,7 +73,7 @@ describe.skip('HydraSynth', function () {
           'render',
           'screencap',
           'vidRecorder',
-        ])
+        ]),
       );
     });
   });
