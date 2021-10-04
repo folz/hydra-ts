@@ -1,4 +1,4 @@
-import REGL, { Regl } from 'regl';
+import REGL from 'regl';
 import gl from 'gl';
 
 import HydraSynth from '../index';
@@ -6,7 +6,7 @@ import HydraSynth from '../index';
 import { transforms } from '../src/glsl/glsl-functions';
 
 describe.skip('HydraSynth', function () {
-  let regl: Regl;
+  let regl;
 
   beforeEach(function () {
     regl = REGL(gl(800, 600));

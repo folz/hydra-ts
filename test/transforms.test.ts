@@ -1,5 +1,5 @@
 import HydraSynth from '../index';
-import REGL, { Regl } from 'regl';
+import REGL from 'regl';
 import gl from 'gl';
 
 describe.skip('Transforms', function () {
@@ -8,7 +8,7 @@ describe.skip('Transforms', function () {
     height: 100,
   };
 
-  let regl: Regl;
+  let regl;
 
   beforeEach(function () {
     regl = REGL(gl(800, 600));

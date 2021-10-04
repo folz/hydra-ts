@@ -1,11 +1,11 @@
 import { HydraRenderer as Synth } from '../hydra-synth';
 
 import { transforms } from '../src/glsl/glsl-functions';
-import REGL, { Regl } from 'regl';
+import REGL from 'regl';
 import gl from 'gl';
 
 describe.skip('Synth', function () {
-  let regl: Regl;
+  let regl;
 
   beforeEach(function () {
     regl = REGL(gl(800, 600));
