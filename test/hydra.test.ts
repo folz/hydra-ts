@@ -66,7 +66,6 @@ describe.skip('HydraSynth', function () {
             .fill(1)
             .map((_, i) => `a${i}`),
           'bpm',
-          'mouse',
           'time',
           'a',
           'synth',

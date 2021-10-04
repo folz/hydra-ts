@@ -5,7 +5,6 @@ import { VideoRecorder } from './src/lib/video-recorder';
 import { EvalSandbox } from './src/eval-sandbox';
 import { DrawCommand, Regl } from 'regl';
 import { GeneratorFactory } from './src/generator-factory';
-declare const Mouse: any;
 export declare type Precision = 'lowp' | 'mediump' | 'highp';
 export interface Synth {
     time: number;
@@ -17,7 +16,6 @@ export interface Synth {
         fps: number;
     };
     speed: number;
-    mouse: typeof Mouse;
     render: any;
     setResolution: any;
     update?: (dt: number) => void;

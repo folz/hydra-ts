@@ -1,16 +1,12 @@
 import { Output } from './src/output';
 import { Loop } from './src/loop';
 import { HydraSource } from './src/hydra-source';
-import createMouse from './src/lib/mouse';
 import { VideoRecorder } from './src/lib/video-recorder';
 import ArrayUtils from './src/lib/array-utils';
 import { EvalSandbox } from './src/eval-sandbox';
 import { DrawCommand, Framebuffer, Regl } from 'regl';
 
 import { GeneratorFactory } from './src/generator-factory';
-import { TransformDefinition } from './src/glsl/glsl-functions';
-
-const Mouse = createMouse();
 
 export type Precision = 'lowp' | 'mediump' | 'highp';
 
@@ -32,7 +28,6 @@ export interface Synth {
     fps: number;
   };
   speed: number;
-  mouse: typeof Mouse;
   render: any;
   setResolution: any;
   update?: (dt: number) => void;
@@ -118,7 +113,6 @@ export class HydraRenderer implements HydraRendererOptions {
         fps: 0,
       },
       speed: 1,
-      mouse: Mouse,
       render: this._render,
       setResolution: this.setResolution,
       update: () => {}, // user defined update function
@@ -422,7 +416,6 @@ export class HydraRenderer implements HydraRendererOptions {
       for (let i = 0; i < this.o.length; i++) {
         this.o[i].tick({
           time: this.synth.time,
-          mouse: this.synth.mouse,
           bpm: this.synth.bpm,
           resolution: [this.regl._gl.canvas.width, this.regl._gl.canvas.height],
         });
