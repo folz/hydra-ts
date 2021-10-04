@@ -7,7 +7,7 @@ import { EvalSandbox } from './src/eval-sandbox';
 import { GeneratorFactory } from './src/generator-factory';
 // to do: add ability to pass in certain uniforms and transforms
 export class HydraRenderer {
-    constructor({ pb = null, width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, autoLoop = true, detectAudio = true, enableStreamCapture = true, precision, regl, }) {
+    constructor({ width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, autoLoop = true, detectAudio = true, enableStreamCapture = true, precision, regl, }) {
         this.isRenderingAll = false;
         this.s = [];
         this.o = [];
@@ -90,7 +90,6 @@ export class HydraRenderer {
             }
         };
         ArrayUtils.init();
-        this.pb = pb;
         this.width = width;
         this.height = height;
         this.renderAll = false;
@@ -138,7 +137,7 @@ export class HydraRenderer {
         };
         if (enableStreamCapture) {
             try {
-                this.captureStream = this.regl._gl.canvas.captureStream(25);
+                this.captureStream = this.regl._gl.canvas.captureStream(24);
                 // to do: enable capture stream of specific sources and outputs
                 this.synth.vidRecorder = new VideoRecorder(this.captureStream);
             }
@@ -299,7 +298,6 @@ export class HydraRenderer {
     createSource(i) {
         let s = new HydraSource({
             regl: this.regl,
-            pb: this.pb,
             width: this.width,
             height: this.height,
         });

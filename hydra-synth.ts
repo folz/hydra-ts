@@ -38,7 +38,6 @@ export interface Synth {
 }
 
 interface HydraRendererOptions {
-  pb?: HydraRenderer['pb'];
   width?: HydraRenderer['width'];
   height?: HydraRenderer['height'];
   numSources?: number;
@@ -53,7 +52,6 @@ interface HydraRendererOptions {
 
 // to do: add ability to pass in certain uniforms and transforms
 export class HydraRenderer implements HydraRendererOptions {
-  pb?: any | null;
   width: number;
   height: number;
   detectAudio?: boolean;
@@ -79,7 +77,6 @@ export class HydraRenderer implements HydraRendererOptions {
   [name: string]: any;
 
   constructor({
-    pb = null,
     width = 1280,
     height = 720,
     numSources = 4,
@@ -92,8 +89,6 @@ export class HydraRenderer implements HydraRendererOptions {
     regl,
   }: HydraRendererOptions) {
     ArrayUtils.init();
-
-    this.pb = pb;
 
     this.width = width;
     this.height = height;
@@ -152,7 +147,7 @@ export class HydraRenderer implements HydraRendererOptions {
 
     if (enableStreamCapture) {
       try {
-        this.captureStream = this.regl._gl.canvas.captureStream(25);
+        this.captureStream = this.regl._gl.canvas.captureStream(24);
         // to do: enable capture stream of specific sources and outputs
         this.synth.vidRecorder = new VideoRecorder(this.captureStream);
       } catch (e) {
@@ -348,7 +343,6 @@ export class HydraRenderer implements HydraRendererOptions {
   createSource(i: number) {
     let s = new HydraSource({
       regl: this.regl,
-      pb: this.pb,
       width: this.width,
       height: this.height,
     });

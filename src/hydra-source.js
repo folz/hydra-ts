@@ -1,7 +1,7 @@
 import { Webcam } from './lib/webcam';
 import { Screen } from './lib/screenmedia';
 export class HydraSource {
-    constructor({ regl, width, height, pb }) {
+    constructor({ regl, width, height }) {
         this.regl = regl;
         this.src = null;
         this.dynamic = true;
@@ -11,7 +11,6 @@ export class HydraSource {
             //  shape: [width, height]
             shape: [1, 1],
         });
-        this.pb = pb;
     }
     init(opts) {
         if (opts.src) {
@@ -55,20 +54,6 @@ export class HydraSource {
             this.dynamic = false;
             this.tex = this.regl.texture(this.src);
         };
-    }
-    initStream(streamName) {
-        //  console.log("initing stream!", streamName)
-        let self = this;
-        if (streamName && this.pb) {
-            this.pb.initSource(streamName);
-            this.pb.on('got video', function (nick, video) {
-                if (nick === streamName) {
-                    self.src = video;
-                    self.dynamic = true;
-                    self.tex = self.regl.texture(self.src);
-                }
-            });
-        }
     }
     initScreen() {
         const self = this;

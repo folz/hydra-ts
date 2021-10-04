@@ -25,7 +25,6 @@ export interface Synth {
     [name: string]: any;
 }
 interface HydraRendererOptions {
-    pb?: HydraRenderer['pb'];
     width?: HydraRenderer['width'];
     height?: HydraRenderer['height'];
     numSources?: number;
@@ -38,7 +37,6 @@ interface HydraRendererOptions {
     precision?: HydraRenderer['precision'];
 }
 export declare class HydraRenderer implements HydraRendererOptions {
-    pb?: any | null;
     width: number;
     height: number;
     detectAudio?: boolean;
@@ -60,7 +58,7 @@ export declare class HydraRenderer implements HydraRendererOptions {
     output: Output;
     loop: Loop;
     [name: string]: any;
-    constructor({ pb, width, height, numSources, numOutputs, makeGlobal, autoLoop, detectAudio, enableStreamCapture, precision, regl, }: HydraRendererOptions);
+    constructor({ width, height, numSources, numOutputs, makeGlobal, autoLoop, detectAudio, enableStreamCapture, precision, regl, }: HydraRendererOptions);
     hush: () => void;
     setResolution: (width: number, height: number) => void;
     canvasToImage(): void;

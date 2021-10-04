@@ -6,19 +6,17 @@ interface HydraSourceOptions {
   regl: HydraSource['regl'];
   width: HydraSource['width'];
   height: HydraSource['height'];
-  pb: HydraSource['pb'];
 }
 
 export class HydraSource {
   regl: Regl;
   width: number;
   height: number;
-  pb: any;
   src: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | CanvasRenderingContext2D | null;
   dynamic: boolean;
   tex: Texture2D;
 
-  constructor({ regl, width, height, pb }: HydraSourceOptions) {
+  constructor({ regl, width, height }: HydraSourceOptions) {
     this.regl = regl;
     this.src = null;
     this.dynamic = true;
@@ -28,7 +26,6 @@ export class HydraSource {
       //  shape: [width, height]
       shape: [1, 1],
     });
-    this.pb = pb;
   }
 
   init(opts: { src: HydraSource['src']; dynamic: boolean }) {
@@ -75,22 +72,6 @@ export class HydraSource {
       this.dynamic = false;
       this.tex = this.regl.texture(this.src);
     };
-  }
-
-  initStream(streamName: string) {
-    //  console.log("initing stream!", streamName)
-    let self = this;
-    if (streamName && this.pb) {
-      this.pb.initSource(streamName);
-
-      this.pb.on('got video', function (nick: string, video: HTMLVideoElement) {
-        if (nick === streamName) {
-          self.src = video;
-          self.dynamic = true;
-          self.tex = self.regl.texture(self.src);
-        }
-      });
-    }
   }
 
   initScreen() {
