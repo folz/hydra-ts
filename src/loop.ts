@@ -32,6 +32,16 @@ export class Loop {
     return this;
   };
 
+  toggle = (): this => {
+    if (this.#running) {
+      this.stop();
+    } else {
+      this.start();
+    }
+
+    return this;
+  };
+
   tick = (): this => {
     this.#raf = requestAnimationFrame(this.tick);
 

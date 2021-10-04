@@ -4,6 +4,7 @@ export declare class Loop {
     constructor(fn: OnTick);
     start: () => this;
     stop: () => this;
+    toggle: () => this;
     tick: () => this;
 }
 export {};

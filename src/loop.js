@@ -33,6 +33,15 @@ export class Loop {
             __classPrivateFieldSet(this, _Loop_raf, undefined, "f");
             return this;
         };
+        this.toggle = () => {
+            if (__classPrivateFieldGet(this, _Loop_running, "f")) {
+                this.stop();
+            }
+            else {
+                this.start();
+            }
+            return this;
+        };
         this.tick = () => {
             __classPrivateFieldSet(this, _Loop_raf, requestAnimationFrame(this.tick), "f");
             const time = performance.now();
