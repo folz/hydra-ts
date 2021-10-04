@@ -1,6 +1,28 @@
 import { Texture2D } from 'regl';
 import { HydraSource } from '../hydra-source';
-export declare type TransformDefinitionType = 'src' | 'color' | 'combine' | 'coord' | 'combineCoord' | 'renderpass';
+export declare const typeLookup: {
+    src: {
+        returnType: string;
+        args: string[];
+    };
+    coord: {
+        returnType: string;
+        args: string[];
+    };
+    color: {
+        returnType: string;
+        args: string[];
+    };
+    combine: {
+        returnType: string;
+        args: string[];
+    };
+    combineCoord: {
+        returnType: string;
+        args: string[];
+    };
+};
+export declare type TransformDefinitionType = keyof typeof typeLookup;
 declare type TransformDefinitionInputType = 'float' | 'sampler2D' | 'vec4' | 'texture';
 export interface ITransformDefinitionInput {
     type: TransformDefinitionInputType;

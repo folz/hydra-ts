@@ -19,4 +19,5 @@ export declare class GeneratorFactory {
     _addMethod(method: string, transform: TransformDefinition): void;
     setFunction: (obj: TransformDefinition) => void;
 }
+export declare function processGlsl(obj: TransformDefinition): TransformDefinition;
 export {};

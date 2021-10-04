@@ -1,4 +1,5 @@
 import { GlslSource } from './glsl-source';
+import { typeLookup } from './glsl/glsl-functions.js';
 export class GeneratorFactory {
     constructor({ defaultUniforms = {}, defaultOutput, changeListener = () => { }, transforms, }) {
         this.generators = {};
@@ -48,35 +49,8 @@ export class GeneratorFactory {
         }
     }
 }
-const typeLookup = {
-    src: {
-        returnType: 'vec4',
-        args: ['vec2 _st'],
-    },
-    coord: {
-        returnType: 'vec2',
-        args: ['vec2 _st'],
-    },
-    color: {
-        returnType: 'vec4',
-        args: ['vec4 _c0'],
-    },
-    combine: {
-        returnType: 'vec4',
-        args: ['vec4 _c0', 'vec4 _c1'],
-    },
-    combineCoord: {
-        returnType: 'vec2',
-        args: ['vec2 _st', 'vec4 _c0'],
-    },
-    renderpass: undefined,
-};
-function processGlsl(obj) {
+export function processGlsl(obj) {
     let t = typeLookup[obj.type];
-    if (!t) {
-        console.warn(`type ${obj.type} not recognized`, obj);
-        return undefined;
-    }
     let baseArgs = t.args.map((arg) => arg).join(', ');
     // @todo: make sure this works for all input types, add validation
     let customArgs = obj.inputs.map((input) => `${input.type} ${input.name}`).join(', ');

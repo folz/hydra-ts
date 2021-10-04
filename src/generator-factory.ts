@@ -2,6 +2,7 @@ import type { Uniforms } from 'regl';
 import type { TransformDefinition } from './glsl/glsl-functions.js';
 import { GlslSource } from './glsl-source';
 import type { Output } from './output';
+import { typeLookup } from './glsl/glsl-functions.js';
 
 interface GeneratorFactoryOptions {
   changeListener?: GeneratorFactory['changeListener'];
@@ -75,37 +76,8 @@ export class GeneratorFactory {
   };
 }
 
-const typeLookup = {
-  src: {
-    returnType: 'vec4',
-    args: ['vec2 _st'],
-  },
-  coord: {
-    returnType: 'vec2',
-    args: ['vec2 _st'],
-  },
-  color: {
-    returnType: 'vec4',
-    args: ['vec4 _c0'],
-  },
-  combine: {
-    returnType: 'vec4',
-    args: ['vec4 _c0', 'vec4 _c1'],
-  },
-  combineCoord: {
-    returnType: 'vec2',
-    args: ['vec2 _st', 'vec4 _c0'],
-  },
-  renderpass: undefined,
-};
-
-function processGlsl(obj: TransformDefinition): TransformDefinition | undefined {
+export function processGlsl(obj: TransformDefinition): TransformDefinition {
   let t = typeLookup[obj.type];
-
-  if (!t) {
-    console.warn(`type ${obj.type} not recognized`, obj);
-    return undefined;
-  }
 
   let baseArgs = t.args.map((arg) => arg).join(', ');
   // @todo: make sure this works for all input types, add validation
