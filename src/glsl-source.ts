@@ -21,7 +21,6 @@ export class GlslSource {
   defaultUniforms?: Uniforms;
   synth?: GeneratorFactory;
   transforms: TransformApplication[] = [];
-  type = 'GlslSource' as const;
 
   constructor(obj: TransformApplication) {
     this.transforms.push(obj);
@@ -32,6 +31,7 @@ export class GlslSource {
 
   then(...transforms: TransformApplication[]) {
     this.transforms.push(...transforms);
+    return this;
   }
 
   out(output: Output = this.defaultOutput) {

@@ -4,6 +4,7 @@ import { HydraSource } from './src/hydra-source';
 import ArrayUtils from './src/lib/array-utils';
 import { EvalSandbox } from './src/eval-sandbox';
 import { GeneratorFactory } from './src/generator-factory';
+import { transforms } from './src/glsl/glsl-functions';
 // to do: add ability to pass in certain uniforms and transforms
 export class HydraRenderer {
     constructor({ width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, precision = 'mediump', regl, }) {
@@ -141,6 +142,7 @@ export class HydraRenderer {
         this.generator = new GeneratorFactory({
             defaultOutput: this.output,
             defaultUniforms: this.output.uniforms,
+            transforms,
             changeListener: ({ type, method, synth, }) => {
                 if (type === 'add') {
                     this.synth[method] = synth.generators[method];

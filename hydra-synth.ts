@@ -6,6 +6,7 @@ import { EvalSandbox } from './src/eval-sandbox';
 import { DrawCommand, Framebuffer, Regl } from 'regl';
 
 import { GeneratorFactory } from './src/generator-factory';
+import { transforms } from './src/glsl/glsl-functions';
 
 export type Precision = 'lowp' | 'mediump' | 'highp';
 
@@ -163,6 +164,7 @@ export class HydraRenderer {
     this.generator = new GeneratorFactory({
       defaultOutput: this.output,
       defaultUniforms: this.output.uniforms,
+      transforms,
       changeListener: ({
         type,
         method,

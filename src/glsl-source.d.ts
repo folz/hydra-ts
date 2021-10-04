@@ -16,9 +16,8 @@ export declare class GlslSource {
     defaultUniforms?: Uniforms;
     synth?: GeneratorFactory;
     transforms: TransformApplication[];
-    type: "GlslSource";
     constructor(obj: TransformApplication);
-    then(...transforms: TransformApplication[]): void;
+    then(...transforms: TransformApplication[]): this;
     out(output?: Output): void;
     glsl(): CompiledTransform[];
     compile(transforms: TransformApplication[]): {

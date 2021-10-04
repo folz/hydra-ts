@@ -3,7 +3,6 @@ import { compileGlsl } from './glsl-utils';
 export class GlslSource {
     constructor(obj) {
         this.transforms = [];
-        this.type = 'GlslSource';
         this.transforms.push(obj);
         this.defaultOutput = obj.defaultOutput;
         this.synth = obj.synth;
@@ -11,6 +10,7 @@ export class GlslSource {
     }
     then(...transforms) {
         this.transforms.push(...transforms);
+        return this;
     }
     out(output = this.defaultOutput) {
         const glsl = this.glsl();

@@ -1,21 +1,21 @@
-import { TransformDefinition } from './glsl/glsl-functions.js';
+import type { Uniforms } from 'regl';
+import type { TransformDefinition } from './glsl/glsl-functions.js';
 import { GlslSource } from './glsl-source';
-import { Output } from './output';
-import { Uniforms } from 'regl';
+import type { Output } from './output';
 interface GeneratorFactoryOptions {
-    defaultUniforms?: GeneratorFactory['defaultUniforms'];
-    defaultOutput: GeneratorFactory['defaultOutput'];
     changeListener?: GeneratorFactory['changeListener'];
+    defaultOutput: GeneratorFactory['defaultOutput'];
+    defaultUniforms?: GeneratorFactory['defaultUniforms'];
+    transforms: TransformDefinition[];
 }
 export declare class GeneratorFactory {
-    defaultUniforms: Uniforms;
-    defaultOutput: Output;
     changeListener: (options: any) => void;
+    defaultOutput: Output;
+    defaultUniforms: Uniforms;
     generators: Record<string, () => GlslSource>;
     glslTransforms: Record<string, TransformDefinition>;
     sourceClass: typeof GlslSource;
-    type: "GeneratorFactory";
-    constructor({ defaultUniforms, defaultOutput, changeListener, }: GeneratorFactoryOptions);
+    constructor({ defaultUniforms, defaultOutput, changeListener, transforms, }: GeneratorFactoryOptions);
     _addMethod(method: string, transform: TransformDefinition): ((...args: any[]) => GlslSource) | undefined;
     setFunction: (obj: TransformDefinition) => void;
 }

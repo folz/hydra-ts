@@ -21,6 +21,7 @@ hydra.loop.start();
 const { src, solid, o0, o1, s0, render } = hydra.synth;
 s0.initImage(jelly);
 const base = src(s0)
+    .then()
     .rotate(0.1, 0.05)
     .scrollX(0.1, -0.05)
     .koch(2, 12)

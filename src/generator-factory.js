@@ -1,11 +1,9 @@
-import { transforms } from './glsl/glsl-functions.js';
 import { GlslSource } from './glsl-source';
 export class GeneratorFactory {
-    constructor({ defaultUniforms = {}, defaultOutput, changeListener = () => { }, }) {
+    constructor({ defaultUniforms = {}, defaultOutput, changeListener = () => { }, transforms, }) {
         this.generators = {};
         this.glslTransforms = {};
         this.sourceClass = createSourceClass();
-        this.type = 'GeneratorFactory';
         this.setFunction = (obj) => {
             const processedGlsl = processGlsl(obj);
             if (processedGlsl)
