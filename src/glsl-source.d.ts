@@ -19,12 +19,12 @@ export declare class GlslSource {
     type: "GlslSource";
     constructor(obj: TransformApplication);
     addTransform(obj: TransformApplication): void;
-    out(_output: Output): void;
-    glsl(output?: Output): CompiledTransform[];
+    out(output?: Output): void;
+    glsl(): CompiledTransform[];
     compile(transforms: TransformApplication[]): {
         frag: string;
         uniforms: {
-            [x: string]: string | import("regl").Uniform | import("regl").Texture2D | ((context: any, props: any) => number | number[]) | undefined;
+            [x: string]: string | import("regl").Uniform | ((context: any, props: any) => number | number[]) | import("regl").Texture2D | undefined;
         };
     };
 }

@@ -47,12 +47,12 @@ export class HydraSource {
   }
 
   initVideo(url = '') {
-    // const self = this
     const vid = document.createElement('video');
     vid.crossOrigin = 'anonymous';
     vid.autoplay = true;
     vid.loop = true;
-    vid.muted = true; // mute in order to load without user interaction
+    // mute in order to load without user interaction
+    vid.muted = true;
     vid.addEventListener('loadeddata', () => {
       this.src = vid;
       vid.play();
@@ -99,7 +99,6 @@ export class HydraSource {
   }
 
   tick(dt?: number) {
-    //  console.log(this.src, this.tex.width, this.tex.height)
     if (this.src !== null && this.dynamic) {
       if ('videoWidth' in this.src && this.src.videoWidth !== this.tex.width) {
         this.tex.resize(this.src.videoWidth, this.src.videoHeight);

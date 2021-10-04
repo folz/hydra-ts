@@ -34,48 +34,22 @@ export class GlslSource {
     this.transforms.push(obj);
   }
 
-  out(_output: Output) {
-    const output = _output || this.defaultOutput;
-    const glsl = this.glsl(output);
-    // output.renderPasses(glsl)
-    if (output)
-      try {
-        output.render(glsl);
-      } catch (error) {
-        console.log('shader could not compile', error);
-      }
+  out(output: Output = this.defaultOutput) {
+    const glsl = this.glsl();
+
+    try {
+      output.render(glsl);
+    } catch (error) {
+      console.log('shader could not compile', error);
+    }
   }
 
-  glsl(output?: Output): CompiledTransform[] {
-    //var output = _output || this.defaultOutput
-    // uniforms included in all shaders
-    //  this.defaultUniforms = output.uniforms
-    const passes: CompiledTransform[] = [];
-    const transforms: TransformApplication[] = [];
-    this.transforms.forEach((transform) => {
-      if (transform.transform.type === 'renderpass') {
-        // if (transforms.length > 0) passes.push(this.compile(transforms, output))
-        // transforms = []
-        // var uniforms = {}
-        // const inputs = formatArguments(transform, -1)
-        // inputs.forEach((uniform) => { uniforms[uniform.name] = uniform.value })
-        //
-        // passes.push({
-        //   frag: transform.transform.frag,
-        //   uniforms: Object.assign({}, self.defaultUniforms, uniforms)
-        // })
-        // transforms.push({name: 'prev', transform:  transforms['prev'], synth: this.synth})
-        console.warn('no support for renderpass');
-      } else {
-        transforms.push(transform);
-      }
-    });
-
-    if (transforms.length > 0) {
-      passes.push(this.compile(transforms));
+  glsl(): CompiledTransform[] {
+    if (this.transforms.length > 0) {
+      return [this.compile(this.transforms)];
     }
 
-    return passes;
+    return [];
   }
 
   compile(transforms: TransformApplication[]) {

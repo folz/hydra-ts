@@ -36,7 +36,7 @@ const base = src(s0)
   .rotate(Math.PI / 6)
   .rotate(Math.PI / 2)
   .luma(0.3);
-base.out(o0);
+base.out();
 
 const shader = src(o0).mult(solid(), 0.1).layer(base, 0.6);
 
