@@ -2,7 +2,7 @@ import type { Uniforms } from 'regl';
 import type { TransformDefinition } from './glsl/glsl-functions.js';
 import { GlslSource } from './glsl-source';
 import type { Output } from './output';
-import { typeLookup } from './glsl/glsl-functions.js';
+import { ProcessedTransformDefinition, typeLookup } from './glsl/glsl-functions.js';
 
 interface GeneratorFactoryOptions {
   changeListener?: GeneratorFactory['changeListener'];
@@ -76,7 +76,7 @@ export class GeneratorFactory {
   };
 }
 
-export function processGlsl(obj: TransformDefinition): TransformDefinition {
+export function processGlsl(obj: TransformDefinition): ProcessedTransformDefinition {
   let t = typeLookup[obj.type];
 
   let baseArgs = t.args.map((arg) => arg).join(', ');
@@ -100,6 +100,7 @@ export function processGlsl(obj: TransformDefinition): TransformDefinition {
   return {
     ...obj,
     glsl: glslFunction,
+    processed: true,
   };
 }
 

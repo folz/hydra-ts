@@ -147,6 +147,10 @@ export interface TransformDefinition {
   glsl: string;
 }
 
+export interface ProcessedTransformDefinition extends TransformDefinition {
+  processed: true;
+}
+
 export const transforms: TransformDefinition[] = [
   {
     name: 'noise',

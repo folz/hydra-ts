@@ -1192,6 +1192,7 @@ Object {
     },
   ],
   "name": "noise",
+  "processed": true,
   "type": "src",
 }
 `;
@@ -1246,6 +1247,7 @@ Object {
     },
   ],
   "name": "voronoi",
+  "processed": true,
   "type": "src",
 }
 `;
@@ -1279,6 +1281,7 @@ Object {
     },
   ],
   "name": "osc",
+  "processed": true,
   "type": "src",
 }
 `;
@@ -1313,6 +1316,7 @@ Object {
     },
   ],
   "name": "shape",
+  "processed": true,
   "type": "src",
 }
 `;
@@ -1332,6 +1336,7 @@ Object {
     },
   ],
   "name": "gradient",
+  "processed": true,
   "type": "src",
 }
 `;
@@ -1352,6 +1357,7 @@ Object {
     },
   ],
   "name": "src",
+  "processed": true,
   "type": "src",
 }
 `;
@@ -1386,6 +1392,7 @@ Object {
     },
   ],
   "name": "solid",
+  "processed": true,
   "type": "src",
 }
 `;
@@ -1414,6 +1421,7 @@ Object {
     },
   ],
   "name": "rotate",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -1457,6 +1465,7 @@ Object {
     },
   ],
   "name": "scale",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -1482,6 +1491,7 @@ Object {
     },
   ],
   "name": "pixelate",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -1511,6 +1521,7 @@ Object {
     },
   ],
   "name": "posterize",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -1550,6 +1561,7 @@ Object {
     },
   ],
   "name": "shift",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -1587,6 +1599,7 @@ Object {
     },
   ],
   "name": "repeat",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -1628,6 +1641,7 @@ Object {
     },
   ],
   "name": "modulateRepeat",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -1655,6 +1669,7 @@ Object {
     },
   ],
   "name": "repeatX",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -1686,6 +1701,7 @@ Object {
     },
   ],
   "name": "modulateRepeatX",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -1713,6 +1729,7 @@ Object {
     },
   ],
   "name": "repeatY",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -1744,6 +1761,7 @@ Object {
     },
   ],
   "name": "modulateRepeatY",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -1797,6 +1815,7 @@ Object {
     },
   ],
   "name": "koch",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -1823,6 +1842,7 @@ Object {
     },
   ],
   "name": "kaleid",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -1852,6 +1872,7 @@ Object {
     },
   ],
   "name": "modulateKaleid",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -1889,6 +1910,7 @@ Object {
     },
   ],
   "name": "scroll",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -1914,6 +1936,7 @@ Object {
     },
   ],
   "name": "scrollX",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -1943,6 +1966,7 @@ Object {
     },
   ],
   "name": "modulateScrollX",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -1968,6 +1992,7 @@ Object {
     },
   ],
   "name": "scrollY",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -1997,6 +2022,7 @@ Object {
     },
   ],
   "name": "modulateScrollY",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -2020,6 +2046,7 @@ Object {
     },
   ],
   "name": "add",
+  "processed": true,
   "type": "combine",
 }
 `;
@@ -2043,6 +2070,7 @@ Object {
     },
   ],
   "name": "sub",
+  "processed": true,
   "type": "combine",
 }
 `;
@@ -2061,6 +2089,7 @@ Object {
     },
   ],
   "name": "layer",
+  "processed": true,
   "type": "combine",
 }
 `;
@@ -2084,6 +2113,7 @@ Object {
     },
   ],
   "name": "blend",
+  "processed": true,
   "type": "combine",
 }
 `;
@@ -2107,6 +2137,7 @@ Object {
     },
   ],
   "name": "mult",
+  "processed": true,
   "type": "combine",
 }
 `;
@@ -2125,6 +2156,7 @@ Object {
     },
   ],
   "name": "diff",
+  "processed": true,
   "type": "combine",
 }
 `;
@@ -2149,6 +2181,7 @@ Object {
     },
   ],
   "name": "modulate",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -2180,6 +2213,7 @@ Object {
     },
   ],
   "name": "modulateScale",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -2209,6 +2243,7 @@ Object {
     },
   ],
   "name": "modulatePixelate",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -2241,6 +2276,7 @@ Object {
     },
   ],
   "name": "modulateRotate",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -2264,6 +2300,7 @@ Object {
     },
   ],
   "name": "modulateHue",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -2283,6 +2320,7 @@ Object {
     },
   ],
   "name": "invert",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -2303,6 +2341,7 @@ Object {
     },
   ],
   "name": "contrast",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -2322,6 +2361,7 @@ Object {
     },
   ],
   "name": "brightness",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -2341,6 +2381,7 @@ Object {
     },
   ],
   "name": "mask",
+  "processed": true,
   "type": "combine",
 }
 `;
@@ -2366,6 +2407,7 @@ Object {
     },
   ],
   "name": "luma",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -2390,6 +2432,7 @@ Object {
     },
   ],
   "name": "thresh",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -2428,6 +2471,7 @@ Object {
     },
   ],
   "name": "color",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -2449,6 +2493,7 @@ Object {
     },
   ],
   "name": "saturate",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -2471,6 +2516,7 @@ Object {
     },
   ],
   "name": "hue",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -2494,6 +2540,7 @@ Object {
     },
   ],
   "name": "colorama",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -2507,6 +2554,7 @@ Object {
 ",
   "inputs": Array [],
   "name": "prev",
+  "processed": true,
   "type": "src",
 }
 `;
@@ -2531,6 +2579,7 @@ Object {
     },
   ],
   "name": "sum",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -2555,6 +2604,7 @@ Object {
     },
   ],
   "name": "r",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -2579,6 +2629,7 @@ Object {
     },
   ],
   "name": "g",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -2603,6 +2654,7 @@ Object {
     },
   ],
   "name": "b",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -2627,6 +2679,7 @@ Object {
     },
   ],
   "name": "a",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -2651,6 +2704,7 @@ Object {
     },
   ],
   "name": "noise",
+  "processed": true,
   "type": "src",
 }
 `;
@@ -2705,6 +2759,7 @@ Object {
     },
   ],
   "name": "voronoi",
+  "processed": true,
   "type": "src",
 }
 `;
@@ -2738,6 +2793,7 @@ Object {
     },
   ],
   "name": "osc",
+  "processed": true,
   "type": "src",
 }
 `;
@@ -2772,6 +2828,7 @@ Object {
     },
   ],
   "name": "shape",
+  "processed": true,
   "type": "src",
 }
 `;
@@ -2791,6 +2848,7 @@ Object {
     },
   ],
   "name": "gradient",
+  "processed": true,
   "type": "src",
 }
 `;
@@ -2811,6 +2869,7 @@ Object {
     },
   ],
   "name": "src",
+  "processed": true,
   "type": "src",
 }
 `;
@@ -2845,6 +2904,7 @@ Object {
     },
   ],
   "name": "solid",
+  "processed": true,
   "type": "src",
 }
 `;
@@ -2873,6 +2933,7 @@ Object {
     },
   ],
   "name": "rotate",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -2916,6 +2977,7 @@ Object {
     },
   ],
   "name": "scale",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -2941,6 +3003,7 @@ Object {
     },
   ],
   "name": "pixelate",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -2970,6 +3033,7 @@ Object {
     },
   ],
   "name": "posterize",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -3009,6 +3073,7 @@ Object {
     },
   ],
   "name": "shift",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -3046,6 +3111,7 @@ Object {
     },
   ],
   "name": "repeat",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -3091,6 +3157,7 @@ Object {
     },
   ],
   "name": "modulateRepeat",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -3118,6 +3185,7 @@ Object {
     },
   ],
   "name": "repeatX",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -3153,6 +3221,7 @@ Object {
     },
   ],
   "name": "modulateRepeatX",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -3180,6 +3249,7 @@ Object {
     },
   ],
   "name": "repeatY",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -3215,6 +3285,7 @@ Object {
     },
   ],
   "name": "modulateRepeatY",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -3268,6 +3339,7 @@ Object {
     },
   ],
   "name": "koch",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -3294,6 +3366,7 @@ Object {
     },
   ],
   "name": "kaleid",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -3327,6 +3400,7 @@ Object {
     },
   ],
   "name": "modulateKaleid",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -3364,6 +3438,7 @@ Object {
     },
   ],
   "name": "scroll",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -3389,6 +3464,7 @@ Object {
     },
   ],
   "name": "scrollX",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -3422,6 +3498,7 @@ Object {
     },
   ],
   "name": "modulateScrollX",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -3447,6 +3524,7 @@ Object {
     },
   ],
   "name": "scrollY",
+  "processed": true,
   "type": "coord",
 }
 `;
@@ -3480,6 +3558,7 @@ Object {
     },
   ],
   "name": "modulateScrollY",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -3507,6 +3586,7 @@ Object {
     },
   ],
   "name": "add",
+  "processed": true,
   "type": "combine",
 }
 `;
@@ -3534,6 +3614,7 @@ Object {
     },
   ],
   "name": "sub",
+  "processed": true,
   "type": "combine",
 }
 `;
@@ -3556,6 +3637,7 @@ Object {
     },
   ],
   "name": "layer",
+  "processed": true,
   "type": "combine",
 }
 `;
@@ -3583,6 +3665,7 @@ Object {
     },
   ],
   "name": "blend",
+  "processed": true,
   "type": "combine",
 }
 `;
@@ -3610,6 +3693,7 @@ Object {
     },
   ],
   "name": "mult",
+  "processed": true,
   "type": "combine",
 }
 `;
@@ -3632,6 +3716,7 @@ Object {
     },
   ],
   "name": "diff",
+  "processed": true,
   "type": "combine",
 }
 `;
@@ -3660,6 +3745,7 @@ Object {
     },
   ],
   "name": "modulate",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -3695,6 +3781,7 @@ Object {
     },
   ],
   "name": "modulateScale",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -3728,6 +3815,7 @@ Object {
     },
   ],
   "name": "modulatePixelate",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -3764,6 +3852,7 @@ Object {
     },
   ],
   "name": "modulateRotate",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -3791,6 +3880,7 @@ Object {
     },
   ],
   "name": "modulateHue",
+  "processed": true,
   "type": "combineCoord",
 }
 `;
@@ -3810,6 +3900,7 @@ Object {
     },
   ],
   "name": "invert",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -3830,6 +3921,7 @@ Object {
     },
   ],
   "name": "contrast",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -3849,6 +3941,7 @@ Object {
     },
   ],
   "name": "brightness",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -3872,6 +3965,7 @@ Object {
     },
   ],
   "name": "mask",
+  "processed": true,
   "type": "combine",
 }
 `;
@@ -3897,6 +3991,7 @@ Object {
     },
   ],
   "name": "luma",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -3921,6 +4016,7 @@ Object {
     },
   ],
   "name": "thresh",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -3959,6 +4055,7 @@ Object {
     },
   ],
   "name": "color",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -3980,6 +4077,7 @@ Object {
     },
   ],
   "name": "saturate",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -4002,6 +4100,7 @@ Object {
     },
   ],
   "name": "hue",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -4025,6 +4124,7 @@ Object {
     },
   ],
   "name": "colorama",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -4038,6 +4138,7 @@ Object {
 ",
   "inputs": Array [],
   "name": "prev",
+  "processed": true,
   "type": "src",
 }
 `;
@@ -4062,6 +4163,7 @@ Object {
     },
   ],
   "name": "sum",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -4086,6 +4188,7 @@ Object {
     },
   ],
   "name": "r",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -4110,6 +4213,7 @@ Object {
     },
   ],
   "name": "g",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -4134,6 +4238,7 @@ Object {
     },
   ],
   "name": "b",
+  "processed": true,
   "type": "color",
 }
 `;
@@ -4158,6 +4263,7 @@ Object {
     },
   ],
   "name": "a",
+  "processed": true,
   "type": "color",
 }
 `;

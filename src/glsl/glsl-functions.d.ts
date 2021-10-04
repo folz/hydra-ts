@@ -55,5 +55,8 @@ export interface TransformDefinition {
     inputs: TransformDefinitionInput[];
     glsl: string;
 }
+export interface ProcessedTransformDefinition extends TransformDefinition {
+    processed: true;
+}
 export declare const transforms: TransformDefinition[];
 export {};

@@ -66,7 +66,7 @@ export function processGlsl(obj) {
             name: 'color',
             type: 'vec4',
         });
-    return Object.assign(Object.assign({}, obj), { glsl: glslFunction });
+    return Object.assign(Object.assign({}, obj), { glsl: glslFunction, processed: true });
 }
 function createSourceClass() {
     return class extends GlslSource {
