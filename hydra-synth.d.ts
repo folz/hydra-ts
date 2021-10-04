@@ -27,14 +27,12 @@ interface HydraRendererOptions {
     numOutputs?: number;
     makeGlobal?: boolean;
     autoLoop?: boolean;
-    detectAudio?: HydraRenderer['detectAudio'];
     regl: HydraRenderer['regl'];
     precision?: HydraRenderer['precision'];
 }
 export declare class HydraRenderer implements HydraRendererOptions {
     width: number;
     height: number;
-    detectAudio?: boolean;
     synth: Synth;
     timeSinceLastUpdate: number;
     _time: number;
@@ -51,7 +49,7 @@ export declare class HydraRenderer implements HydraRendererOptions {
     output: Output;
     loop: Loop;
     [name: string]: any;
-    constructor({ width, height, numSources, numOutputs, makeGlobal, autoLoop, detectAudio, precision, regl, }: HydraRendererOptions);
+    constructor({ width, height, numSources, numOutputs, makeGlobal, autoLoop, precision, regl, }: HydraRendererOptions);
     hush: () => void;
     setResolution: (width: number, height: number) => void;
     _initRegl(): void;

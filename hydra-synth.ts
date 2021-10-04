@@ -40,7 +40,6 @@ interface HydraRendererOptions {
   numOutputs?: number;
   makeGlobal?: boolean;
   autoLoop?: boolean;
-  detectAudio?: HydraRenderer['detectAudio'];
   regl: HydraRenderer['regl'];
   precision?: HydraRenderer['precision'];
 }
@@ -49,7 +48,6 @@ interface HydraRendererOptions {
 export class HydraRenderer implements HydraRendererOptions {
   width: number;
   height: number;
-  detectAudio?: boolean;
   synth: Synth;
   timeSinceLastUpdate;
   _time;
@@ -76,7 +74,6 @@ export class HydraRenderer implements HydraRendererOptions {
     numOutputs = 4,
     makeGlobal = true,
     autoLoop = true,
-    detectAudio = true,
     precision = 'mediump',
     regl,
   }: HydraRendererOptions) {
@@ -84,7 +81,6 @@ export class HydraRenderer implements HydraRendererOptions {
 
     this.width = width;
     this.height = height;
-    this.detectAudio = detectAudio;
 
     this.regl = regl;
 

@@ -17,7 +17,7 @@ const regl = REGL(canvas);
 const hydra = new Hydra({
   width: WIDTH,
   height: HEIGHT,
-  detectAudio: false,
+  precision: 'highp',
   regl,
 });
 

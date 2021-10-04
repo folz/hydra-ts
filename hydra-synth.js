@@ -6,7 +6,7 @@ import { EvalSandbox } from './src/eval-sandbox';
 import { GeneratorFactory } from './src/generator-factory';
 // to do: add ability to pass in certain uniforms and transforms
 export class HydraRenderer {
-    constructor({ width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, autoLoop = true, detectAudio = true, precision = 'mediump', regl, }) {
+    constructor({ width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, autoLoop = true, precision = 'mediump', regl, }) {
         this.isRenderingAll = false;
         this.s = [];
         this.o = [];
@@ -79,7 +79,6 @@ export class HydraRenderer {
         ArrayUtils.init();
         this.width = width;
         this.height = height;
-        this.detectAudio = detectAudio;
         this.regl = regl;
         // object that contains all properties that will be made available on the global context and during local evaluation
         this.synth = {

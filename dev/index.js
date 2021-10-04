@@ -13,7 +13,7 @@ const regl = REGL(canvas);
 const hydra = new Hydra({
     width: WIDTH,
     height: HEIGHT,
-    detectAudio: false,
+    precision: 'highp',
     regl,
 });
 const { src, solid, o0, o1, s0, render } = hydra.synth;
