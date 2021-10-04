@@ -31,7 +31,8 @@
   },
   "homepage": "https://github.com/ojack/hydra-synth#readme",
   "dependencies": {
-    "regl": "^1.3.9"
+    "regl": "^1.3.9",
+    "tinykeys": "^1.2.0"
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.1",

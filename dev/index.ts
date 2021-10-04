@@ -1,39 +1,51 @@
 import REGL from 'regl';
+import tinykeys from 'tinykeys';
 import Hydra from '../index';
+import jelly from './image3A3853_Glitch.jpg';
+
+const WIDTH = 1080;
+const HEIGHT = 1080;
 
 const canvas = document.createElement('canvas');
 canvas.style.backgroundColor = '#000000';
-canvas.width = 1080;
-canvas.height = 1080;
+canvas.width = WIDTH;
+canvas.height = HEIGHT;
 document.body.appendChild(canvas);
 
 const regl = REGL(canvas);
 
 const hydra = new Hydra({
-  width: 1080,
-  height: 1080,
+  width: WIDTH,
+  height: HEIGHT,
   detectAudio: false,
   regl,
 });
 
-const shader = osc().layer(
-  shape()
-    .scroll(
-      () => mouse.x / width,
-      () => mouse.y / height
-    )
-    .mask(
-      shape().scroll(
-        () => mouse.x / width,
-        () => mouse.y / height
-      )
-    )
-    .kaleid(4)
-);
+s0.initImage(jelly);
 
-shader.out();
+const base = src(s0)
+  .rotate(0.1, 0.05)
+  .scrollX(0.1, -0.05)
+  .koch(2, 12)
+  .koch(1, 12)
+  .rotate(Math.PI / 6)
+  .rotate(Math.PI / 2)
+  .luma(0.3);
+base.out(o0);
+
+const shader = src(o0).mult(solid(), 0.1).layer(base, 0.6);
+
+shader.out(o1);
+
+render(o1);
 
 const debugLog = document.createElement('pre');
 const frag = shader.glsl()[0].frag;
 debugLog.innerText = frag;
 document.body.appendChild(debugLog);
+
+tinykeys(window, {
+  'Alt+Space': (event) => {
+    hydra.loop.toggle();
+  },
+});
