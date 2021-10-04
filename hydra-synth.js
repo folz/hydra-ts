@@ -14,6 +14,85 @@ class HydraRenderer {
         this.isRenderingAll = false;
         this.s = [];
         this.o = [];
+        this.hush = () => {
+            this.s.forEach((source) => {
+                source.clear();
+            });
+            this.o.forEach((output) => {
+                this.synth.solid(1, 1, 1, 0).out(output);
+            });
+        };
+        this.setResolution = (width, height) => {
+            this.regl._gl.canvas.width = width;
+            this.regl._gl.canvas.height = height;
+            this.width = width;
+            this.height = height;
+            this.o.forEach((output) => {
+                output.resize(width, height);
+            });
+            this.s.forEach((source) => {
+                source.resize(width, height);
+            });
+            this.regl._refresh();
+            console.log(this.regl._gl.canvas.width);
+        };
+        this._render = (output) => {
+            if (output) {
+                this.output = output;
+                this.isRenderingAll = false;
+            }
+            else {
+                this.isRenderingAll = true;
+            }
+        };
+        // dt in ms
+        this.tick = (dt) => {
+            this.sandbox.tick();
+            if (this.synth.update) {
+                try {
+                    this.synth.update(dt);
+                }
+                catch (e) {
+                    console.log(e);
+                }
+            }
+            this.sandbox.set('time', (this.synth.time += dt * 0.001 * this.synth.speed));
+            this.timeSinceLastUpdate += dt;
+            if (!this.synth.fps || this.timeSinceLastUpdate >= 1000 / this.synth.fps) {
+                this.synth.stats.fps = Math.ceil(1000 / this.timeSinceLastUpdate);
+                for (let i = 0; i < this.s.length; i++) {
+                    this.s[i].tick(this.synth.time);
+                }
+                for (let i = 0; i < this.o.length; i++) {
+                    this.o[i].tick({
+                        time: this.synth.time,
+                        mouse: this.synth.mouse,
+                        bpm: this.synth.bpm,
+                        resolution: [this.regl._gl.canvas.width, this.regl._gl.canvas.height],
+                    });
+                }
+                if (this.isRenderingAll && this.renderAll) {
+                    this.renderAll({
+                        tex0: this.o[0].getCurrent(),
+                        tex1: this.o[1].getCurrent(),
+                        tex2: this.o[2].getCurrent(),
+                        tex3: this.o[3].getCurrent(),
+                        resolution: [this.regl._gl.canvas.width, this.regl._gl.canvas.height],
+                    });
+                }
+                else {
+                    this.renderFbo({
+                        tex0: this.output.getCurrent(),
+                        resolution: [this.regl._gl.canvas.width, this.regl._gl.canvas.height],
+                    });
+                }
+                this.timeSinceLastUpdate = 0;
+            }
+            if (this.saveFrame) {
+                this.canvasToImage();
+                this.saveFrame = false;
+            }
+        };
         ArrayUtils.init();
         this.pb = pb;
         this.width = width;
@@ -33,21 +112,15 @@ class HydraRenderer {
             },
             speed: 1,
             mouse: Mouse,
-            render: this._render.bind(this),
-            setResolution: this.setResolution.bind(this),
+            render: this._render,
+            setResolution: this.setResolution,
             update: () => { },
-            hush: this.hush.bind(this),
+            hush: this.hush,
         };
         this.timeSinceLastUpdate = 0;
         this._time = 0; // for internal use, only to use for deciding when to render frames
-        // only allow valid precision options
-        let precisionOptions = ['lowp', 'mediump', 'highp'];
-        if (precision && precisionOptions.includes(precision.toLowerCase())) {
-            this.precision = precision.toLowerCase();
-            //
-            // if(!precisionValid){
-            //   console.warn('[hydra-synth warning]\nConstructor was provided an invalid floating point precision value of "' + precision + '". Using default value of "mediump" instead.')
-            // }
+        if (precision) {
+            this.precision = precision;
         }
         else {
             let isIOS = (/iPad|iPhone|iPod/.test(navigator.platform) ||
@@ -80,41 +153,12 @@ class HydraRenderer {
                 console.error(e);
             }
         }
+        this.loop = new Loop(this.tick);
         if (autoLoop) {
-            new Loop(this.tick.bind(this)).start();
+            this.loop.start();
         }
         // final argument is properties that the user can set, all others are treated as read-only
         this.sandbox = new Sandbox(this.synth, makeGlobal, ['speed', 'update', 'bpm', 'fps']);
-    }
-    eval(code) {
-        this.sandbox.eval(code);
-    }
-    getScreenImage(callback) {
-        this.imageCallback = callback;
-        this.saveFrame = true;
-    }
-    hush() {
-        this.s.forEach((source) => {
-            source.clear();
-        });
-        this.o.forEach((output) => {
-            this.synth.solid(1, 1, 1, 0).out(output);
-        });
-    }
-    setResolution(width, height) {
-        //  console.log(width, height)
-        this.regl._gl.canvas.width = width;
-        this.regl._gl.canvas.height = height;
-        this.width = width;
-        this.height = height;
-        this.o.forEach((output) => {
-            output.resize(width, height);
-        });
-        this.s.forEach((source) => {
-            source.resize(width, height);
-        });
-        this.regl._refresh();
-        console.log(this.regl._gl.canvas.width);
     }
     canvasToImage() {
         const a = document.createElement('a');
@@ -291,68 +335,6 @@ class HydraRenderer {
             },
         });
         this.synth.setFunction = this.generator.setFunction.bind(this.generator);
-    }
-    _render(output) {
-        if (output) {
-            this.output = output;
-            this.isRenderingAll = false;
-        }
-        else {
-            this.isRenderingAll = true;
-        }
-    }
-    // dt in ms
-    tick(dt) {
-        this.sandbox.tick();
-        //  let updateInterval = 1000/this.synth.fps // ms
-        if (this.synth.update) {
-            try {
-                this.synth.update(dt);
-            }
-            catch (e) {
-                console.log(e);
-            }
-        }
-        this.sandbox.set('time', (this.synth.time += dt * 0.001 * this.synth.speed));
-        this.timeSinceLastUpdate += dt;
-        if (!this.synth.fps || this.timeSinceLastUpdate >= 1000 / this.synth.fps) {
-            //  console.log(1000/this.timeSinceLastUpdate)
-            this.synth.stats.fps = Math.ceil(1000 / this.timeSinceLastUpdate);
-            //  console.log(this.synth.speed, this.synth.time)
-            for (let i = 0; i < this.s.length; i++) {
-                this.s[i].tick(this.synth.time);
-            }
-            //  console.log(this.regl._gl.canvas.width, this.regl._gl.canvas.height)
-            for (let i = 0; i < this.o.length; i++) {
-                this.o[i].tick({
-                    time: this.synth.time,
-                    mouse: this.synth.mouse,
-                    bpm: this.synth.bpm,
-                    resolution: [this.regl._gl.canvas.width, this.regl._gl.canvas.height],
-                });
-            }
-            if (this.isRenderingAll && this.renderAll) {
-                this.renderAll({
-                    tex0: this.o[0].getCurrent(),
-                    tex1: this.o[1].getCurrent(),
-                    tex2: this.o[2].getCurrent(),
-                    tex3: this.o[3].getCurrent(),
-                    resolution: [this.regl._gl.canvas.width, this.regl._gl.canvas.height],
-                });
-            }
-            else {
-                this.renderFbo({
-                    tex0: this.output.getCurrent(),
-                    resolution: [this.regl._gl.canvas.width, this.regl._gl.canvas.height],
-                });
-            }
-            this.timeSinceLastUpdate = 0;
-        }
-        if (this.saveFrame) {
-            this.canvasToImage();
-            this.saveFrame = false;
-        }
-        //  this.regl.poll()
     }
 }
 export default HydraRenderer;

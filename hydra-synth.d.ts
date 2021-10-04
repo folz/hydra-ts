@@ -1,4 +1,5 @@
 import Output from './src/output';
+import { Loop } from './src/loop';
 import Source from './src/hydra-source';
 import VidRecorder from './src/lib/video-recorder';
 import Sandbox from './src/eval-sandbox';
@@ -62,19 +63,18 @@ declare class HydraRenderer implements HydraRendererOptions {
     s: Source[];
     o: Output[];
     output: Output;
+    loop: Loop;
     [name: string]: any;
     constructor({ pb, width, height, numSources, numOutputs, makeGlobal, autoLoop, detectAudio, enableStreamCapture, precision, regl, extendTransforms, }: HydraRendererOptions);
-    eval(code: string): void;
-    getScreenImage(callback: HydraRenderer['imageCallback']): void;
-    hush(): void;
-    setResolution(width: number, height: number): void;
+    hush: () => void;
+    setResolution: (width: number, height: number) => void;
     canvasToImage(): void;
     _initRegl(): void;
     _initOutputs(numOutputs: number): void;
     _initSources(numSources: number): void;
     createSource(i: number): Source;
     _generateGlslTransforms(): void;
-    _render(output: Output): void;
-    tick(dt: number): void;
+    _render: (output: Output) => void;
+    tick: (dt: number) => void;
 }
 export default HydraRenderer;
