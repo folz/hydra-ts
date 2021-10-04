@@ -29,7 +29,6 @@ export interface Synth {
   speed: number;
   render: any;
   setResolution: any;
-  update?: (dt: number) => void;
   hush: () => void;
   [name: string]: any;
 }
@@ -59,7 +58,7 @@ export class HydraRenderer implements HydraRendererOptions {
   sandbox: EvalSandbox;
   imageCallback?: (blob: Blob | null) => void;
   regl: Regl;
-  renderAll: DrawCommand | false;
+  renderAll?: DrawCommand;
   // @ts-ignore
   renderFbo: DrawCommand;
   isRenderingAll: boolean = false;
@@ -85,7 +84,6 @@ export class HydraRenderer implements HydraRendererOptions {
 
     this.width = width;
     this.height = height;
-    this.renderAll = false;
     this.detectAudio = detectAudio;
 
     this.regl = regl;
@@ -103,7 +101,6 @@ export class HydraRenderer implements HydraRendererOptions {
       speed: 1,
       render: this._render,
       setResolution: this.setResolution,
-      update: () => {}, // user defined update function
       hush: this.hush,
     };
 
@@ -134,7 +131,7 @@ export class HydraRenderer implements HydraRendererOptions {
     }
 
     // final argument is properties that the user can set, all others are treated as read-only
-    this.sandbox = new EvalSandbox(this.synth, makeGlobal, ['speed', 'update', 'bpm', 'fps']);
+    this.sandbox = new EvalSandbox(this.synth, makeGlobal, ['speed', 'bpm', 'fps']);
   }
 
   hush = () => {
@@ -336,13 +333,6 @@ export class HydraRenderer implements HydraRendererOptions {
   // dt in ms
   tick = (dt: number) => {
     this.sandbox.tick();
-    if (this.synth.update) {
-      try {
-        this.synth.update(dt);
-      } catch (e) {
-        console.log(e);
-      }
-    }
 
     this.sandbox.set('time', (this.synth.time += dt * 0.001 * this.synth.speed));
     this.timeSinceLastUpdate += dt;

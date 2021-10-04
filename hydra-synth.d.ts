@@ -17,7 +17,6 @@ export interface Synth {
     speed: number;
     render: any;
     setResolution: any;
-    update?: (dt: number) => void;
     hush: () => void;
     [name: string]: any;
 }
@@ -44,7 +43,7 @@ export declare class HydraRenderer implements HydraRendererOptions {
     sandbox: EvalSandbox;
     imageCallback?: (blob: Blob | null) => void;
     regl: Regl;
-    renderAll: DrawCommand | false;
+    renderAll?: DrawCommand;
     renderFbo: DrawCommand;
     isRenderingAll: boolean;
     s: HydraSource[];

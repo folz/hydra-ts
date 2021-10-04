@@ -44,14 +44,6 @@ export class HydraRenderer {
         // dt in ms
         this.tick = (dt) => {
             this.sandbox.tick();
-            if (this.synth.update) {
-                try {
-                    this.synth.update(dt);
-                }
-                catch (e) {
-                    console.log(e);
-                }
-            }
             this.sandbox.set('time', (this.synth.time += dt * 0.001 * this.synth.speed));
             this.timeSinceLastUpdate += dt;
             if (!this.synth.fps || this.timeSinceLastUpdate >= 1000 / this.synth.fps) {
@@ -87,7 +79,6 @@ export class HydraRenderer {
         ArrayUtils.init();
         this.width = width;
         this.height = height;
-        this.renderAll = false;
         this.detectAudio = detectAudio;
         this.regl = regl;
         // object that contains all properties that will be made available on the global context and during local evaluation
@@ -103,7 +94,6 @@ export class HydraRenderer {
             speed: 1,
             render: this._render,
             setResolution: this.setResolution,
-            update: () => { },
             hush: this.hush,
         };
         this.timeSinceLastUpdate = 0;
@@ -128,7 +118,7 @@ export class HydraRenderer {
             this.loop.start();
         }
         // final argument is properties that the user can set, all others are treated as read-only
-        this.sandbox = new EvalSandbox(this.synth, makeGlobal, ['speed', 'update', 'bpm', 'fps']);
+        this.sandbox = new EvalSandbox(this.synth, makeGlobal, ['speed', 'bpm', 'fps']);
     }
     _initRegl() {
         // This clears the color buffer to black and the depth buffer to 1
