@@ -176,7 +176,9 @@ export class HydraRenderer {
       }) => {
         if (type === 'add') {
           this.synth[method] = synth.generators[method];
-          if (this.sandbox) this.sandbox.add(method);
+          if (this.sandbox) {
+            this.sandbox.add(method);
+          }
         } else if (type === 'remove') {
           // what to do here? dangerously deleting window methods
           //delete window[method]

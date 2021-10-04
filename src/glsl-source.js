@@ -3,16 +3,16 @@ import { compileGlsl } from './glsl-utils';
 export class GlslSource {
     constructor(obj) {
         this.transforms = [];
-        this.transforms.push(obj);
-        this.defaultOutput = obj.defaultOutput;
-        this.synth = obj.synth;
         this.defaultUniforms = obj.defaultUniforms;
+        this.precision = obj.precision;
+        this.transforms.push(obj);
+        this.synth = obj.synth;
     }
     then(...transforms) {
         this.transforms.push(...transforms);
         return this;
     }
-    out(output = this.defaultOutput) {
+    out(output) {
         const glsl = this.glsl();
         try {
             output.render(glsl);
@@ -34,7 +34,7 @@ export class GlslSource {
             uniforms[uniform.name] = uniform.value;
         });
         const frag = `
-  precision ${this.defaultOutput.precision} float;
+  precision ${this.precision} float;
   ${Object.values(shaderInfo.uniforms)
             .map((uniform) => {
             let type = uniform.type;

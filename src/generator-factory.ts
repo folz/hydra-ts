@@ -33,31 +33,31 @@ export class GeneratorFactory {
       return prev;
     }, {});
 
-    this.sourceClass = createSourceClass();
-
     transforms.map((transform) => this.setFunction(transform));
   }
 
   _addMethod(method: string, transform: TransformDefinition) {
     this.glslTransforms[method] = transform;
 
+    // TODO: Pass in precision directly; don't infer from defaultOutput
+    const precision = this.defaultOutput.precision;
     if (transform.type === 'src') {
       this.generators[method] = (...args: any[]) =>
         new this.sourceClass({
+          defaultUniforms: this.defaultUniforms,
           name: method,
+          precision,
           transform: transform,
           userArgs: args,
-          defaultOutput: this.defaultOutput,
-          defaultUniforms: this.defaultUniforms,
-          synth: this,
         });
       this.changeListener({ type: 'add', synth: this, method });
     } else {
+      // Must be kept as function() because it relies on `this` rebinding
       // @ts-ignore
       this.sourceClass.prototype[method] = function (...args: any[]) {
         this.transforms.push({
-          defaultOutput: this.defaultOutput,
           name: method,
+          precision,
           transform: transform,
           userArgs: args,
         });

@@ -4,11 +4,12 @@ import { TransformDefinition } from './glsl/glsl-functions';
 import { utilityFunctions } from './glsl/utility-functions';
 import { compileGlsl, TypedArg } from './glsl-utils';
 import { Output } from './output';
+import { Precision } from '../hydra-synth';
 
 export interface TransformApplication {
-  defaultOutput: GlslSource['defaultOutput'];
   defaultUniforms?: GlslSource['defaultUniforms'];
   name: string;
+  precision: Precision;
   synth?: GlslSource['synth'];
   transform: TransformDefinition;
   userArgs: any[];
@@ -17,16 +18,16 @@ export interface TransformApplication {
 export type CompiledTransform = ReturnType<GlslSource['compile']>;
 
 export class GlslSource {
-  defaultOutput: Output;
   defaultUniforms?: Uniforms;
+  precision: Precision;
   synth?: GeneratorFactory;
   transforms: TransformApplication[] = [];
 
   constructor(obj: TransformApplication) {
-    this.transforms.push(obj);
-    this.defaultOutput = obj.defaultOutput;
-    this.synth = obj.synth;
     this.defaultUniforms = obj.defaultUniforms;
+    this.precision = obj.precision;
+    this.transforms.push(obj);
+    this.synth = obj.synth;
   }
 
   then(...transforms: TransformApplication[]) {
@@ -34,7 +35,7 @@ export class GlslSource {
     return this;
   }
 
-  out(output: Output = this.defaultOutput) {
+  out(output: Output) {
     const glsl = this.glsl();
 
     try {
@@ -60,7 +61,7 @@ export class GlslSource {
     });
 
     const frag = `
-  precision ${this.defaultOutput.precision} float;
+  precision ${this.precision} float;
   ${Object.values(shaderInfo.uniforms)
     .map((uniform) => {
       let type = uniform.type;
