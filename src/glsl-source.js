@@ -6,7 +6,6 @@ export class GlslSource {
         this.defaultUniforms = obj.defaultUniforms;
         this.precision = obj.precision;
         this.transforms.push(obj);
-        this.synth = obj.synth;
     }
     then(...transforms) {
         this.transforms.push(...transforms);

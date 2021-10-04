@@ -1,5 +1,4 @@
 import { Uniforms } from 'regl';
-import { GeneratorFactory } from './generator-factory';
 import { TransformDefinition } from './glsl/glsl-functions';
 import { utilityFunctions } from './glsl/utility-functions';
 import { compileGlsl, TypedArg } from './glsl-utils';
@@ -10,7 +9,6 @@ export interface TransformApplication {
   defaultUniforms?: GlslSource['defaultUniforms'];
   name: string;
   precision: Precision;
-  synth?: GlslSource['synth'];
   transform: TransformDefinition;
   userArgs: any[];
 }
@@ -20,14 +18,12 @@ export type CompiledTransform = ReturnType<GlslSource['compile']>;
 export class GlslSource {
   defaultUniforms?: Uniforms;
   precision: Precision;
-  synth?: GeneratorFactory;
   transforms: TransformApplication[] = [];
 
   constructor(obj: TransformApplication) {
     this.defaultUniforms = obj.defaultUniforms;
     this.precision = obj.precision;
     this.transforms.push(obj);
-    this.synth = obj.synth;
   }
 
   then(...transforms: TransformApplication[]) {
