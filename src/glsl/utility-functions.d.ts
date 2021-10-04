@@ -15,5 +15,9 @@ declare const _default: {
         type: string;
         glsl: string;
     };
+    _rotate: {
+        type: string;
+        glsl: string;
+    };
 };
 export default _default;

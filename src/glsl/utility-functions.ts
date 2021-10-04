@@ -107,4 +107,18 @@ export default {
         return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
     }`,
   },
+  _rotate: {
+    type: 'util',
+    glsl: `vec2 _rotate(vec2 uv, vec2 cp, float a, bool side) {
+    float angle = a * 3.141592;
+    vec2 n = vec2(sin(angle), cos(angle));
+    float d = dot(uv - cp, n);
+    if (side) {
+      uv -= n * max(0.0, d) * 2.0;
+    } else {
+        uv -= n * min(0.0, d) * 2.0;
+    }
+    return uv;
+}`,
+  },
 };
