@@ -164,7 +164,7 @@ export class HydraRenderer {
         let d = new Date();
         a.download = `hydra-${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}-${d.getHours()}.${d.getMinutes()}.${d.getSeconds()}.png`;
         document.body.appendChild(a);
-        var self = this;
+        const self = this;
         this.regl._gl.canvas.toBlob((blob) => {
             if (self.imageCallback) {
                 self.imageCallback(blob);
@@ -280,7 +280,7 @@ export class HydraRenderer {
         this.o = Array(numOutputs)
             .fill(undefined)
             .map((el, index) => {
-            var o = new Output({
+            const o = new Output({
                 regl: this.regl,
                 width: this.width,
                 height: this.height,
@@ -297,7 +297,7 @@ export class HydraRenderer {
     }
     _initSources(numSources) {
         this.s = [];
-        for (var i = 0; i < numSources; i++) {
+        for (let i = 0; i < numSources; i++) {
             this.createSource(i);
         }
     }
@@ -314,7 +314,7 @@ export class HydraRenderer {
         return s;
     }
     _generateGlslTransforms() {
-        var self = this;
+        const self = this;
         this.generator = new GeneratorFactory({
             defaultOutput: this.o[0],
             defaultUniforms: this.o[0].uniforms,

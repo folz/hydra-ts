@@ -5,7 +5,7 @@ export class EvalSandbox {
         this.makeGlobal = makeGlobal;
         this.sandbox = Sandbox(parent);
         this.parent = parent;
-        var properties = Object.keys(parent);
+        const properties = Object.keys(parent);
         properties.forEach((property) => this.add(property));
         this.userProps = userProps;
     }

@@ -68,7 +68,7 @@ export class GeneratorFactory {
   }
 
   setFunction = (obj: TransformDefinition) => {
-    var processedGlsl = processGlsl(obj);
+    const processedGlsl = processGlsl(obj);
     if (processedGlsl) this._addMethod(obj.name, processedGlsl);
   };
 }

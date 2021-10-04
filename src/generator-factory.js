@@ -7,7 +7,7 @@ export class GeneratorFactory {
         this.sourceClass = createSourceClass();
         this.type = 'GeneratorFactory';
         this.setFunction = (obj) => {
-            var processedGlsl = processGlsl(obj);
+            const processedGlsl = processGlsl(obj);
             if (processedGlsl)
                 this._addMethod(obj.name, processedGlsl);
         };

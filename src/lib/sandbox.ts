@@ -3,11 +3,11 @@
 // should probably be replaced with an abstract syntax tree
 
 export default (parent: Record<string, any>) => {
-  var initialCode = ``;
+  let initialCode = ``;
 
-  var sandbox = createSandbox(initialCode);
+  let sandbox = createSandbox(initialCode);
 
-  var addToContext = (name: string, object: string) => {
+  const addToContext = (name: string, object: string) => {
     initialCode += `
       var ${name} = ${object}
     `;
@@ -22,7 +22,7 @@ export default (parent: Record<string, any>) => {
   function createSandbox(initial: string) {
     eval(initial);
     // optional params
-    var localEval = function (code: string) {
+    const localEval = function (code: string) {
       eval(code);
     };
 

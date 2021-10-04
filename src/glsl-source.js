@@ -13,8 +13,8 @@ export class GlslSource {
         this.transforms.push(obj);
     }
     out(_output) {
-        var output = _output || this.defaultOutput;
-        var glsl = this.glsl(output);
+        const output = _output || this.defaultOutput;
+        const glsl = this.glsl(output);
         // output.renderPasses(glsl)
         if (output)
             try {
@@ -28,9 +28,8 @@ export class GlslSource {
         //var output = _output || this.defaultOutput
         // uniforms included in all shaders
         //  this.defaultUniforms = output.uniforms
-        var passes = [];
-        var transforms = [];
-        //  console.log('output', output)
+        const passes = [];
+        const transforms = [];
         this.transforms.forEach((transform) => {
             if (transform.transform.type === 'renderpass') {
                 // if (transforms.length > 0) passes.push(this.compile(transforms, output))
@@ -56,12 +55,12 @@ export class GlslSource {
         return passes;
     }
     compile(transforms) {
-        var shaderInfo = compileGlsl(transforms);
-        var uniforms = {};
+        const shaderInfo = compileGlsl(transforms);
+        const uniforms = {};
         shaderInfo.uniforms.forEach((uniform) => {
             uniforms[uniform.name] = uniform.value;
         });
-        var frag = `
+        const frag = `
   precision ${this.defaultOutput.precision} float;
   ${Object.values(shaderInfo.uniforms)
             .map((uniform) => {

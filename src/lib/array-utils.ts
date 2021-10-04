@@ -4,7 +4,7 @@
 
 import easing from './easing-functions';
 
-var map = (num: number, in_min: number, in_max: number, out_min: number, out_max: number) => {
+const map = (num: number, in_min: number, in_max: number, out_min: number, out_max: number) => {
   return ((num - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
 };
 
@@ -61,7 +61,7 @@ export default {
     Array.prototype.fit = function (low = 0, high = 1) {
       let lowest = Math.min(...this);
       let highest = Math.max(...this);
-      var newArr = this.map((num) => map(num, lowest, highest, low, high));
+      const newArr = this.map((num) => map(num, lowest, highest, low, high));
       newArr._speed = this._speed;
       newArr._smooth = this._smooth;
       newArr._ease = this._ease;

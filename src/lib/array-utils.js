@@ -2,7 +2,7 @@
 // Possibly should be integrated with lfo extension, etc.
 // to do: transform time rather than array values, similar to working with coordinates in hydra
 import easing from './easing-functions';
-var map = (num, in_min, in_max, out_min, out_max) => {
+const map = (num, in_min, in_max, out_min, out_max) => {
     return ((num - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
 };
 export default {
@@ -37,7 +37,7 @@ export default {
         Array.prototype.fit = function (low = 0, high = 1) {
             let lowest = Math.min(...this);
             let highest = Math.max(...this);
-            var newArr = this.map((num) => map(num, lowest, highest, low, high));
+            const newArr = this.map((num) => map(num, lowest, highest, low, high));
             newArr._speed = this._speed;
             newArr._smooth = this._smooth;
             newArr._ease = this._ease;

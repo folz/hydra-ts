@@ -2,9 +2,9 @@
 // for now, just avoids polluting the global namespace
 // should probably be replaced with an abstract syntax tree
 export default (parent) => {
-    var initialCode = ``;
-    var sandbox = createSandbox(initialCode);
-    var addToContext = (name, object) => {
+    let initialCode = ``;
+    let sandbox = createSandbox(initialCode);
+    const addToContext = (name, object) => {
         initialCode += `
       var ${name} = ${object}
     `;
@@ -17,7 +17,7 @@ export default (parent) => {
     function createSandbox(initial) {
         eval(initial);
         // optional params
-        var localEval = function (code) {
+        const localEval = function (code) {
             eval(code);
         };
         // API/data for end-user

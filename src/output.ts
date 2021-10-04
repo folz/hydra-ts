@@ -1,5 +1,3 @@
-//const transforms = require('./glsl-transforms')
-
 import { Attributes, Buffer, DrawCommand, Framebuffer2D, Regl, Uniforms } from 'regl';
 import { Precision } from '../hydra-synth';
 import { CompiledTransform } from './glsl-source';
@@ -74,7 +72,6 @@ export class Output {
     this.fbos.forEach((fbo) => {
       fbo.resize(width, height);
     });
-    //  console.log(this)
   }
 
   getCurrent() {
@@ -82,12 +79,11 @@ export class Output {
   }
 
   getTexture() {
-    var index = this.pingPongIndex ? 0 : 1;
+    const index = this.pingPongIndex ? 0 : 1;
     return this.fbos[index];
   }
 
   init() {
-    //  console.log('clearing')
     this.transformIndex = 0;
     this.fragHeader = `
   precision ${this.precision} float;
@@ -133,9 +129,8 @@ export class Output {
 
   render(passes: CompiledTransform[]) {
     let pass = passes[0];
-    //console.log('pass', pass, this.pingPongIndex)
-    var self = this;
-    var uniforms = Object.assign(pass.uniforms, {
+    const self = this;
+    const uniforms = Object.assign(pass.uniforms, {
       prevBuffer: () => {
         //var index = this.pingPongIndex ? 0 : 1
         //   var index = self.pingPong[(passIndex+1)%2]
@@ -158,7 +153,6 @@ export class Output {
   }
 
   tick(props: {}) {
-    //  console.log(props)
     this.draw(props);
   }
 }

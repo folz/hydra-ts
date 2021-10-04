@@ -12,12 +12,12 @@ const DEFAULT_CONVERSIONS = {
     texture: undefined,
 };
 export function compileGlsl(transforms) {
-    var shaderParams = {
+    const shaderParams = {
         uniforms: [],
         glslFunctions: [],
         fragColor: '',
     };
-    var gen = generateGlsl(transforms, shaderParams)('st');
+    const gen = generateGlsl(transforms, shaderParams)('st');
     shaderParams.fragColor = gen;
     // remove uniforms with duplicate names
     let uniforms = {};
@@ -29,11 +29,12 @@ export function compileGlsl(transforms) {
 // to do: improve variable names
 function generateGlsl(transforms, shaderParams) {
     // transform function that outputs a shader string corresponding to gl_FragColor
-    var fragColor = () => '';
+    let fragColor = () => '';
     // var uniforms = []
     // var glslFunctions = []
     transforms.forEach((transform) => {
-        var inputs = formatArguments(transform, shaderParams.uniforms.length);
+        let f1;
+        const inputs = formatArguments(transform, shaderParams.uniforms.length);
         //  console.log('inputs', inputs, transform)
         inputs.forEach((input) => {
             if (input.isUniform)
@@ -43,7 +44,7 @@ function generateGlsl(transforms, shaderParams) {
         if (!contains(transform, shaderParams.glslFunctions))
             shaderParams.glslFunctions.push(transform);
         // current function for generating frag color shader code
-        var f0 = fragColor;
+        const f0 = fragColor;
         if (transform.transform.type === 'src') {
             fragColor = (uv) => `${shaderString(uv, transform.name, inputs, shaderParams)}`;
         }
@@ -55,7 +56,7 @@ function generateGlsl(transforms, shaderParams) {
         }
         else if (transform.transform.type === 'combine') {
             // combining two generated shader strings (i.e. for blend, mult, add funtions)
-            var f1 = inputs[0].value && inputs[0].value.transforms
+            f1 = inputs[0].value && inputs[0].value.transforms
                 ? (uv) => `${generateGlsl(inputs[0].value.transforms, shaderParams)(uv)}`
                 : inputs[0].isUniform
                     ? () => inputs[0].name
@@ -65,7 +66,7 @@ function generateGlsl(transforms, shaderParams) {
         else if (transform.transform.type === 'combineCoord') {
             // combining two generated shader strings (i.e. for modulate functions)
             // eslint-disable-next-line no-redeclare
-            var f1 = inputs[0].value && inputs[0].value.transforms
+            f1 = inputs[0].value && inputs[0].value.transforms
                 ? (uv) => `${generateGlsl(inputs[0].value.transforms, shaderParams)(uv)}`
                 : inputs[0].isUniform
                     ? () => inputs[0].name
@@ -95,7 +96,7 @@ function shaderString(uv, method, inputs, shaderParams) {
 }
 // check whether array
 function contains(object, arr) {
-    for (var i = 0; i < arr.length; i++) {
+    for (let i = 0; i < arr.length; i++) {
         if (object.name == arr[i].name)
             return true;
     }
@@ -208,14 +209,14 @@ function formatArguments(transform, startIndex) {
             }
             else if (input.type === 'sampler2D') {
                 // typedArg.tex = typedArg.value
-                var x = typedArg.value;
+                const x = typedArg.value;
                 typedArg.value = () => x.getTexture();
                 typedArg.isUniform = true;
             }
             else {
                 // if passing in a texture reference, when function asks for vec4, convert to vec4
                 if (typedArg.value.getTexture && input.type === 'vec4') {
-                    var x1 = typedArg.value;
+                    const x1 = typedArg.value;
                     // @ts-ignore
                     // eslint-disable-next-line no-undef
                     typedArg.value = src(x1);
