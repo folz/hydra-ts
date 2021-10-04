@@ -51,8 +51,7 @@ function generateGlsl(
   // var uniforms = []
   // var glslFunctions = []
   transforms.forEach((transform) => {
-    let f1
-    ;
+    let f1;
     const inputs = formatArguments(transform, shaderParams.uniforms.length);
     //  console.log('inputs', inputs, transform)
     inputs.forEach((input) => {
@@ -73,19 +72,20 @@ function generateGlsl(
       fragColor = (uv) => `${shaderString(`${f0(uv)}`, transform.name, inputs, shaderParams)}`;
     } else if (transform.transform.type === 'combine') {
       // combining two generated shader strings (i.e. for blend, mult, add funtions)
-      f1 = inputs[0].value && inputs[0].value.transforms
-        ? (uv: string) => `${generateGlsl(inputs[0].value.transforms, shaderParams)(uv)}`
-        : inputs[0].isUniform
-        ? () => inputs[0].name
-        : () => inputs[0].value;
+      f1 =
+        inputs[0].value && inputs[0].value.transforms
+          ? (uv: string) => `${generateGlsl(inputs[0].value.transforms, shaderParams)(uv)}`
+          : inputs[0].isUniform
+          ? () => inputs[0].name
+          : () => inputs[0].value;
       fragColor = (uv) =>
         `${shaderString(`${f0(uv)}, ${f1(uv)}`, transform.name, inputs.slice(1), shaderParams)}`;
     } else if (transform.transform.type === 'combineCoord') {
       // combining two generated shader strings (i.e. for modulate functions)
-      // eslint-disable-next-line no-redeclare
-      f1 = inputs[0].value && inputs[0].value.transforms
-        ? (uv: string) => `${generateGlsl(inputs[0].value.transforms, shaderParams)(uv)}`
-        : inputs[0].isUniform
+      f1 =
+        inputs[0].value && inputs[0].value.transforms
+          ? (uv: string) => `${generateGlsl(inputs[0].value.transforms, shaderParams)(uv)}`
+          : inputs[0].isUniform
           ? () => inputs[0].name
           : () => inputs[0].value;
       fragColor = (uv) =>
@@ -94,8 +94,6 @@ function generateGlsl(
         )}`;
     }
   });
-  //  console.log(fragColor)
-  //  break;
   return fragColor;
 }
 
@@ -159,7 +157,6 @@ export interface TypedArg {
 }
 
 function formatArguments(transform: TransformApplication, startIndex: number): TypedArg[] {
-  //  console.log('processing args', transform, startIndex)
   const defaultArgs = transform.transform.inputs;
   const userArgs = transform.userArgs;
   return defaultArgs.map((input, index) => {
@@ -209,7 +206,7 @@ function formatArguments(transform: TransformApplication, startIndex: number): T
           typedArg.isUniform = true;
           typedArg.value = fillArrayWithDefaults(typedArg.value, typedArg.vecLen);
         } else {
-          //  console.log("is Array")
+          // is Array
           typedArg.value = (context, props) => arrayUtils.getValue(userArgs[index])(props);
           typedArg.isUniform = true;
         }

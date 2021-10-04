@@ -56,26 +56,25 @@ function generateGlsl(transforms, shaderParams) {
         }
         else if (transform.transform.type === 'combine') {
             // combining two generated shader strings (i.e. for blend, mult, add funtions)
-            f1 = inputs[0].value && inputs[0].value.transforms
-                ? (uv) => `${generateGlsl(inputs[0].value.transforms, shaderParams)(uv)}`
-                : inputs[0].isUniform
-                    ? () => inputs[0].name
-                    : () => inputs[0].value;
+            f1 =
+                inputs[0].value && inputs[0].value.transforms
+                    ? (uv) => `${generateGlsl(inputs[0].value.transforms, shaderParams)(uv)}`
+                    : inputs[0].isUniform
+                        ? () => inputs[0].name
+                        : () => inputs[0].value;
             fragColor = (uv) => `${shaderString(`${f0(uv)}, ${f1(uv)}`, transform.name, inputs.slice(1), shaderParams)}`;
         }
         else if (transform.transform.type === 'combineCoord') {
             // combining two generated shader strings (i.e. for modulate functions)
-            // eslint-disable-next-line no-redeclare
-            f1 = inputs[0].value && inputs[0].value.transforms
-                ? (uv) => `${generateGlsl(inputs[0].value.transforms, shaderParams)(uv)}`
-                : inputs[0].isUniform
-                    ? () => inputs[0].name
-                    : () => inputs[0].value;
+            f1 =
+                inputs[0].value && inputs[0].value.transforms
+                    ? (uv) => `${generateGlsl(inputs[0].value.transforms, shaderParams)(uv)}`
+                    : inputs[0].isUniform
+                        ? () => inputs[0].name
+                        : () => inputs[0].value;
             fragColor = (uv) => `${f0(`${shaderString(`${uv}, ${f1(uv)}`, transform.name, inputs.slice(1), shaderParams)}`)}`;
         }
     });
-    //  console.log(fragColor)
-    //  break;
     return fragColor;
 }
 // assembles a shader string containing the arguments and the function name, i.e. 'osc(uv, frequency)'
@@ -123,7 +122,6 @@ const ensure_decimal_dot = (val) => {
     return val;
 };
 function formatArguments(transform, startIndex) {
-    //  console.log('processing args', transform, startIndex)
     const defaultArgs = transform.transform.inputs;
     const userArgs = transform.userArgs;
     return defaultArgs.map((input, index) => {
@@ -174,7 +172,7 @@ function formatArguments(transform, startIndex) {
                     typedArg.value = fillArrayWithDefaults(typedArg.value, typedArg.vecLen);
                 }
                 else {
-                    //  console.log("is Array")
+                    // is Array
                     typedArg.value = (context, props) => arrayUtils.getValue(userArgs[index])(props);
                     typedArg.isUniform = true;
                 }
