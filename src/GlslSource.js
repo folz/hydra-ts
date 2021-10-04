@@ -1,5 +1,5 @@
-import { utilityFunctions } from './glsl/utility-functions';
-import { compileGlsl } from './glsl-utils';
+import { utilityFunctions } from './glsl/utilityFunctions';
+import { compileGlsl } from './compileGlsl';
 export class GlslSource {
     constructor(obj) {
         this.transforms = [];

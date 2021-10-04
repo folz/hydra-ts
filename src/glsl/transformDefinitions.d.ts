@@ -1,5 +1,5 @@
 import { Texture2D } from 'regl';
-import { HydraSource } from '../hydra-source';
+import { HydraSource } from '../HydraSource';
 export declare const typeLookup: {
     src: {
         returnType: string;

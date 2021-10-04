@@ -1,5 +1,5 @@
-import { TransformApplication } from './glsl-source';
-import { TransformDefinitionInput } from './glsl/glsl-functions';
+import { TransformApplication } from './GlslSource';
+import { TransformDefinitionInput } from './glsl/transformDefinitions';
 interface ShaderParams {
     uniforms: TypedArg[];
     glslFunctions: TransformApplication[];

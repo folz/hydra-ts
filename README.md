@@ -34,7 +34,7 @@ npm install --save hydra-synth
 Include in your app:
 
 ```javascript
-const Hydra = require('hydra-synth');
+const Hydra = require('HydraRenderer');
 
 const hydra = new Hydra({ detectAudio: false });
 osc(4, 0.1, 1.2).out();

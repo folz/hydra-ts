@@ -69,7 +69,7 @@ const types = {
 */
 
 import { Texture2D } from 'regl';
-import { HydraSource } from '../hydra-source';
+import { HydraSource } from '../HydraSource';
 
 export const typeLookup = {
   src: {

@@ -1,8 +1,8 @@
 import type { Uniforms } from 'regl';
-import type { TransformDefinition } from './glsl/glsl-functions.js';
-import { GlslSource } from './glsl-source';
-import type { Output } from './output';
-import { ProcessedTransformDefinition, typeLookup } from './glsl/glsl-functions.js';
+import type { TransformDefinition } from './glsl/transformDefinitions.js';
+import { GlslSource } from './GlslSource';
+import type { Output } from './Output';
+import { ProcessedTransformDefinition, typeLookup } from './glsl/transformDefinitions.js';
 
 interface GeneratorFactoryOptions {
   changeListener?: GeneratorFactory['changeListener'];

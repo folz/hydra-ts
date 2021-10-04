@@ -1,5 +1,5 @@
-import { transforms } from './glsl/glsl-functions';
-import { processGlsl } from './generator-factory';
+import { transforms } from './glsl/transformDefinitions';
+import { processGlsl } from './GeneratorFactory';
 test.each(transforms)('processGlsl($definition.name)', (definition) => {
     expect(definition).toMatchSnapshot('initial');
     const processed = processGlsl(definition);

@@ -1,6 +1,6 @@
 // handles code evaluation and attaching relevant objects to global and evaluation contexts
 
-import { Sandbox } from './lib/sandbox';
+import { Sandbox } from './lib/Sandbox';
 
 export class EvalSandbox {
   makeGlobal: boolean;

@@ -1,5 +1,5 @@
-import { GlslSource } from './glsl-source';
-import { typeLookup } from './glsl/glsl-functions.js';
+import { GlslSource } from './GlslSource';
+import { typeLookup } from './glsl/transformDefinitions.js';
 export class GeneratorFactory {
     constructor({ defaultUniforms = {}, defaultOutput, changeListener = () => { }, transforms, }) {
         this.generators = {};

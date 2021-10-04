@@ -1,2 +1,2 @@
-import { HydraRenderer } from './hydra-synth';
+import { HydraRenderer } from './HydraRenderer';
 export default HydraRenderer;

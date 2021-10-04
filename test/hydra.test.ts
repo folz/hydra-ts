@@ -3,7 +3,7 @@ import gl from 'gl';
 
 import HydraSynth from '../index';
 
-import { transforms } from '../src/glsl/glsl-functions';
+import { transforms } from '../src/glsl/transformDefinitions';
 
 describe.skip('HydraSynth', function () {
   let regl;

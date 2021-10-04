@@ -1,5 +1,5 @@
-import { Webcam } from './lib/webcam';
-import { Screen } from './lib/screenmedia';
+import { Webcam } from './lib/Webcam';
+import { Screen } from './lib/Screen';
 export class HydraSource {
     constructor({ regl, width, height }) {
         this.regl = regl;

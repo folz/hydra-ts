@@ -1,9 +1,9 @@
 import { Uniforms } from 'regl';
-import { ProcessedTransformDefinition } from './glsl/glsl-functions';
-import { utilityFunctions } from './glsl/utility-functions';
-import { compileGlsl, TypedArg } from './glsl-utils';
-import { Output } from './output';
-import { Precision } from '../hydra-synth';
+import { ProcessedTransformDefinition } from './glsl/transformDefinitions';
+import { utilityFunctions } from './glsl/utilityFunctions';
+import { compileGlsl, TypedArg } from './compileGlsl';
+import { Output } from './Output';
+import { Precision } from '../HydraRenderer';
 
 export interface TransformApplication {
   defaultUniforms?: GlslSource['defaultUniforms'];

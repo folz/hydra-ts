@@ -2,8 +2,8 @@
 
 // Add extra functionality to Array.prototype for generating sequences in time
 import arrayUtils from './lib/array-utils';
-import { TransformApplication } from './glsl-source';
-import { TransformDefinitionInput } from './glsl/glsl-functions';
+import { TransformApplication } from './GlslSource';
+import { TransformDefinitionInput } from './glsl/transformDefinitions';
 
 // [WIP] how to treat different dimensions (?)
 const DEFAULT_CONVERSIONS = {
