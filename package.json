@@ -8,9 +8,6 @@
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/.bin/jest",
     "dev": "vite",
-    "build-hydra": "browserify hydra-synth.js --standalone Hydra > dist/hydra-synth.js",
-    "build-shader-generator": "browserify shader-generator.js --standalone HydraShaders > dist/hydra-shaders.js",
-    "build": "npm run build-hydra",
     "coverage": "nyc npm run test"
   },
   "repository": {
@@ -39,10 +36,6 @@
     "@types/gl": "^4.1.0",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.7.13",
-    "babel-core": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "babelify": "^8.0.0",
-    "browserify": "^16.2.3",
     "eslint": "^7.26.0",
     "eslint-plugin-mocha": "^8.1.0",
     "gl": "^4.4.0",
@@ -54,9 +47,6 @@
     "jsdom-global": "^3.0.2",
     "nyc": "^14.1.1",
     "prettier": "^2.3.0",
-    "rewire": "^4.0.1",
-    "rtc-patch-bay": "^1.0.0",
-    "sinon": "^7.5.0",
     "typescript": "^4.4.2",
     "vite": "^2.6.2"
   },
