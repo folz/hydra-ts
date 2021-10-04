@@ -249,6 +249,7 @@ function formatArguments(transform: TransformApplication, startIndex: number): T
         // if passing in a texture reference, when function asks for vec4, convert to vec4
         if (typedArg.value.getTexture && input.type === 'vec4') {
           const x1 = typedArg.value;
+          // TODO: get texture without relying on makeGlobal src()
           // @ts-ignore
           // eslint-disable-next-line no-undef
           typedArg.value = src(x1);

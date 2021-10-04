@@ -14,10 +14,6 @@ export declare class Output {
     draw: DrawCommand;
     pingPongIndex: number;
     fbos: Framebuffer2D[];
-    transformIndex: number;
-    fragHeader: string;
-    fragBody: string;
-    frag: string;
     vert: string;
     uniforms: Uniforms;
     attributes: Attributes;
@@ -25,7 +21,6 @@ export declare class Output {
     resize(width: number, height: number): void;
     getCurrent(): Framebuffer2D;
     getTexture(): Framebuffer2D;
-    init(): this;
     render(passes: CompiledTransform[]): void;
     tick(props: {}): void;
 }

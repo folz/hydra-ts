@@ -151,7 +151,6 @@ export class HydraRenderer {
                     // what to do here? dangerously deleting window methods
                     //delete window[method]
                 }
-                //  }
             },
         });
         this.loop = new Loop(this.tick);

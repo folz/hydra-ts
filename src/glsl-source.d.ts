@@ -24,7 +24,7 @@ export declare class GlslSource {
     compile(transforms: TransformApplication[]): {
         frag: string;
         uniforms: {
-            [x: string]: string | import("regl").Texture2D | ((context: any, props: any) => number | number[]) | import("regl").Uniform | undefined;
+            [x: string]: string | import("regl").Uniform | import("regl").Texture2D | ((context: any, props: any) => number | number[]) | undefined;
         };
     };
 }

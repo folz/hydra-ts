@@ -113,6 +113,7 @@ export class HydraSource {
     }
   }
 
+  // Used by glsl-utils/formatArguments
   getTexture() {
     return this.tex;
   }

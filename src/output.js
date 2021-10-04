@@ -1,12 +1,6 @@
 export class Output {
     constructor({ regl, precision, width, height }) {
-        this.transformIndex = 0;
-        this.fragHeader = '';
-        this.fragBody = '';
-        this.frag = '';
-        this.vert = '';
-        this.uniforms = {};
-        this.attributes = {};
+        this.pingPongIndex = 0;
         this.regl = regl;
         this.precision = precision;
         this.positionBuffer = this.regl.buffer([
@@ -16,8 +10,24 @@ export class Output {
         ]);
         // @ts-ignore
         this.draw = () => { };
-        this.init();
-        this.pingPongIndex = 0;
+        this.vert = `
+  precision ${this.precision} float;
+  attribute vec2 position;
+  varying vec2 uv;
+
+  void main () {
+    uv = position;
+    gl_Position = vec4(2.0 * position - 1.0, 0, 1);
+  }`;
+        this.attributes = {
+            position: this.positionBuffer,
+        };
+        this.uniforms = {
+            // @ts-ignore
+            time: this.regl.prop('time'),
+            // @ts-ignore
+            resolution: this.regl.prop('resolution'),
+        };
         // for each output, create two fbos for pingponging
         this.fbos = Array(2)
             .fill(undefined)
@@ -41,48 +51,10 @@ export class Output {
     getCurrent() {
         return this.fbos[this.pingPongIndex];
     }
+    // Used by glsl-utils/formatArguments
     getTexture() {
-        const index = this.pingPongIndex ? 0 : 1;
+        const index = (this.pingPongIndex + 1) % 1;
         return this.fbos[index];
-    }
-    init() {
-        this.transformIndex = 0;
-        this.fragHeader = `
-  precision ${this.precision} float;
-
-  uniform float time;
-  varying vec2 uv;
-  `;
-        this.fragBody = ``;
-        this.vert = `
-  precision ${this.precision} float;
-  attribute vec2 position;
-  varying vec2 uv;
-
-  void main () {
-    uv = position;
-    gl_Position = vec4(2.0 * position - 1.0, 0, 1);
-  }`;
-        this.attributes = {
-            position: this.positionBuffer,
-        };
-        this.uniforms = {
-            // @ts-ignore
-            time: this.regl.prop('time'),
-            // @ts-ignore
-            resolution: this.regl.prop('resolution'),
-        };
-        this.frag = `
-       ${this.fragHeader}
-
-      void main () {
-        vec4 c = vec4(0, 0, 0, 0);
-        vec2 st = uv;
-        ${this.fragBody}
-        gl_FragColor = c;
-      }
-  `;
-        return this;
     }
     render(passes) {
         let pass = passes[0];

@@ -88,6 +88,7 @@ export class HydraSource {
             this.tex.subimage(this.src);
         }
     }
+    // Used by glsl-utils/formatArguments
     getTexture() {
         return this.tex;
     }
