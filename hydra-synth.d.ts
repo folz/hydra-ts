@@ -29,7 +29,7 @@ interface HydraRendererOptions {
     regl: HydraRenderer['regl'];
     precision?: HydraRenderer['precision'];
 }
-export declare class HydraRenderer implements HydraRendererOptions {
+export declare class HydraRenderer {
     width: number;
     height: number;
     synth: Synth;
@@ -38,22 +38,15 @@ export declare class HydraRenderer implements HydraRendererOptions {
     precision: Precision;
     generator?: GeneratorFactory;
     sandbox: EvalSandbox;
-    imageCallback?: (blob: Blob | null) => void;
     regl: Regl;
     renderFbo: DrawCommand;
     s: HydraSource[];
     o: Output[];
     output: Output;
     loop: Loop;
-    [name: string]: any;
     constructor({ width, height, numSources, numOutputs, makeGlobal, precision, regl, }: HydraRendererOptions);
     hush: () => void;
     setResolution: (width: number, height: number) => void;
-    _initRegl(): void;
-    _initOutputs(numOutputs: number): void;
-    _initSources(numSources: number): void;
-    createSource(i: number): HydraSource;
-    _generateGlslTransforms(): void;
     render: (output: Output) => void;
     tick: (dt: number) => void;
 }

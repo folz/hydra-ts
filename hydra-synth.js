@@ -14,6 +14,7 @@ export class HydraRenderer {
                 source.clear();
             });
             this.o.forEach((output) => {
+                // TODO - should reset output directly without relying on synth
                 this.synth.solid(1, 1, 1, 0).out(output);
             });
         };
@@ -22,21 +23,16 @@ export class HydraRenderer {
             this.regl._gl.canvas.height = height;
             this.width = width;
             this.height = height;
-            this.o.forEach((output) => {
-                output.resize(width, height);
-            });
             this.s.forEach((source) => {
                 source.resize(width, height);
+            });
+            this.o.forEach((output) => {
+                output.resize(width, height);
             });
             this.regl._refresh();
         };
         this.render = (output) => {
-            if (output) {
-                this.output = output;
-            }
-            else {
-                this.output = this.o[0];
-            }
+            this.output = output !== null && output !== void 0 ? output : this.o[0];
         };
         // dt in ms
         this.tick = (dt) => {
@@ -84,16 +80,6 @@ export class HydraRenderer {
         this.timeSinceLastUpdate = 0;
         this._time = 0; // for internal use, only to use for deciding when to render frames
         this.precision = precision;
-        this.generator = undefined;
-        this._initRegl();
-        this._initOutputs(numOutputs);
-        this._initSources(numSources);
-        this._generateGlslTransforms();
-        this.loop = new Loop(this.tick);
-        // final argument is properties that the user can set, all others are treated as read-only
-        this.sandbox = new EvalSandbox(this.synth, makeGlobal, ['speed', 'bpm', 'fps']);
-    }
-    _initRegl() {
         // This clears the color buffer to black and the depth buffer to 1
         this.regl.clear({
             color: [0, 0, 0, 1],
@@ -132,45 +118,29 @@ export class HydraRenderer {
             count: 3,
             depth: { enable: false },
         });
-    }
-    _initOutputs(numOutputs) {
-        this.o = Array(numOutputs)
-            .fill(undefined)
-            .map((el, index) => {
+        for (let i = 0; i < numSources; i++) {
+            let s = new HydraSource({
+                regl: this.regl,
+                width: this.width,
+                height: this.height,
+            });
+            this.synth[`s${i}`] = s;
+            this.s.push(s);
+        }
+        for (let i = 0; i < numOutputs; i++) {
             const o = new Output({
                 regl: this.regl,
                 width: this.width,
                 height: this.height,
                 precision: this.precision,
             });
-            //  o.render()
-            o.id = index;
-            this.synth['o' + index] = o;
-            return o;
-        });
-        // set default output
-        this.output = this.o[0];
-    }
-    _initSources(numSources) {
-        this.s = [];
-        for (let i = 0; i < numSources; i++) {
-            this.createSource(i);
+            this.synth[`o${i}`] = o;
+            this.o.push(o);
         }
-    }
-    createSource(i) {
-        let s = new HydraSource({
-            regl: this.regl,
-            width: this.width,
-            height: this.height,
-        });
-        this.synth['s' + this.s.length] = s;
-        this.s.push(s);
-        return s;
-    }
-    _generateGlslTransforms() {
+        this.output = this.o[0];
         this.generator = new GeneratorFactory({
-            defaultOutput: this.o[0],
-            defaultUniforms: this.o[0].uniforms,
+            defaultOutput: this.output,
+            defaultUniforms: this.output.uniforms,
             changeListener: ({ type, method, synth, }) => {
                 if (type === 'add') {
                     this.synth[method] = synth.generators[method];
@@ -184,5 +154,8 @@ export class HydraRenderer {
                 //  }
             },
         });
+        this.loop = new Loop(this.tick);
+        // final argument is properties that the user can set, all others are treated as read-only
+        this.sandbox = new EvalSandbox(this.synth, makeGlobal, ['speed', 'bpm', 'fps']);
     }
 }

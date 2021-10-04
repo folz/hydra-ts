@@ -44,7 +44,7 @@ interface HydraRendererOptions {
 }
 
 // to do: add ability to pass in certain uniforms and transforms
-export class HydraRenderer implements HydraRendererOptions {
+export class HydraRenderer {
   width: number;
   height: number;
   synth: Synth;
@@ -53,16 +53,12 @@ export class HydraRenderer implements HydraRendererOptions {
   precision: Precision;
   generator?: GeneratorFactory;
   sandbox: EvalSandbox;
-  imageCallback?: (blob: Blob | null) => void;
   regl: Regl;
-  // @ts-ignore
   renderFbo: DrawCommand;
   s: HydraSource[] = [];
   o: Output[] = [];
-  // @ts-ignore
   output: Output;
   loop: Loop;
-  [name: string]: any;
 
   constructor({
     width = 1280,
@@ -101,43 +97,6 @@ export class HydraRenderer implements HydraRendererOptions {
 
     this.precision = precision;
 
-    this.generator = undefined;
-
-    this._initRegl();
-    this._initOutputs(numOutputs);
-    this._initSources(numSources);
-    this._generateGlslTransforms();
-
-    this.loop = new Loop(this.tick);
-
-    // final argument is properties that the user can set, all others are treated as read-only
-    this.sandbox = new EvalSandbox(this.synth, makeGlobal, ['speed', 'bpm', 'fps']);
-  }
-
-  hush = () => {
-    this.s.forEach((source) => {
-      source.clear();
-    });
-    this.o.forEach((output) => {
-      this.synth.solid(1, 1, 1, 0).out(output);
-    });
-  };
-
-  setResolution = (width: number, height: number) => {
-    this.regl._gl.canvas.width = width;
-    this.regl._gl.canvas.height = height;
-    this.width = width;
-    this.height = height;
-    this.o.forEach((output) => {
-      output.resize(width, height);
-    });
-    this.s.forEach((source) => {
-      source.resize(width, height);
-    });
-    this.regl._refresh();
-  };
-
-  _initRegl() {
     // This clears the color buffer to black and the depth buffer to 1
     this.regl.clear({
       color: [0, 0, 0, 1],
@@ -177,50 +136,33 @@ export class HydraRenderer implements HydraRendererOptions {
       count: 3,
       depth: { enable: false },
     });
-  }
 
-  _initOutputs(numOutputs: number) {
-    this.o = Array(numOutputs)
-      .fill(undefined)
-      .map((el, index) => {
-        const o = new Output({
-          regl: this.regl,
-          width: this.width,
-          height: this.height,
-          precision: this.precision,
-        });
-        //  o.render()
-        o.id = index;
-        this.synth['o' + index] = o;
-        return o;
-      });
-
-    // set default output
-    this.output = this.o[0];
-  }
-
-  _initSources(numSources: number) {
-    this.s = [];
     for (let i = 0; i < numSources; i++) {
-      this.createSource(i);
+      let s = new HydraSource({
+        regl: this.regl,
+        width: this.width,
+        height: this.height,
+      });
+      this.synth[`s${i}`] = s;
+      this.s.push(s);
     }
-  }
 
-  createSource(i: number) {
-    let s = new HydraSource({
-      regl: this.regl,
-      width: this.width,
-      height: this.height,
-    });
-    this.synth['s' + this.s.length] = s;
-    this.s.push(s);
-    return s;
-  }
+    for (let i = 0; i < numOutputs; i++) {
+      const o = new Output({
+        regl: this.regl,
+        width: this.width,
+        height: this.height,
+        precision: this.precision,
+      });
+      this.synth[`o${i}`] = o;
+      this.o.push(o);
+    }
 
-  _generateGlslTransforms() {
+    this.output = this.o[0];
+
     this.generator = new GeneratorFactory({
-      defaultOutput: this.o[0],
-      defaultUniforms: this.o[0].uniforms,
+      defaultOutput: this.output,
+      defaultUniforms: this.output.uniforms,
       changeListener: ({
         type,
         method,
@@ -240,14 +182,43 @@ export class HydraRenderer implements HydraRendererOptions {
         //  }
       },
     });
+
+    this.loop = new Loop(this.tick);
+
+    // final argument is properties that the user can set, all others are treated as read-only
+    this.sandbox = new EvalSandbox(this.synth, makeGlobal, ['speed', 'bpm', 'fps']);
   }
 
+  hush = () => {
+    this.s.forEach((source) => {
+      source.clear();
+    });
+    this.o.forEach((output) => {
+      // TODO - should reset output directly without relying on synth
+      this.synth.solid(1, 1, 1, 0).out(output);
+    });
+  };
+
+  setResolution = (width: number, height: number) => {
+    this.regl._gl.canvas.width = width;
+    this.regl._gl.canvas.height = height;
+
+    this.width = width;
+    this.height = height;
+
+    this.s.forEach((source) => {
+      source.resize(width, height);
+    });
+
+    this.o.forEach((output) => {
+      output.resize(width, height);
+    });
+
+    this.regl._refresh();
+  };
+
   render = (output: Output) => {
-    if (output) {
-      this.output = output;
-    } else {
-      this.output = this.o[0];
-    }
+    this.output = output ?? this.o[0];
   };
 
   // dt in ms

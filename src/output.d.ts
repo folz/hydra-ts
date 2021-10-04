@@ -21,7 +21,6 @@ export declare class Output {
     vert: string;
     uniforms: Uniforms;
     attributes: Attributes;
-    id?: number;
     constructor({ regl, precision, width, height }: OutputOptions);
     resize(width: number, height: number): void;
     getCurrent(): Framebuffer2D;
