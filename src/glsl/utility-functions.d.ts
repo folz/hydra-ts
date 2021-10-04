@@ -1,4 +1,4 @@
-declare const _default: {
+export declare const utilityFunctions: {
     _luminance: {
         type: string;
         glsl: string;
@@ -20,4 +20,3 @@ declare const _default: {
         glsl: string;
     };
 };
-export default _default;

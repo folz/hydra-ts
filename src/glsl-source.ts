@@ -1,5 +1,5 @@
 import { compileGlsl, TypedArg } from './glsl-utils';
-import utilityGlsl from './glsl/utility-functions';
+import { utilityFunctions } from './glsl/utility-functions';
 import { GeneratorFactory } from './generator-factory';
 import { Output } from './output';
 import { Uniforms } from 'regl';
@@ -105,7 +105,7 @@ export class GlslSource {
   varying vec2 uv;
   uniform sampler2D prevBuffer;
 
-  ${Object.values(utilityGlsl)
+  ${Object.values(utilityFunctions)
     .map((transform) => {
       //  console.log(transform.glsl)
       return `

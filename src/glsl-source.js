@@ -1,5 +1,5 @@
 import { compileGlsl } from './glsl-utils';
-import utilityGlsl from './glsl/utility-functions';
+import { utilityFunctions } from './glsl/utility-functions';
 export class GlslSource {
     constructor(obj) {
         this.transforms = [];
@@ -80,7 +80,7 @@ export class GlslSource {
   varying vec2 uv;
   uniform sampler2D prevBuffer;
 
-  ${Object.values(utilityGlsl)
+  ${Object.values(utilityFunctions)
             .map((transform) => {
             //  console.log(transform.glsl)
             return `

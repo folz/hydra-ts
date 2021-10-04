@@ -1,5 +1,5 @@
 // functions that are only used within other functions
-export default {
+export const utilityFunctions = {
     _luminance: {
         type: 'util',
         glsl: `float _luminance(vec3 rgb){
