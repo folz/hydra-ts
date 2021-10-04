@@ -1,4 +1,4 @@
-import { compileGlsl as generateGlsl, TypedArg } from './glsl-utils';
+import { compileGlsl, TypedArg } from './glsl-utils';
 import utilityGlsl from './glsl/utility-functions';
 import { GeneratorFactory } from './generator-factory';
 import { Output } from './output';
@@ -65,7 +65,7 @@ export class GlslSource {
         //   frag: transform.transform.frag,
         //   uniforms: Object.assign({}, self.defaultUniforms, uniforms)
         // })
-        // transforms.push({name: 'prev', transform:  glslTransforms['prev'], synth: this.synth})
+        // transforms.push({name: 'prev', transform:  transforms['prev'], synth: this.synth})
         console.warn('no support for renderpass');
       } else {
         transforms.push(transform);
@@ -80,7 +80,7 @@ export class GlslSource {
   }
 
   compile(transforms: TransformApplication[]) {
-    var shaderInfo = generateGlsl(transforms);
+    var shaderInfo = compileGlsl(transforms);
     var uniforms: Record<TypedArg['name'], TypedArg['value']> = {};
     shaderInfo.uniforms.forEach((uniform) => {
       uniforms[uniform.name] = uniform.value;

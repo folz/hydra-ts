@@ -1,13 +1,13 @@
 import { Output } from './src/output';
 import { Loop } from './src/loop';
-import { HydraSource as Source } from './src/hydra-source';
+import { HydraSource } from './src/hydra-source';
 import createMouse from './src/lib/mouse';
-import { VideoRecorder as VidRecorder } from './src/lib/video-recorder';
+import { VideoRecorder } from './src/lib/video-recorder';
 import ArrayUtils from './src/lib/array-utils';
-import { EvalSandbox as Sandbox } from './src/eval-sandbox';
+import { EvalSandbox } from './src/eval-sandbox';
 import { DrawCommand, Framebuffer, Regl } from 'regl';
 
-import { GeneratorFactory as Generator } from './src/generator-factory';
+import { GeneratorFactory } from './src/generator-factory';
 import { TransformDefinition } from './src/glsl/glsl-functions';
 
 const Mouse = createMouse();
@@ -38,7 +38,7 @@ export interface Synth {
   update?: (dt: number) => void;
   hush: any;
   screencap?: () => void;
-  vidRecorder?: VidRecorder;
+  vidRecorder?: VideoRecorder;
   [name: string]: any;
 }
 
@@ -70,15 +70,15 @@ export class HydraRenderer implements HydraRendererOptions {
   extendTransforms: TransformDefinition | TransformDefinition[];
   saveFrame: boolean;
   captureStream: MediaStream | null;
-  generator?: Generator;
-  sandbox: Sandbox;
+  generator?: GeneratorFactory;
+  sandbox: EvalSandbox;
   imageCallback?: (blob: Blob | null) => void;
   regl: Regl;
   renderAll: DrawCommand | false;
   // @ts-ignore
   renderFbo: DrawCommand;
   isRenderingAll: boolean = false;
-  s: Source[] = [];
+  s: HydraSource[] = [];
   o: Output[] = [];
   // @ts-ignore
   output: Output;
@@ -165,7 +165,7 @@ export class HydraRenderer implements HydraRendererOptions {
       try {
         this.captureStream = this.regl._gl.canvas.captureStream(25);
         // to do: enable capture stream of specific sources and outputs
-        this.synth.vidRecorder = new VidRecorder(this.captureStream);
+        this.synth.vidRecorder = new VideoRecorder(this.captureStream);
       } catch (e) {
         console.warn('[hydra-synth warning]\nnew MediaSource() is not currently supported on iOS.');
         console.error(e);
@@ -178,7 +178,7 @@ export class HydraRenderer implements HydraRendererOptions {
     }
 
     // final argument is properties that the user can set, all others are treated as read-only
-    this.sandbox = new Sandbox(this.synth, makeGlobal, ['speed', 'update', 'bpm', 'fps']);
+    this.sandbox = new EvalSandbox(this.synth, makeGlobal, ['speed', 'update', 'bpm', 'fps']);
   }
 
   hush = () => {
@@ -358,7 +358,7 @@ export class HydraRenderer implements HydraRendererOptions {
   }
 
   createSource(i: number) {
-    let s = new Source({
+    let s = new HydraSource({
       regl: this.regl,
       pb: this.pb,
       width: this.width,
@@ -372,7 +372,7 @@ export class HydraRenderer implements HydraRendererOptions {
 
   _generateGlslTransforms() {
     var self = this;
-    this.generator = new Generator({
+    this.generator = new GeneratorFactory({
       defaultOutput: this.o[0],
       defaultUniforms: this.o[0].uniforms,
       extendTransforms: this.extendTransforms,
@@ -383,7 +383,7 @@ export class HydraRenderer implements HydraRendererOptions {
       }: {
         type: string;
         method: string;
-        synth: Generator;
+        synth: GeneratorFactory;
       }) => {
         if (type === 'add') {
           self.synth[method] = synth.generators[method];

@@ -1,11 +1,11 @@
 import { Output } from './src/output';
 import { Loop } from './src/loop';
-import { HydraSource as Source } from './src/hydra-source';
+import { HydraSource } from './src/hydra-source';
 import createMouse from './src/lib/mouse';
-import { VideoRecorder as VidRecorder } from './src/lib/video-recorder';
+import { VideoRecorder } from './src/lib/video-recorder';
 import ArrayUtils from './src/lib/array-utils';
-import { EvalSandbox as Sandbox } from './src/eval-sandbox';
-import { GeneratorFactory as Generator } from './src/generator-factory';
+import { EvalSandbox } from './src/eval-sandbox';
+import { GeneratorFactory } from './src/generator-factory';
 const Mouse = createMouse();
 // to do: add ability to pass in certain uniforms and transforms
 export class HydraRenderer {
@@ -146,7 +146,7 @@ export class HydraRenderer {
             try {
                 this.captureStream = this.regl._gl.canvas.captureStream(25);
                 // to do: enable capture stream of specific sources and outputs
-                this.synth.vidRecorder = new VidRecorder(this.captureStream);
+                this.synth.vidRecorder = new VideoRecorder(this.captureStream);
             }
             catch (e) {
                 console.warn('[hydra-synth warning]\nnew MediaSource() is not currently supported on iOS.');
@@ -158,7 +158,7 @@ export class HydraRenderer {
             this.loop.start();
         }
         // final argument is properties that the user can set, all others are treated as read-only
-        this.sandbox = new Sandbox(this.synth, makeGlobal, ['speed', 'update', 'bpm', 'fps']);
+        this.sandbox = new EvalSandbox(this.synth, makeGlobal, ['speed', 'update', 'bpm', 'fps']);
     }
     canvasToImage() {
         const a = document.createElement('a');
@@ -304,7 +304,7 @@ export class HydraRenderer {
         }
     }
     createSource(i) {
-        let s = new Source({
+        let s = new HydraSource({
             regl: this.regl,
             pb: this.pb,
             width: this.width,
@@ -317,7 +317,7 @@ export class HydraRenderer {
     }
     _generateGlslTransforms() {
         var self = this;
-        this.generator = new Generator({
+        this.generator = new GeneratorFactory({
             defaultOutput: this.o[0],
             defaultUniforms: this.o[0].uniforms,
             extendTransforms: this.extendTransforms,

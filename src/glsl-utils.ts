@@ -169,7 +169,7 @@ function formatArguments(transform: TransformApplication, startIndex: number): T
       isUniform: false,
       name: input.name,
       vecLen: 0,
-      //  generateGlsl: null // function for creating glsl
+      //  compileGlsl: null // function for creating glsl
     };
 
     if (typedArg.type === 'float') typedArg.value = ensure_decimal_dot(input.default);

@@ -1,10 +1,10 @@
 import { Output } from './src/output';
 import { Loop } from './src/loop';
-import { HydraSource as Source } from './src/hydra-source';
-import { VideoRecorder as VidRecorder } from './src/lib/video-recorder';
-import { EvalSandbox as Sandbox } from './src/eval-sandbox';
+import { HydraSource } from './src/hydra-source';
+import { VideoRecorder } from './src/lib/video-recorder';
+import { EvalSandbox } from './src/eval-sandbox';
 import { DrawCommand, Regl } from 'regl';
-import { GeneratorFactory as Generator } from './src/generator-factory';
+import { GeneratorFactory } from './src/generator-factory';
 import { TransformDefinition } from './src/glsl/glsl-functions';
 declare const Mouse: any;
 export declare type Precision = 'lowp' | 'mediump' | 'highp';
@@ -24,7 +24,7 @@ export interface Synth {
     update?: (dt: number) => void;
     hush: any;
     screencap?: () => void;
-    vidRecorder?: VidRecorder;
+    vidRecorder?: VideoRecorder;
     [name: string]: any;
 }
 interface HydraRendererOptions {
@@ -53,14 +53,14 @@ export declare class HydraRenderer implements HydraRendererOptions {
     extendTransforms: TransformDefinition | TransformDefinition[];
     saveFrame: boolean;
     captureStream: MediaStream | null;
-    generator?: Generator;
-    sandbox: Sandbox;
+    generator?: GeneratorFactory;
+    sandbox: EvalSandbox;
     imageCallback?: (blob: Blob | null) => void;
     regl: Regl;
     renderAll: DrawCommand | false;
     renderFbo: DrawCommand;
     isRenderingAll: boolean;
-    s: Source[];
+    s: HydraSource[];
     o: Output[];
     output: Output;
     loop: Loop;
@@ -72,7 +72,7 @@ export declare class HydraRenderer implements HydraRendererOptions {
     _initRegl(): void;
     _initOutputs(numOutputs: number): void;
     _initSources(numSources: number): void;
-    createSource(i: number): Source;
+    createSource(i: number): HydraSource;
     _generateGlslTransforms(): void;
     _render: (output: Output) => void;
     tick: (dt: number) => void;

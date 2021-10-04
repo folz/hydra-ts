@@ -21,7 +21,7 @@ export class VideoRecorder {
     this.mediaSource.addEventListener('sourceopen', () => {
       console.log('MediaSource opened');
       self.sourceBuffer = self.mediaSource.addSourceBuffer('video/webm; codecs="vp8"');
-      console.log('Source buffer: ', self.sourceBuffer);
+      console.log('HydraSource buffer: ', self.sourceBuffer);
     });
   }
 

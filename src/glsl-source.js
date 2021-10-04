@@ -1,4 +1,4 @@
-import { compileGlsl as generateGlsl } from './glsl-utils';
+import { compileGlsl } from './glsl-utils';
 import utilityGlsl from './glsl/utility-functions';
 export class GlslSource {
     constructor(obj) {
@@ -43,7 +43,7 @@ export class GlslSource {
                 //   frag: transform.transform.frag,
                 //   uniforms: Object.assign({}, self.defaultUniforms, uniforms)
                 // })
-                // transforms.push({name: 'prev', transform:  glslTransforms['prev'], synth: this.synth})
+                // transforms.push({name: 'prev', transform:  transforms['prev'], synth: this.synth})
                 console.warn('no support for renderpass');
             }
             else {
@@ -56,7 +56,7 @@ export class GlslSource {
         return passes;
     }
     compile(transforms) {
-        var shaderInfo = generateGlsl(transforms);
+        var shaderInfo = compileGlsl(transforms);
         var uniforms = {};
         shaderInfo.uniforms.forEach((uniform) => {
             uniforms[uniform.name] = uniform.value;

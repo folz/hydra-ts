@@ -1,4 +1,4 @@
-import { transforms as glslTransforms } from './glsl/glsl-functions.js';
+import { transforms } from './glsl/glsl-functions.js';
 import { GlslSource } from './glsl-source';
 export class GeneratorFactory {
     constructor({ defaultUniforms = {}, defaultOutput, extendTransforms = [], changeListener = () => { }, }) {
@@ -15,7 +15,7 @@ export class GeneratorFactory {
             return prev;
         }, {});
         this.sourceClass = createSourceClass();
-        let functions = glslTransforms;
+        let functions = transforms;
         // add user definied transforms
         if (Array.isArray(this.extendTransforms)) {
             functions.concat(this.extendTransforms);
