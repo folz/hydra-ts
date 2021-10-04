@@ -2,6 +2,7 @@ import REGL from 'regl';
 import tinykeys from 'tinykeys';
 import Hydra from '../index';
 import jelly from './image3A3853_Glitch.jpg';
+import './style.css';
 const WIDTH = 1080;
 const HEIGHT = 1080;
 const canvas = document.createElement('canvas');
