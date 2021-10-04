@@ -45,7 +45,6 @@ describe.skip('Synth', function () {
                 },
             ],
         ].forEach((ext) => {
-            synth.extendTransforms = ext;
             events.length = 0;
             synth.init();
             expect(events.filter(({ type }) => type === 'remove').map(({ method }) => method)).toEqual(srcNames);

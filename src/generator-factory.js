@@ -1,29 +1,25 @@
 import { transforms } from './glsl/glsl-functions.js';
 import { GlslSource } from './glsl-source';
 export class GeneratorFactory {
-    constructor({ defaultUniforms = {}, defaultOutput, extendTransforms = [], changeListener = () => { }, }) {
+    constructor({ defaultUniforms = {}, defaultOutput, changeListener = () => { }, }) {
         this.generators = {};
         this.glslTransforms = {};
         this.sourceClass = createSourceClass();
         this.type = 'GeneratorFactory';
+        this.setFunction = (obj) => {
+            var processedGlsl = processGlsl(obj);
+            if (processedGlsl)
+                this._addMethod(obj.name, processedGlsl);
+        };
         this.defaultOutput = defaultOutput;
         this.defaultUniforms = defaultUniforms;
         this.changeListener = changeListener;
-        this.extendTransforms = extendTransforms;
         this.generators = Object.entries(this.generators).reduce((prev, [method]) => {
             this.changeListener({ type: 'remove', synth: this, method });
             return prev;
         }, {});
         this.sourceClass = createSourceClass();
-        let functions = transforms;
-        // add user definied transforms
-        if (Array.isArray(this.extendTransforms)) {
-            functions.concat(this.extendTransforms);
-        }
-        else if (typeof this.extendTransforms === 'object' && this.extendTransforms.type) {
-            functions.push(this.extendTransforms);
-        }
-        functions.map((transform) => this.setFunction(transform));
+        transforms.map((transform) => this.setFunction(transform));
     }
     _addMethod(method, transform) {
         this.glslTransforms[method] = transform;
@@ -53,11 +49,6 @@ export class GeneratorFactory {
             };
         }
         return undefined;
-    }
-    setFunction(obj) {
-        var processedGlsl = processGlsl(obj);
-        if (processedGlsl)
-            this._addMethod(obj.name, processedGlsl);
     }
 }
 const typeLookup = {

@@ -9,8 +9,7 @@ import { GeneratorFactory } from './src/generator-factory';
 const Mouse = createMouse();
 // to do: add ability to pass in certain uniforms and transforms
 export class HydraRenderer {
-    constructor({ pb = null, width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, autoLoop = true, detectAudio = true, enableStreamCapture = true, precision, regl, extendTransforms = [], // add your own functions on init
-     }) {
+    constructor({ pb = null, width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, autoLoop = true, detectAudio = true, enableStreamCapture = true, precision, regl, }) {
         this.isRenderingAll = false;
         this.s = [];
         this.o = [];
@@ -129,7 +128,6 @@ export class HydraRenderer {
                 !window.MSStream;
             this.precision = isIOS ? 'highp' : 'mediump';
         }
-        this.extendTransforms = extendTransforms;
         // boolean to store when to save screenshot
         this.saveFrame = false;
         // if stream capture is enabled, this object contains the capture stream
@@ -320,7 +318,6 @@ export class HydraRenderer {
         this.generator = new GeneratorFactory({
             defaultOutput: this.o[0],
             defaultUniforms: this.o[0].uniforms,
-            extendTransforms: this.extendTransforms,
             changeListener: ({ type, method, synth, }) => {
                 if (type === 'add') {
                     self.synth[method] = synth.generators[method];
@@ -334,6 +331,6 @@ export class HydraRenderer {
                 //  }
             },
         });
-        this.synth.setFunction = this.generator.setFunction.bind(this.generator);
+        this.synth.setFunction = this.generator.setFunction;
     }
 }

@@ -54,7 +54,6 @@ interface HydraRendererOptions {
   enableStreamCapture?: boolean;
   regl: HydraRenderer['regl'];
   precision?: HydraRenderer['precision'];
-  extendTransforms?: HydraRenderer['extendTransforms'];
 }
 
 // to do: add ability to pass in certain uniforms and transforms
@@ -67,7 +66,6 @@ export class HydraRenderer implements HydraRendererOptions {
   timeSinceLastUpdate;
   _time;
   precision: Precision;
-  extendTransforms: TransformDefinition | TransformDefinition[];
   saveFrame: boolean;
   captureStream: MediaStream | null;
   generator?: GeneratorFactory;
@@ -97,7 +95,6 @@ export class HydraRenderer implements HydraRendererOptions {
     enableStreamCapture = true,
     precision,
     regl,
-    extendTransforms = [], // add your own functions on init
   }: HydraRendererOptions) {
     ArrayUtils.init();
 
@@ -141,8 +138,6 @@ export class HydraRenderer implements HydraRendererOptions {
         !window.MSStream;
       this.precision = isIOS ? 'highp' : 'mediump';
     }
-
-    this.extendTransforms = extendTransforms;
 
     // boolean to store when to save screenshot
     this.saveFrame = false;
@@ -375,7 +370,6 @@ export class HydraRenderer implements HydraRendererOptions {
     this.generator = new GeneratorFactory({
       defaultOutput: this.o[0],
       defaultUniforms: this.o[0].uniforms,
-      extendTransforms: this.extendTransforms,
       changeListener: ({
         type,
         method,
@@ -395,7 +389,7 @@ export class HydraRenderer implements HydraRendererOptions {
         //  }
       },
     });
-    this.synth.setFunction = this.generator.setFunction.bind(this.generator);
+    this.synth.setFunction = this.generator.setFunction;
   }
 
   _render = (output: Output) => {

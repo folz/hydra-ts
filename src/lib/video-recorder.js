@@ -1,5 +1,29 @@
 export class VideoRecorder {
     constructor(stream) {
+        this._handleStop = () => {
+            var _a;
+            //const superBuffer = new Blob(recordedBlobs, {type: 'video/webm'})
+            // const blob = new Blob(this.recordedBlobs, {type: 'video/webm;codecs=h264'})
+            const blob = new Blob(this.recordedBlobs, { type: (_a = this.mediaRecorder) === null || _a === void 0 ? void 0 : _a.mimeType });
+            const url = window.URL.createObjectURL(blob);
+            this.output.src = url;
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            let d = new Date();
+            a.download = `hydra-${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}-${d.getHours()}.${d.getMinutes()}.${d.getSeconds()}.webm`;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 300);
+        };
+        this._handleDataAvailable = (event) => {
+            if (event.data && event.data.size > 0) {
+                this.recordedBlobs.push(event.data);
+            }
+        };
         this.mediaSource = new MediaSource();
         this.stream = stream;
         // testing using a recording as input
@@ -44,37 +68,13 @@ export class VideoRecorder {
             }
         }
         console.log('Created MediaRecorder', this.mediaRecorder, 'with options', options);
-        this.mediaRecorder.onstop = this._handleStop.bind(this);
-        this.mediaRecorder.ondataavailable = this._handleDataAvailable.bind(this);
+        this.mediaRecorder.onstop = this._handleStop;
+        this.mediaRecorder.ondataavailable = this._handleDataAvailable;
         this.mediaRecorder.start(100); // collect 100ms of data
         console.log('MediaRecorder started', this.mediaRecorder);
     }
     stop() {
         var _a;
         (_a = this.mediaRecorder) === null || _a === void 0 ? void 0 : _a.stop();
-    }
-    _handleStop() {
-        var _a;
-        //const superBuffer = new Blob(recordedBlobs, {type: 'video/webm'})
-        // const blob = new Blob(this.recordedBlobs, {type: 'video/webm;codecs=h264'})
-        const blob = new Blob(this.recordedBlobs, { type: (_a = this.mediaRecorder) === null || _a === void 0 ? void 0 : _a.mimeType });
-        const url = window.URL.createObjectURL(blob);
-        this.output.src = url;
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        let d = new Date();
-        a.download = `hydra-${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}-${d.getHours()}.${d.getMinutes()}.${d.getSeconds()}.webm`;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(() => {
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-        }, 300);
-    }
-    _handleDataAvailable(event) {
-        if (event.data && event.data.size > 0) {
-            this.recordedBlobs.push(event.data);
-        }
     }
 }

@@ -63,8 +63,6 @@ describe.skip('Synth', function () {
         },
       ],
     ].forEach((ext) => {
-      synth.extendTransforms = ext;
-
       events.length = 0;
       synth.init();
 

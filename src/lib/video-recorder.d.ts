@@ -8,6 +8,6 @@ export declare class VideoRecorder {
     constructor(stream: MediaStream);
     start(): void;
     stop(): void;
-    _handleStop(): void;
-    _handleDataAvailable(event: BlobEvent): void;
+    _handleStop: () => void;
+    _handleDataAvailable: (event: BlobEvent) => void;
 }

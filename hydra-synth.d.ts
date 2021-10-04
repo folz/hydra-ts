@@ -5,7 +5,6 @@ import { VideoRecorder } from './src/lib/video-recorder';
 import { EvalSandbox } from './src/eval-sandbox';
 import { DrawCommand, Regl } from 'regl';
 import { GeneratorFactory } from './src/generator-factory';
-import { TransformDefinition } from './src/glsl/glsl-functions';
 declare const Mouse: any;
 export declare type Precision = 'lowp' | 'mediump' | 'highp';
 export interface Synth {
@@ -39,7 +38,6 @@ interface HydraRendererOptions {
     enableStreamCapture?: boolean;
     regl: HydraRenderer['regl'];
     precision?: HydraRenderer['precision'];
-    extendTransforms?: HydraRenderer['extendTransforms'];
 }
 export declare class HydraRenderer implements HydraRendererOptions {
     pb?: any | null;
@@ -50,7 +48,6 @@ export declare class HydraRenderer implements HydraRendererOptions {
     timeSinceLastUpdate: number;
     _time: number;
     precision: Precision;
-    extendTransforms: TransformDefinition | TransformDefinition[];
     saveFrame: boolean;
     captureStream: MediaStream | null;
     generator?: GeneratorFactory;
@@ -65,7 +62,7 @@ export declare class HydraRenderer implements HydraRendererOptions {
     output: Output;
     loop: Loop;
     [name: string]: any;
-    constructor({ pb, width, height, numSources, numOutputs, makeGlobal, autoLoop, detectAudio, enableStreamCapture, precision, regl, extendTransforms, }: HydraRendererOptions);
+    constructor({ pb, width, height, numSources, numOutputs, makeGlobal, autoLoop, detectAudio, enableStreamCapture, precision, regl, }: HydraRendererOptions);
     hush: () => void;
     setResolution: (width: number, height: number) => void;
     canvasToImage(): void;

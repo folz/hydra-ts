@@ -1,4 +1,4 @@
-import { transforms, TransformDefinition } from './glsl/glsl-functions.js';
+import { TransformDefinition, transforms } from './glsl/glsl-functions.js';
 import { GlslSource } from './glsl-source';
 import { Output } from './output';
 import { Uniforms } from 'regl';
@@ -6,14 +6,12 @@ import { Uniforms } from 'regl';
 interface GeneratorFactoryOptions {
   defaultUniforms?: GeneratorFactory['defaultUniforms'];
   defaultOutput: GeneratorFactory['defaultOutput'];
-  extendTransforms?: GeneratorFactory['extendTransforms'];
   changeListener?: GeneratorFactory['changeListener'];
 }
 
 export class GeneratorFactory {
   defaultUniforms: Uniforms;
   defaultOutput: Output;
-  extendTransforms: TransformDefinition | TransformDefinition[];
   changeListener: (options: any) => void;
   generators: Record<string, () => GlslSource> = {};
   glslTransforms: Record<string, TransformDefinition> = {};
@@ -23,13 +21,11 @@ export class GeneratorFactory {
   constructor({
     defaultUniforms = {},
     defaultOutput,
-    extendTransforms = [],
     changeListener = () => {},
   }: GeneratorFactoryOptions) {
     this.defaultOutput = defaultOutput;
     this.defaultUniforms = defaultUniforms;
     this.changeListener = changeListener;
-    this.extendTransforms = extendTransforms;
 
     this.generators = Object.entries(this.generators).reduce((prev, [method]) => {
       this.changeListener({ type: 'remove', synth: this, method });
@@ -38,16 +34,7 @@ export class GeneratorFactory {
 
     this.sourceClass = createSourceClass();
 
-    let functions = transforms;
-
-    // add user definied transforms
-    if (Array.isArray(this.extendTransforms)) {
-      functions.concat(this.extendTransforms);
-    } else if (typeof this.extendTransforms === 'object' && this.extendTransforms.type) {
-      functions.push(this.extendTransforms);
-    }
-
-    functions.map((transform) => this.setFunction(transform));
+    transforms.map((transform) => this.setFunction(transform));
   }
 
   _addMethod(method: string, transform: TransformDefinition) {
@@ -80,10 +67,10 @@ export class GeneratorFactory {
     return undefined;
   }
 
-  setFunction(obj: TransformDefinition) {
+  setFunction = (obj: TransformDefinition) => {
     var processedGlsl = processGlsl(obj);
     if (processedGlsl) this._addMethod(obj.name, processedGlsl);
-  }
+  };
 }
 
 const typeLookup = {

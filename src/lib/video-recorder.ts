@@ -56,8 +56,8 @@ export class VideoRecorder {
       }
     }
     console.log('Created MediaRecorder', this.mediaRecorder, 'with options', options);
-    this.mediaRecorder.onstop = this._handleStop.bind(this);
-    this.mediaRecorder.ondataavailable = this._handleDataAvailable.bind(this);
+    this.mediaRecorder.onstop = this._handleStop;
+    this.mediaRecorder.ondataavailable = this._handleDataAvailable;
     this.mediaRecorder.start(100); // collect 100ms of data
     console.log('MediaRecorder started', this.mediaRecorder);
   }
@@ -66,7 +66,7 @@ export class VideoRecorder {
     this.mediaRecorder?.stop();
   }
 
-  _handleStop() {
+  _handleStop = () => {
     //const superBuffer = new Blob(recordedBlobs, {type: 'video/webm'})
     // const blob = new Blob(this.recordedBlobs, {type: 'video/webm;codecs=h264'})
     const blob = new Blob(this.recordedBlobs, { type: this.mediaRecorder?.mimeType });
@@ -86,11 +86,11 @@ export class VideoRecorder {
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
     }, 300);
-  }
+  };
 
-  _handleDataAvailable(event: BlobEvent) {
+  _handleDataAvailable = (event: BlobEvent) => {
     if (event.data && event.data.size > 0) {
       this.recordedBlobs.push(event.data);
     }
-  }
+  };
 }
