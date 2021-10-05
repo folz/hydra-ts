@@ -1,7 +1,7 @@
 import { GlslSource } from './GlslSource';
 import { typeLookup } from './glsl/transformDefinitions.js';
 export class GeneratorFactory {
-    constructor({ defaultUniforms = {}, defaultOutput, changeListener = () => { }, transforms, }) {
+    constructor({ changeListener = () => { }, defaultUniforms = {}, precision, transforms, }) {
         this.generators = {};
         this.glslTransforms = {};
         this.sourceClass = createSourceClass();
@@ -11,19 +11,19 @@ export class GeneratorFactory {
                 this._addMethod(obj.name, processedGlsl);
             }
         };
-        this.defaultOutput = defaultOutput;
-        this.defaultUniforms = defaultUniforms;
         this.changeListener = changeListener;
+        this.defaultUniforms = defaultUniforms;
         this.generators = Object.entries(this.generators).reduce((prev, [method]) => {
             this.changeListener({ type: 'remove', synth: this, method });
             return prev;
         }, {});
+        this.precision = precision;
         transforms.map((transform) => this.setFunction(transform));
     }
     _addMethod(method, transform) {
         this.glslTransforms[method] = transform;
         // TODO: Pass in precision directly; don't infer from defaultOutput
-        const precision = this.defaultOutput.precision;
+        const precision = this.precision;
         if (transform.type === 'src') {
             this.generators[method] = (...args) => new this.sourceClass({
                 defaultUniforms: this.defaultUniforms,

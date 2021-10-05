@@ -1,38 +1,39 @@
 import type { Uniforms } from 'regl';
 import type { TransformDefinition } from './glsl/transformDefinitions.js';
 import { GlslSource } from './GlslSource';
-import type { Output } from './Output';
 import { ProcessedTransformDefinition, typeLookup } from './glsl/transformDefinitions.js';
+import { Precision } from '../HydraRenderer';
 
 interface GeneratorFactoryOptions {
   changeListener?: GeneratorFactory['changeListener'];
-  defaultOutput: GeneratorFactory['defaultOutput'];
   defaultUniforms?: GeneratorFactory['defaultUniforms'];
+  precision: Precision;
   transforms: TransformDefinition[];
 }
 
 export class GeneratorFactory {
   changeListener: (options: any) => void;
-  defaultOutput: Output;
   defaultUniforms: Uniforms;
   generators: Record<string, () => GlslSource> = {};
   glslTransforms: Record<string, ProcessedTransformDefinition> = {};
+  precision: Precision;
   sourceClass: typeof GlslSource = createSourceClass();
 
   constructor({
-    defaultUniforms = {},
-    defaultOutput,
     changeListener = () => {},
+    defaultUniforms = {},
+    precision,
     transforms,
   }: GeneratorFactoryOptions) {
-    this.defaultOutput = defaultOutput;
-    this.defaultUniforms = defaultUniforms;
     this.changeListener = changeListener;
+    this.defaultUniforms = defaultUniforms;
 
     this.generators = Object.entries(this.generators).reduce((prev, [method]) => {
       this.changeListener({ type: 'remove', synth: this, method });
       return prev;
     }, {});
+
+    this.precision = precision;
 
     transforms.map((transform) => this.setFunction(transform));
   }
@@ -41,7 +42,7 @@ export class GeneratorFactory {
     this.glslTransforms[method] = transform;
 
     // TODO: Pass in precision directly; don't infer from defaultOutput
-    const precision = this.defaultOutput.precision;
+    const precision = this.precision;
     if (transform.type === 'src') {
       this.generators[method] = (...args: any[]) =>
         new this.sourceClass({

@@ -140,8 +140,8 @@ export class HydraRenderer {
         }
         this.output = this.o[0];
         this.generator = new GeneratorFactory({
-            defaultOutput: this.output,
             defaultUniforms: this.output.uniforms,
+            precision: this.output.precision,
             transforms,
             changeListener: ({ type, method, synth, }) => {
                 if (type === 'add') {
