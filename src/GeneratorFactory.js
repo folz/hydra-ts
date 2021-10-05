@@ -13,10 +13,6 @@ export class GeneratorFactory {
         };
         this.changeListener = changeListener;
         this.defaultUniforms = defaultUniforms;
-        this.generators = Object.entries(this.generators).reduce((prev, [method]) => {
-            this.changeListener({ type: 'remove', synth: this, method });
-            return prev;
-        }, {});
         this.precision = precision;
         transforms.map((transform) => this.setFunction(transform));
     }
@@ -32,7 +28,7 @@ export class GeneratorFactory {
                 transform: transform,
                 userArgs: args,
             });
-            this.changeListener({ type: 'add', synth: this, method });
+            this.changeListener({ synth: this, method });
         }
         else {
             // Must be kept as function() because it relies on `this` rebinding

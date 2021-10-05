@@ -143,16 +143,10 @@ export class HydraRenderer {
             defaultUniforms: this.output.uniforms,
             precision: this.output.precision,
             transforms,
-            changeListener: ({ type, method, synth, }) => {
-                if (type === 'add') {
-                    this.synth[method] = synth.generators[method];
-                    if (this.sandbox) {
-                        this.sandbox.add(method);
-                    }
-                }
-                else if (type === 'remove') {
-                    // what to do here? dangerously deleting window methods
-                    //delete window[method]
+            changeListener: ({ method, synth }) => {
+                this.synth[method] = synth.generators[method];
+                if (this.sandbox) {
+                    this.sandbox.add(method);
                 }
             },
         });
