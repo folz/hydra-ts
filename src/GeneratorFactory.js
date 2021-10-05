@@ -1,7 +1,7 @@
 import { GlslSource } from './GlslSource';
 import { typeLookup } from './glsl/transformDefinitions.js';
 export class GeneratorFactory {
-    constructor({ changeListener = () => { }, defaultUniforms = {}, precision, transforms, }) {
+    constructor({ changeListener, defaultUniforms, precision, transforms }) {
         this.generators = {};
         this.glslTransforms = {};
         this.sourceClass = createSourceClass();

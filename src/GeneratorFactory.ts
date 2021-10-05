@@ -5,8 +5,8 @@ import { ProcessedTransformDefinition, typeLookup } from './glsl/transformDefini
 import { Precision } from '../HydraRenderer';
 
 interface GeneratorFactoryOptions {
-  changeListener?: GeneratorFactory['changeListener'];
-  defaultUniforms?: GeneratorFactory['defaultUniforms'];
+  changeListener: GeneratorFactory['changeListener'];
+  defaultUniforms: GeneratorFactory['defaultUniforms'];
   precision: Precision;
   transforms: TransformDefinition[];
 }
@@ -19,12 +19,7 @@ export class GeneratorFactory {
   precision: Precision;
   sourceClass: typeof GlslSource = createSourceClass();
 
-  constructor({
-    changeListener = () => {},
-    defaultUniforms = {},
-    precision,
-    transforms,
-  }: GeneratorFactoryOptions) {
+  constructor({ changeListener, defaultUniforms, precision, transforms }: GeneratorFactoryOptions) {
     this.changeListener = changeListener;
     this.defaultUniforms = defaultUniforms;
 
