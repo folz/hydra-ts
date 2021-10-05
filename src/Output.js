@@ -53,7 +53,7 @@ export class Output {
     }
     // Used by glsl-utils/formatArguments
     getTexture() {
-        const index = (this.pingPongIndex + 1) % 1;
+        const index = this.pingPongIndex ? 0 : 1;
         return this.fbos[index];
     }
     render(passes) {
