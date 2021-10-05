@@ -30,7 +30,6 @@ export class GeneratorFactory {
   _addMethod(method: string, transform: ProcessedTransformDefinition) {
     this.glslTransforms[method] = transform;
 
-    // TODO: Pass in precision directly; don't infer from defaultOutput
     const precision = this.precision;
     if (transform.type === 'src') {
       this.generators[method] = (...args: any[]) =>
