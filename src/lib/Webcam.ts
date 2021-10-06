@@ -3,7 +3,9 @@
 export function Webcam(deviceId: number): Promise<{ video: HTMLVideoElement }> {
   return navigator.mediaDevices
     .enumerateDevices()
-    .then((devices) => devices.filter((devices) => devices.kind === 'videoinput'))
+    .then((devices) =>
+      devices.filter((devices) => devices.kind === 'videoinput'),
+    )
     .then((cameras) => {
       let constraints: MediaStreamConstraints = { audio: false, video: true };
       if (cameras[deviceId]) {

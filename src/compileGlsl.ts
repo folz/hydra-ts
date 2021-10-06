@@ -33,7 +33,9 @@ export function compileGlsl(transforms: TransformApplication[]) {
   shaderParams.fragColor = gen;
   // remove uniforms with duplicate names
   let uniforms: Record<string, TypedArg> = {};
-  shaderParams.uniforms.forEach((uniform) => (uniforms[uniform.name] = uniform));
+  shaderParams.uniforms.forEach(
+    (uniform) => (uniforms[uniform.name] = uniform),
+  );
   shaderParams.uniforms = Object.values(uniforms);
   return shaderParams;
 }
@@ -65,32 +67,47 @@ function generateGlsl(
     // current function for generating frag color shader code
     const f0 = fragColor;
     if (transform.transform.type === 'src') {
-      fragColor = (uv) => `${shaderString(uv, transform.name, inputs, shaderParams)}`;
+      fragColor = (uv) =>
+        `${shaderString(uv, transform.name, inputs, shaderParams)}`;
     } else if (transform.transform.type === 'coord') {
-      fragColor = (uv) => `${f0(`${shaderString(uv, transform.name, inputs, shaderParams)}`)}`;
+      fragColor = (uv) =>
+        `${f0(`${shaderString(uv, transform.name, inputs, shaderParams)}`)}`;
     } else if (transform.transform.type === 'color') {
-      fragColor = (uv) => `${shaderString(`${f0(uv)}`, transform.name, inputs, shaderParams)}`;
+      fragColor = (uv) =>
+        `${shaderString(`${f0(uv)}`, transform.name, inputs, shaderParams)}`;
     } else if (transform.transform.type === 'combine') {
       // combining two generated shader strings (i.e. for blend, mult, add funtions)
       f1 =
         inputs[0].value && inputs[0].value.transforms
-          ? (uv: string) => `${generateGlsl(inputs[0].value.transforms, shaderParams)(uv)}`
+          ? (uv: string) =>
+              `${generateGlsl(inputs[0].value.transforms, shaderParams)(uv)}`
           : inputs[0].isUniform
           ? () => inputs[0].name
           : () => inputs[0].value;
       fragColor = (uv) =>
-        `${shaderString(`${f0(uv)}, ${f1(uv)}`, transform.name, inputs.slice(1), shaderParams)}`;
+        `${shaderString(
+          `${f0(uv)}, ${f1(uv)}`,
+          transform.name,
+          inputs.slice(1),
+          shaderParams,
+        )}`;
     } else if (transform.transform.type === 'combineCoord') {
       // combining two generated shader strings (i.e. for modulate functions)
       f1 =
         inputs[0].value && inputs[0].value.transforms
-          ? (uv: string) => `${generateGlsl(inputs[0].value.transforms, shaderParams)(uv)}`
+          ? (uv: string) =>
+              `${generateGlsl(inputs[0].value.transforms, shaderParams)(uv)}`
           : inputs[0].isUniform
           ? () => inputs[0].name
           : () => inputs[0].value;
       fragColor = (uv) =>
         `${f0(
-          `${shaderString(`${uv}, ${f1(uv)}`, transform.name, inputs.slice(1), shaderParams)}`,
+          `${shaderString(
+            `${uv}, ${f1(uv)}`,
+            transform.name,
+            inputs.slice(1),
+            shaderParams,
+          )}`,
         )}`;
     }
   });
@@ -156,7 +173,10 @@ export interface TypedArg {
   vecLen: number;
 }
 
-function formatArguments(transform: TransformApplication, startIndex: number): TypedArg[] {
+function formatArguments(
+  transform: TransformApplication,
+  startIndex: number,
+): TypedArg[] {
   const defaultArgs = transform.transform.inputs;
   const userArgs = transform.userArgs;
   return defaultArgs.map((input, index) => {
@@ -169,12 +189,15 @@ function formatArguments(transform: TransformApplication, startIndex: number): T
       //  compileGlsl: null // function for creating glsl
     };
 
-    if (typedArg.type === 'float') typedArg.value = ensure_decimal_dot(input.default);
+    if (typedArg.type === 'float')
+      typedArg.value = ensure_decimal_dot(input.default);
     if (input.type.startsWith('vec')) {
       try {
         typedArg.vecLen = Number.parseInt(input.type.substr(3));
       } catch (e) {
-        console.log(`Error determining length of vector input type ${input.type} (${input.name})`);
+        console.log(
+          `Error determining length of vector input type ${input.type} (${input.name})`,
+        );
       }
     }
 
@@ -204,10 +227,14 @@ function formatArguments(transform: TransformApplication, startIndex: number): T
         if (typedArg.vecLen > 0) {
           // expected input is a vector, not a scalar
           typedArg.isUniform = true;
-          typedArg.value = fillArrayWithDefaults(typedArg.value, typedArg.vecLen);
+          typedArg.value = fillArrayWithDefaults(
+            typedArg.value,
+            typedArg.vecLen,
+          );
         } else {
           // is Array
-          typedArg.value = (context, props) => arrayUtils.getValue(userArgs[index])(props);
+          typedArg.value = (context, props) =>
+            arrayUtils.getValue(userArgs[index])(props);
           typedArg.isUniform = true;
         }
       }
@@ -217,12 +244,14 @@ function formatArguments(transform: TransformApplication, startIndex: number): T
       // pass
     } else {
       if (typedArg.value && typedArg.value.transforms) {
-        const final_transform = typedArg.value.transforms[typedArg.value.transforms.length - 1];
+        const final_transform =
+          typedArg.value.transforms[typedArg.value.transforms.length - 1];
 
         if (final_transform.transform.glsl_return_type !== input.type) {
           const defaults = DEFAULT_CONVERSIONS[input.type];
           if (typeof defaults !== 'undefined') {
-            const default_def = defaults[final_transform.transform.glsl_return_type];
+            const default_def =
+              defaults[final_transform.transform.glsl_return_type];
             if (typeof default_def !== 'undefined') {
               const { name, args } = default_def;
               typedArg.value = typedArg.value[name](...args);
@@ -231,7 +260,10 @@ function formatArguments(transform: TransformApplication, startIndex: number): T
         }
 
         typedArg.isUniform = false;
-      } else if (typedArg.type === 'float' && typeof typedArg.value === 'number') {
+      } else if (
+        typedArg.type === 'float' &&
+        typeof typedArg.value === 'number'
+      ) {
         typedArg.value = ensure_decimal_dot(typedArg.value);
       } else if (
         typedArg.type.startsWith('vec') &&
@@ -239,7 +271,9 @@ function formatArguments(transform: TransformApplication, startIndex: number): T
         Array.isArray(typedArg.value)
       ) {
         typedArg.isUniform = false;
-        typedArg.value = `${typedArg.type}(${typedArg.value.map(ensure_decimal_dot).join(', ')})`;
+        typedArg.value = `${typedArg.type}(${typedArg.value
+          .map(ensure_decimal_dot)
+          .join(', ')})`;
       } else if (input.type === 'sampler2D') {
         // typedArg.tex = typedArg.value
         const x = typedArg.value;

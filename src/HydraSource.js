@@ -70,7 +70,9 @@ export class HydraSource {
     clear() {
         if (this.src && 'srcObject' in this.src && this.src.srcObject) {
             if ('getTracks' in this.src.srcObject && this.src.srcObject.getTracks) {
-                this.src.srcObject.getTracks().forEach((track) => track.stop());
+                this.src.srcObject
+                    .getTracks()
+                    .forEach((track) => track.stop());
             }
         }
         this.src = null;

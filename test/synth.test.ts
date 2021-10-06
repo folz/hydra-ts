@@ -27,9 +27,9 @@ describe.skip('Synth', function () {
 
     expect(synth.generators).toEqual(expect.arrayContaining(srcNames));
 
-    expect(events.filter(({ type }) => type === 'add').map(({ method }) => method)).toEqual(
-      srcNames,
-    );
+    expect(
+      events.filter(({ type }) => type === 'add').map(({ method }) => method),
+    ).toEqual(srcNames);
   });
 
   it('Can be extended', () => {
@@ -42,9 +42,9 @@ describe.skip('Synth', function () {
 
     expect(synth.generators).toEqual(expect.arrayContaining(srcNames));
 
-    expect(events.filter(({ type }) => type === 'add').map(({ method }) => method)).toEqual(
-      srcNames,
-    );
+    expect(
+      events.filter(({ type }) => type === 'add').map(({ method }) => method),
+    ).toEqual(srcNames);
 
     [
       {
@@ -66,13 +66,15 @@ describe.skip('Synth', function () {
       events.length = 0;
       synth.init();
 
-      expect(events.filter(({ type }) => type === 'remove').map(({ method }) => method)).toEqual(
-        srcNames,
-      );
+      expect(
+        events
+          .filter(({ type }) => type === 'remove')
+          .map(({ method }) => method),
+      ).toEqual(srcNames);
 
-      expect(events.filter(({ type }) => type === 'add').map(({ method }) => method)).toEqual(
-        expect.arrayContaining([...srcNames, 'foo']),
-      );
+      expect(
+        events.filter(({ type }) => type === 'add').map(({ method }) => method),
+      ).toEqual(expect.arrayContaining([...srcNames, 'foo']));
     });
 
     synth.setFunction('bar', {

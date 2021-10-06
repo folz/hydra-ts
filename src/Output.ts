@@ -1,4 +1,11 @@
-import { Attributes, Buffer, DrawCommand, Framebuffer2D, Regl, Uniforms } from 'regl';
+import {
+  Attributes,
+  Buffer,
+  DrawCommand,
+  Framebuffer2D,
+  Regl,
+  Uniforms,
+} from 'regl';
 import { Precision } from '../HydraRenderer';
 import { CompiledTransform } from './GlslSource';
 

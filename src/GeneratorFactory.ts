@@ -1,7 +1,10 @@
 import type { Uniforms } from 'regl';
 import type { TransformDefinition } from './glsl/transformDefinitions.js';
 import { GlslSource } from './GlslSource';
-import { ProcessedTransformDefinition, typeLookup } from './glsl/transformDefinitions.js';
+import {
+  ProcessedTransformDefinition,
+  typeLookup,
+} from './glsl/transformDefinitions.js';
 import { Precision } from '../HydraRenderer';
 
 interface GeneratorFactoryOptions {
@@ -19,7 +22,12 @@ export class GeneratorFactory {
   precision: Precision;
   sourceClass: typeof GlslSource = createSourceClass();
 
-  constructor({ changeListener, defaultUniforms, precision, transforms }: GeneratorFactoryOptions) {
+  constructor({
+    changeListener,
+    defaultUniforms,
+    precision,
+    transforms,
+  }: GeneratorFactoryOptions) {
     this.changeListener = changeListener;
     this.defaultUniforms = defaultUniforms;
     this.precision = precision;
@@ -65,12 +73,16 @@ export class GeneratorFactory {
   };
 }
 
-export function processGlsl(obj: TransformDefinition): ProcessedTransformDefinition {
+export function processGlsl(
+  obj: TransformDefinition,
+): ProcessedTransformDefinition {
   let t = typeLookup[obj.type];
 
   let baseArgs = t.args.map((arg) => arg).join(', ');
   // @todo: make sure this works for all input types, add validation
-  let customArgs = obj.inputs.map((input) => `${input.type} ${input.name}`).join(', ');
+  let customArgs = obj.inputs
+    .map((input) => `${input.type} ${input.name}`)
+    .join(', ');
   let args = `${baseArgs}${customArgs.length > 0 ? ', ' + customArgs : ''}`;
 
   let glslFunction = `

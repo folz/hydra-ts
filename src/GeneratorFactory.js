@@ -1,7 +1,7 @@
 import { GlslSource } from './GlslSource';
-import { typeLookup } from './glsl/transformDefinitions.js';
+import { typeLookup, } from './glsl/transformDefinitions.js';
 export class GeneratorFactory {
-    constructor({ changeListener, defaultUniforms, precision, transforms }) {
+    constructor({ changeListener, defaultUniforms, precision, transforms, }) {
         this.generators = {};
         this.glslTransforms = {};
         this.sourceClass = createSourceClass();
@@ -48,7 +48,9 @@ export function processGlsl(obj) {
     let t = typeLookup[obj.type];
     let baseArgs = t.args.map((arg) => arg).join(', ');
     // @todo: make sure this works for all input types, add validation
-    let customArgs = obj.inputs.map((input) => `${input.type} ${input.name}`).join(', ');
+    let customArgs = obj.inputs
+        .map((input) => `${input.type} ${input.name}`)
+        .join(', ');
     let args = `${baseArgs}${customArgs.length > 0 ? ', ' + customArgs : ''}`;
     let glslFunction = `
   ${t.returnType} ${obj.name}(${args}) {

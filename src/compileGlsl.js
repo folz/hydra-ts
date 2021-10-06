@@ -196,14 +196,17 @@ function formatArguments(transform, startIndex) {
                 }
                 typedArg.isUniform = false;
             }
-            else if (typedArg.type === 'float' && typeof typedArg.value === 'number') {
+            else if (typedArg.type === 'float' &&
+                typeof typedArg.value === 'number') {
                 typedArg.value = ensure_decimal_dot(typedArg.value);
             }
             else if (typedArg.type.startsWith('vec') &&
                 typeof typedArg.value === 'object' &&
                 Array.isArray(typedArg.value)) {
                 typedArg.isUniform = false;
-                typedArg.value = `${typedArg.type}(${typedArg.value.map(ensure_decimal_dot).join(', ')})`;
+                typedArg.value = `${typedArg.type}(${typedArg.value
+                    .map(ensure_decimal_dot)
+                    .join(', ')})`;
             }
             else if (input.type === 'sampler2D') {
                 // typedArg.tex = typedArg.value

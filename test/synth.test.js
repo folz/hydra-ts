@@ -47,7 +47,9 @@ describe.skip('Synth', function () {
         ].forEach((ext) => {
             events.length = 0;
             synth.init();
-            expect(events.filter(({ type }) => type === 'remove').map(({ method }) => method)).toEqual(srcNames);
+            expect(events
+                .filter(({ type }) => type === 'remove')
+                .map(({ method }) => method)).toEqual(srcNames);
             expect(events.filter(({ type }) => type === 'add').map(({ method }) => method)).toEqual(expect.arrayContaining([...srcNames, 'foo']));
         });
         synth.setFunction('bar', {

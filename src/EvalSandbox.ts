@@ -8,7 +8,11 @@ export class EvalSandbox {
   sandbox: ReturnType<typeof Sandbox>;
   userProps: string[];
 
-  constructor(parent: Record<string, any>, makeGlobal: boolean, userProps: string[] = []) {
+  constructor(
+    parent: Record<string, any>,
+    makeGlobal: boolean,
+    userProps: string[] = [],
+  ) {
     this.makeGlobal = makeGlobal;
     this.sandbox = Sandbox(parent);
     this.parent = parent;

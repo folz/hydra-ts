@@ -1,6 +1,8 @@
 import REGL from 'regl';
 import tinykeys from 'tinykeys';
 import Hydra from '../index';
+import * as space from '../src/glsl/space';
+import * as color from '../src/glsl/color';
 
 import jelly from './image3A3853_Glitch.jpg';
 import './style.css';
@@ -19,7 +21,7 @@ const regl = REGL(canvas);
 const hydra = new Hydra({
   width: WIDTH,
   height: HEIGHT,
-  precision: 'highp',
+  precision: 'mediump',
   regl,
 });
 hydra.loop.start();
@@ -28,22 +30,22 @@ const { src, solid, o0, o1, s0, render } = hydra.synth;
 
 s0.initImage(jelly);
 
-const base = src(s0)
-  .then()
-  .rotate(0.1, 0.05)
-  .scrollX(0.1, -0.05)
-  .koch(2, 12)
-  .koch(1, 12)
-  .rotate(Math.PI / 6)
-  .rotate(Math.PI / 2)
-  .luma(0.3);
-base.out(o0);
+const shader = src(s0)
+  // .scrollX(0.01, 0.01)
+  // .scrollY(0.01, 0.01)
+  .then(
+    space.Rotate(0.1, -0.05),
+    space.Scale([1, 2].ease('easeInOutCubic')),
+    color.Shift(1, 0, 1),
+  );
+// .koch(1, 4)
+// .koch(0.5, 5)
+// .modulateRepeat(osc(2))
+// .rotate((Math.PI * 5) / 6),
 
-const shader = src(o0).mult(solid(), 0.1).layer(base, 0.6);
+shader.out(o0);
 
-shader.out(o1);
-
-render(o1);
+render(o0);
 
 const debugLog = document.createElement('pre');
 const frag = shader.glsl()[0].frag;

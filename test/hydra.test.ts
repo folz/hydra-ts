@@ -35,7 +35,9 @@ describe.skip('HydraSynth', function () {
         regl,
       });
 
-      const new_keys = Object.keys(window).filter((x) => prev_keys.indexOf(x) < 0);
+      const new_keys = Object.keys(window).filter(
+        (x) => prev_keys.indexOf(x) < 0,
+      );
 
       expect(new_keys).toHaveLength(0);
     });
@@ -49,7 +51,9 @@ describe.skip('HydraSynth', function () {
         regl,
       });
 
-      const new_keys = Object.keys(window).filter((x) => prev_keys.indexOf(x) < 0);
+      const new_keys = Object.keys(window).filter(
+        (x) => prev_keys.indexOf(x) < 0,
+      );
 
       expect(new_keys).toEqual(
         expect.arrayContaining([

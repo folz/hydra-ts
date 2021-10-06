@@ -12,7 +12,12 @@ export class HydraSource {
   regl: Regl;
   width: number;
   height: number;
-  src: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | CanvasRenderingContext2D | null;
+  src:
+    | HTMLImageElement
+    | HTMLVideoElement
+    | HTMLCanvasElement
+    | CanvasRenderingContext2D
+    | null;
   dynamic: boolean;
   tex: Texture2D;
 
@@ -91,7 +96,9 @@ export class HydraSource {
   clear() {
     if (this.src && 'srcObject' in this.src && this.src.srcObject) {
       if ('getTracks' in this.src.srcObject && this.src.srcObject.getTracks) {
-        this.src.srcObject.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+        this.src.srcObject
+          .getTracks()
+          .forEach((track: MediaStreamTrack) => track.stop());
       }
     }
     this.src = null;
