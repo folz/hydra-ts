@@ -112,7 +112,10 @@ export interface ITransformDefinitionInput {
 
 type TransformDefinitionInputTypeFloat = {
   type: 'float';
-  default?: number | number[] | ((context: any, props: any) => number | number[]);
+  default?:
+    | number
+    | number[]
+    | ((context: any, props: any) => number | number[]);
 };
 
 type TransformDefinitionInputTypeSampler2D = {
@@ -143,7 +146,7 @@ export type TransformDefinitionInput = TransformDefinitionInputUnion & {
 export interface TransformDefinition {
   name: string;
   type: TransformDefinitionType;
-  inputs: TransformDefinitionInput[];
+  inputs: readonly TransformDefinitionInput[];
   glsl: string;
 }
 

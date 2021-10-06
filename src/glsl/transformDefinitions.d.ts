@@ -52,7 +52,7 @@ export declare type TransformDefinitionInput = TransformDefinitionInputUnion & {
 export interface TransformDefinition {
     name: string;
     type: TransformDefinitionType;
-    inputs: TransformDefinitionInput[];
+    inputs: readonly TransformDefinitionInput[];
     glsl: string;
 }
 export interface ProcessedTransformDefinition extends TransformDefinition {
