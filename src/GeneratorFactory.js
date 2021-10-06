@@ -47,12 +47,14 @@ export function processGlsl(obj) {
       ${obj.glsl}
   }
 `;
+    // TODO: remove if determined unnecessary
     // add extra input to beginning for backward combatibility @todo update compiler so this is no longer necessary
-    if (obj.type === 'combine' || obj.type === 'combineCoord')
-        obj.inputs.unshift({
-            name: 'color',
-            type: 'vec4',
-        });
+    // if (obj.type === 'combine' || obj.type === 'combineCoord') {
+    //   obj.inputs.unshift({
+    //     name: 'color',
+    //     type: 'vec4',
+    //   });
+    // }
     return Object.assign(Object.assign({}, obj), { glsl: glslFunction, processed: true });
 }
 function createSourceClass() {
