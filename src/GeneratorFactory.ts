@@ -50,17 +50,11 @@ export class GeneratorFactory {
         });
       this.changeListener({ synth: this, method });
     } else {
-      // Must be kept as function() because it relies on `this` rebinding
-      // @ts-ignore
-      this.sourceClass.prototype[method] = function (...args: any[]) {
-        this.transforms.push({
-          name: method,
-          precision,
-          transform: transform,
-          userArgs: args,
-        });
-        return this;
-      };
+      this.sourceClass.createTransformOnPrototype(
+        this.sourceClass,
+        method,
+        transform,
+      );
     }
   }
 

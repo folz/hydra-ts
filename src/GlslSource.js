@@ -79,3 +79,16 @@ export class GlslSource {
         };
     }
 }
+GlslSource.createTransformOnPrototype = (cls, name, transform) => {
+    function Transform(...args) {
+        this.transforms.push({
+            name,
+            precision: this.precision,
+            transform: transform,
+            userArgs: args,
+        });
+        return this;
+    }
+    // @ts-ignore
+    cls.prototype[name] = Transform;
+};
