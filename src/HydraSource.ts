@@ -28,15 +28,18 @@ export class HydraSource {
     });
   }
 
-  init(opts: { src: HydraSource['src']; dynamic: boolean }) {
+  init = (opts: { src: HydraSource['src']; dynamic: boolean }) => {
     if (opts.src) {
       this.src = opts.src;
       this.tex = this.regl.texture(this.src);
     }
-    if (opts.dynamic) this.dynamic = opts.dynamic;
-  }
 
-  initCam(index: number) {
+    if (opts.dynamic) {
+      this.dynamic = opts.dynamic;
+    }
+  };
+
+  initCam = (index: number) => {
     Webcam(index)
       .then((response) => {
         this.src = response.video;
@@ -44,9 +47,9 @@ export class HydraSource {
         this.tex = this.regl.texture(response.video);
       })
       .catch((err) => console.log('could not get camera', err));
-  }
+  };
 
-  initVideo(url = '') {
+  initVideo = (url = '') => {
     const vid = document.createElement('video');
     vid.crossOrigin = 'anonymous';
     vid.autoplay = true;
@@ -60,9 +63,9 @@ export class HydraSource {
       this.dynamic = true;
     });
     vid.src = url;
-  }
+  };
 
-  initImage(url = '') {
+  initImage = (url = '') => {
     const img = document.createElement('img');
     img.crossOrigin = 'anonymous';
     img.src = url;
@@ -71,9 +74,9 @@ export class HydraSource {
       this.dynamic = false;
       this.tex = this.regl.texture(this.src);
     };
-  }
+  };
 
-  initScreen() {
+  initScreen = () => {
     Screen()
       .then((response) => {
         this.src = response.video;
@@ -81,14 +84,14 @@ export class HydraSource {
         this.dynamic = true;
       })
       .catch((err) => console.log('could not get screen', err));
-  }
+  };
 
-  resize(width: number, height: number) {
+  resize = (width: number, height: number) => {
     this.width = width;
     this.height = height;
-  }
+  };
 
-  clear() {
+  clear = () => {
     if (this.src && 'srcObject' in this.src && this.src.srcObject) {
       if ('getTracks' in this.src.srcObject && this.src.srcObject.getTracks) {
         this.src.srcObject
@@ -98,24 +101,32 @@ export class HydraSource {
     }
     this.src = undefined;
     this.tex = this.regl.texture({ shape: [1, 1] });
-  }
+  };
 
-  tick(dt?: number) {
+  tick = (dt: number) => {
     if (this.src && this.dynamic) {
-      if ('videoWidth' in this.src && this.src.videoWidth !== this.tex.width) {
+      if (
+        'videoWidth' in this.src &&
+        this.src.videoWidth &&
+        this.src.videoWidth !== this.tex.width
+      ) {
         this.tex.resize(this.src.videoWidth, this.src.videoHeight);
       }
 
-      if ('width' in this.src && this.src.width !== this.tex.width) {
+      if (
+        'width' in this.src &&
+        this.src.width &&
+        this.src.width !== this.tex.width
+      ) {
         this.tex.resize(this.src.width, this.src.height);
       }
 
       this.tex.subimage(this.src);
     }
-  }
+  };
 
   // Used by glsl-utils/formatArguments
-  getTexture() {
+  getTexture = () => {
     return this.tex;
-  }
+  };
 }

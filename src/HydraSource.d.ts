@@ -12,17 +12,17 @@ export declare class HydraSource {
     dynamic: boolean;
     tex: Texture2D;
     constructor({ regl, width, height }: HydraSourceOptions);
-    init(opts: {
+    init: (opts: {
         src: HydraSource['src'];
         dynamic: boolean;
-    }): void;
-    initCam(index: number): void;
-    initVideo(url?: string): void;
-    initImage(url?: string): void;
-    initScreen(): void;
-    resize(width: number, height: number): void;
-    clear(): void;
-    tick(dt?: number): void;
-    getTexture(): Texture2D;
+    }) => void;
+    initCam: (index: number) => void;
+    initVideo: (url?: string) => void;
+    initImage: (url?: string) => void;
+    initScreen: () => void;
+    resize: (width: number, height: number) => void;
+    clear: () => void;
+    tick: (dt: number) => void;
+    getTexture: () => Texture2D;
 }
 export {};
