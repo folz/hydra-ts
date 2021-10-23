@@ -30,7 +30,6 @@ export class EvalSandbox {
                 // @ts-ignore
                 this.parent[property] = window[property];
             });
-            //  this.parent.speed = window.speed
         }
         else {
             // pass
