@@ -3,7 +3,7 @@ import { Screen } from './lib/Screen';
 export class HydraSource {
     constructor({ regl, width, height }) {
         this.regl = regl;
-        this.src = null;
+        this.src = undefined;
         this.dynamic = true;
         this.width = width;
         this.height = height;
@@ -75,11 +75,11 @@ export class HydraSource {
                     .forEach((track) => track.stop());
             }
         }
-        this.src = null;
+        this.src = undefined;
         this.tex = this.regl.texture({ shape: [1, 1] });
     }
     tick(dt) {
-        if (this.src !== null && this.dynamic) {
+        if (this.src && this.dynamic) {
             if ('videoWidth' in this.src && this.src.videoWidth !== this.tex.width) {
                 this.tex.resize(this.src.videoWidth, this.src.videoHeight);
             }

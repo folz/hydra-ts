@@ -1,4 +1,4 @@
-import { Regl, Texture2D } from 'regl';
+import { Regl, Texture2D, TextureImageData } from 'regl';
 interface HydraSourceOptions {
     regl: HydraSource['regl'];
     width: HydraSource['width'];
@@ -8,7 +8,7 @@ export declare class HydraSource {
     regl: Regl;
     width: number;
     height: number;
-    src: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | CanvasRenderingContext2D | null;
+    src?: TextureImageData;
     dynamic: boolean;
     tex: Texture2D;
     constructor({ regl, width, height }: HydraSourceOptions);

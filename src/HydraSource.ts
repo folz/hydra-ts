@@ -1,6 +1,6 @@
 import { Webcam } from './lib/Webcam';
 import { Screen } from './lib/Screen';
-import { Regl, Texture2D } from 'regl';
+import { Regl, Texture2D, TextureImageData } from 'regl';
 
 interface HydraSourceOptions {
   regl: HydraSource['regl'];
@@ -12,18 +12,13 @@ export class HydraSource {
   regl: Regl;
   width: number;
   height: number;
-  src:
-    | HTMLImageElement
-    | HTMLVideoElement
-    | HTMLCanvasElement
-    | CanvasRenderingContext2D
-    | null;
+  src?: TextureImageData;
   dynamic: boolean;
   tex: Texture2D;
 
   constructor({ regl, width, height }: HydraSourceOptions) {
     this.regl = regl;
-    this.src = null;
+    this.src = undefined;
     this.dynamic = true;
     this.width = width;
     this.height = height;
@@ -101,12 +96,12 @@ export class HydraSource {
           .forEach((track: MediaStreamTrack) => track.stop());
       }
     }
-    this.src = null;
+    this.src = undefined;
     this.tex = this.regl.texture({ shape: [1, 1] });
   }
 
   tick(dt?: number) {
-    if (this.src !== null && this.dynamic) {
+    if (this.src && this.dynamic) {
       if ('videoWidth' in this.src && this.src.videoWidth !== this.tex.width) {
         this.tex.resize(this.src.videoWidth, this.src.videoHeight);
       }
