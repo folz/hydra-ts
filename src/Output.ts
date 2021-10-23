@@ -1,11 +1,4 @@
-import {
-  Attributes,
-  Buffer,
-  DrawCommand,
-  Framebuffer2D,
-  Regl,
-  Uniforms,
-} from 'regl';
+import { Attributes, Buffer, DrawCommand, Framebuffer2D, Regl } from 'regl';
 import { Precision } from '../HydraRenderer';
 import { CompiledTransform } from './GlslSource';
 
@@ -24,7 +17,7 @@ export class Output {
   pingPongIndex: number = 0;
   fbos: Framebuffer2D[];
   vert: string;
-  uniforms: Uniforms;
+  uniforms: Record<string, any>;
   attributes: Attributes;
 
   constructor({ regl, precision, width, height }: OutputOptions) {

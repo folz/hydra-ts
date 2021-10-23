@@ -3,20 +3,12 @@ import { Loop } from './src/Loop';
 import { HydraSource } from './src/HydraSource';
 import ArrayUtils from './src/lib/array-utils';
 import { EvalSandbox } from './src/EvalSandbox';
-import { DrawCommand, Framebuffer, Regl } from 'regl';
+import { DrawCommand, Regl } from 'regl';
 
 import { GeneratorFactory } from './src/GeneratorFactory';
 import { transforms } from './src/glsl/transformDefinitions';
 
 export type Precision = 'lowp' | 'mediump' | 'highp';
-
-type ReglProps = {
-  tex0: Framebuffer;
-  tex1: Framebuffer;
-  tex2: Framebuffer;
-  tex3: Framebuffer;
-  resolution: [number, number];
-};
 
 export interface Synth {
   time: number;
@@ -131,8 +123,10 @@ export class HydraRenderer {
         ],
       },
       uniforms: {
-        tex0: this.regl.prop<ReglProps, keyof ReglProps>('tex0'),
-        resolution: this.regl.prop<ReglProps, keyof ReglProps>('resolution'),
+        // @ts-ignore
+        tex0: this.regl.prop('tex0'),
+        // @ts-ignore
+        resolution: this.regl.prop('resolution'),
       },
       count: 3,
       depth: { enable: false },
@@ -165,7 +159,13 @@ export class HydraRenderer {
       defaultUniforms: this.output.uniforms,
       precision: this.output.precision,
       transforms,
-      changeListener: ({ method, synth }: { method: string; synth: GeneratorFactory }) => {
+      changeListener: ({
+        method,
+        synth,
+      }: {
+        method: string;
+        synth: GeneratorFactory;
+      }) => {
         this.synth[method] = synth.generators[method];
         if (this.sandbox) {
           this.sandbox.add(method);
@@ -176,7 +176,11 @@ export class HydraRenderer {
     this.loop = new Loop(this.tick);
 
     // final argument is properties that the user can set, all others are treated as read-only
-    this.sandbox = new EvalSandbox(this.synth, makeGlobal, ['speed', 'bpm', 'fps']);
+    this.sandbox = new EvalSandbox(this.synth, makeGlobal, [
+      'speed',
+      'bpm',
+      'fps',
+    ]);
   }
 
   hush = () => {
@@ -214,7 +218,10 @@ export class HydraRenderer {
   // dt in ms
   tick = (dt: number) => {
     this.sandbox.tick();
-    this.sandbox.set('time', (this.synth.time += dt * 0.001 * this.synth.speed));
+    this.sandbox.set(
+      'time',
+      (this.synth.time += dt * 0.001 * this.synth.speed),
+    );
     this.timeSinceLastUpdate += dt;
 
     if (!this.synth.fps || this.timeSinceLastUpdate >= 1000 / this.synth.fps) {

@@ -113,7 +113,9 @@ export class HydraRenderer {
                 ],
             },
             uniforms: {
+                // @ts-ignore
                 tex0: this.regl.prop('tex0'),
+                // @ts-ignore
                 resolution: this.regl.prop('resolution'),
             },
             count: 3,
@@ -143,7 +145,7 @@ export class HydraRenderer {
             defaultUniforms: this.output.uniforms,
             precision: this.output.precision,
             transforms,
-            changeListener: ({ method, synth }) => {
+            changeListener: ({ method, synth, }) => {
                 this.synth[method] = synth.generators[method];
                 if (this.sandbox) {
                     this.sandbox.add(method);
@@ -152,6 +154,10 @@ export class HydraRenderer {
         });
         this.loop = new Loop(this.tick);
         // final argument is properties that the user can set, all others are treated as read-only
-        this.sandbox = new EvalSandbox(this.synth, makeGlobal, ['speed', 'bpm', 'fps']);
+        this.sandbox = new EvalSandbox(this.synth, makeGlobal, [
+            'speed',
+            'bpm',
+            'fps',
+        ]);
     }
 }
