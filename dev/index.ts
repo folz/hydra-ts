@@ -1,8 +1,7 @@
 import REGL from 'regl';
 import tinykeys from 'tinykeys';
 import Hydra from '../index';
-import * as space from '../src/glsl/space';
-import * as color from '../src/glsl/color';
+import * as t from '../src/glsl/t';
 
 // @ts-ignore
 import jelly from './image3A3853_Glitch.jpg';
@@ -33,7 +32,7 @@ s0.initImage(jelly);
 
 //prettier-ignore
 const shader = osc(12, 0.1, Math.PI/2)
-  .then(space.Rotate())
+  .then(t.Rotate())
   .scrollX(0.01, 0.01)
   .scrollY(0.01, 0.01)
 // .then(
