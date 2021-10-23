@@ -50,6 +50,10 @@ export class GlslSource {
     return this;
   }
 
+  skip(...transforms: TransformApplication[]) {
+    return this;
+  }
+
   out(output: Output) {
     const glsl = this.glsl();
 

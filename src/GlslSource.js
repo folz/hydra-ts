@@ -11,6 +11,9 @@ export class GlslSource {
         this.transforms.push(...transforms);
         return this;
     }
+    skip(...transforms) {
+        return this;
+    }
     out(output) {
         const glsl = this.glsl();
         try {
