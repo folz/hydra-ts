@@ -1,8 +1,8 @@
 {
-  "name": "hydra-synth",
+  "name": "hiasynth",
   "license": "AGPL",
   "version": "1.3.8",
-  "description": "base synth for hydra-editor",
+  "description": "hiasynth visual synth",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ojack/hydra-synth.git"
+    "url": "git+https://github.com/folz/hiasynth.git"
   },
   "keywords": [
     "webgl",
@@ -21,12 +21,11 @@
     "livecoding",
     "synth"
   ],
-  "unpkg": "dist/hydra-synth.js",
-  "author": "ojack",
+  "author": "folz",
   "bugs": {
-    "url": "https://github.com/ojack/hydra-synth/issues"
+    "url": "https://github.com/folz/hiasynth/issues"
   },
-  "homepage": "https://github.com/ojack/hydra-synth#readme",
+  "homepage": "https://github.com/folz/hiasynth#readme",
   "dependencies": {
     "regl": "^1.3.9",
     "tinykeys": "^1.2.0"
@@ -34,21 +33,21 @@
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.1",
     "@types/gl": "^4.1.0",
-    "@types/jest": "^27.0.1",
-    "@types/node": "^16.7.13",
-    "eslint": "^7.26.0",
-    "eslint-plugin-mocha": "^8.1.0",
-    "gl": "^4.4.0",
+    "@types/jest": "^27.0.2",
+    "@types/node": "^16.11.4",
+    "eslint": "^7.32.0",
+    "eslint-plugin-mocha": "^8.2.0",
+    "gl": "^4.9.2",
     "glslify": "^6.3.1",
-    "jest": "^27.2.0",
-    "jest-environment-jsdom": "^27.2.0",
+    "jest": "^27.3.1",
+    "jest-environment-jsdom": "^27.3.1",
     "jest-environment-jsdom-global": "^3.0.0",
     "jsdom": "^17.0.0",
     "jsdom-global": "^3.0.2",
     "nyc": "^14.1.1",
-    "prettier": "^2.3.0",
-    "typescript": "^4.4.2",
-    "vite": "^2.6.2"
+    "prettier": "^2.4.1",
+    "typescript": "^4.4.4",
+    "vite": "^2.6.10"
   },
   "nyc": {
     "include": [
