@@ -2,7 +2,7 @@ import REGL from 'regl';
 import tinykeys from 'tinykeys';
 import Hydra from '../index';
 import * as space from '../src/glsl/space';
-import * as color from '../src/glsl/color';
+// @ts-ignore
 import jelly from './image3A3853_Glitch.jpg';
 import './style.css';
 const WIDTH = 1080;
@@ -20,12 +20,17 @@ const hydra = new Hydra({
     regl,
 });
 hydra.loop.start();
-const { src, solid, o0, o1, s0, render } = hydra.synth;
+const { osc, src, solid, o0, o1, s0, render } = hydra.synth;
 s0.initImage(jelly);
-const shader = src(s0)
-    // .scrollX(0.01, 0.01)
-    // .scrollY(0.01, 0.01)
-    .then(space.Rotate(0.1, -0.05), space.Scale([1, 2].ease('easeInOutCubic')), color.Shift(1, 0, 1));
+//prettier-ignore
+const shader = osc(12, 0.1, Math.PI / 2)
+    .then(space.Rotate())
+    .scrollX(0.01, 0.01)
+    .scrollY(0.01, 0.01);
+// .then(
+//   color.Posterize(12 * Math.PI),
+//   color.Invert()
+// ).pixelate(12 * Math.PI);
 // .koch(1, 4)
 // .koch(0.5, 5)
 // .modulateRepeat(osc(2))
