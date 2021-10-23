@@ -85,14 +85,14 @@ export function processGlsl(
   }
 `;
 
-  // TODO: remove if determined unnecessary
-  // add extra input to beginning for backward combatibility @todo update compiler so this is no longer necessary
-  // if (obj.type === 'combine' || obj.type === 'combineCoord') {
-  //   obj.inputs.unshift({
-  //     name: 'color',
-  //     type: 'vec4',
-  //   });
-  // }
+  // add extra input to beginning for backward compatibility
+  if (obj.type === 'combine' || obj.type === 'combineCoord') {
+    // @ts-ignore
+    obj.inputs.unshift({
+      name: 'color',
+      type: 'vec4',
+    });
+  }
 
   return {
     ...obj,

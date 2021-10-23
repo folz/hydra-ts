@@ -23,7 +23,7 @@ export declare class GlslSource {
     compile(transforms: TransformApplication[]): {
         frag: string;
         uniforms: {
-            [x: string]: string | import("regl").Uniform | ((context: any, props: any) => number | number[]) | import("regl").Texture2D | undefined;
+            [x: string]: string | ((context: any, props: any) => number | number[]) | import("regl").Texture2D | import("regl").Uniform | undefined;
         };
     };
 }
