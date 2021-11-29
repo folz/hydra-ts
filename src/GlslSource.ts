@@ -1,16 +1,23 @@
 import { Uniforms } from 'regl';
-import { ProcessedTransformDefinition } from './glsl/transformDefinitions';
+import {
+  ProcessedTransformDefinition,
+  TransformDefinitionInput,
+} from './glsl/transformDefinitions';
 import { utilityFunctions } from './glsl/utilityFunctions';
-import { compileGlsl, TypedArg } from './compileGlsl';
+import { compileGlsl } from './compileGlsl';
 import { Output } from './Output';
 import { Precision } from '../HydraRenderer';
+import { TypedArg } from './compiler/formatArguments';
 
 export interface TransformApplication {
   defaultUniforms?: GlslSource['defaultUniforms'];
   name: string;
   precision: Precision;
   transform: ProcessedTransformDefinition;
-  userArgs: any[];
+  userArgs: (
+    | TransformDefinitionInput['default']
+    | ((context: any, props: any) => TransformDefinitionInput['default'])
+  )[];
 }
 
 export type CompiledTransform = ReturnType<GlslSource['compile']>;
@@ -41,11 +48,10 @@ export class GlslSource {
       return this;
     }
 
-    // @ts-ignore
     cls.prototype[name] = Transform;
   };
 
-  then(...transforms: TransformApplication[]) {
+  do(...transforms: TransformApplication[]) {
     this.transforms.push(...transforms);
     return this;
   }

@@ -8,7 +8,6 @@ export class Output {
             [0, -2],
             [2, 2],
         ]);
-        // @ts-ignore
         this.draw = () => { };
         this.vert = `
   precision ${this.precision} float;
@@ -23,9 +22,7 @@ export class Output {
             position: this.positionBuffer,
         };
         this.uniforms = {
-            // @ts-ignore
             time: this.regl.prop('time'),
-            // @ts-ignore
             resolution: this.regl.prop('resolution'),
         };
         // for each output, create two fbos for pingponging

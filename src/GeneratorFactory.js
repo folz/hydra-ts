@@ -4,7 +4,8 @@ export class GeneratorFactory {
     constructor({ changeListener, defaultUniforms, precision, transforms, }) {
         this.generators = {};
         this.glslTransforms = {};
-        this.sourceClass = createSourceClass();
+        this.sourceClass = class extends GlslSource {
+        };
         this.setFunction = (obj) => {
             const processedGlsl = processGlsl(obj);
             if (processedGlsl) {
@@ -49,15 +50,10 @@ export function processGlsl(obj) {
 `;
     // add extra input to beginning for backward compatibility
     if (obj.type === 'combine' || obj.type === 'combineCoord') {
-        // @ts-ignore
         obj.inputs.unshift({
             name: 'color',
             type: 'vec4',
         });
     }
     return Object.assign(Object.assign({}, obj), { glsl: glslFunction, processed: true });
-}
-function createSourceClass() {
-    return class extends GlslSource {
-    };
 }

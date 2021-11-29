@@ -30,19 +30,22 @@ const { osc, src, solid, o0, o1, s0, render } = hydra.synth;
 
 s0.initImage(jelly);
 
-//prettier-ignore
-const shader = osc(12, 0.1, Math.PI/2)
-  .then(t.Rotate())
+// prettier-ignore
+const shader = osc(12, 0.1, Math.PI / 2)
+  .do(
+    t.Rotate()
+  )
   .scrollX(0.01, 0.01)
   .scrollY(0.01, 0.01)
-// .then(
-//   color.Posterize(12 * Math.PI),
-//   color.Invert()
-// ).pixelate(12 * Math.PI);
-// .koch(1, 4)
-// .koch(0.5, 5)
-// .modulateRepeat(osc(2))
-// .rotate((Math.PI * 5) / 6),
+  .do(
+    t.Posterize(12 * Math.PI),
+    t.Invert()
+  )
+  .pixelate(12 * Math.PI)
+  .koch(1, 4)
+  .koch(0.5, 5)
+  .modulateRepeat(osc(2))
+  .rotate((Math.PI * 5) / 6);
 
 shader.out(o0);
 

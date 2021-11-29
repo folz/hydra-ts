@@ -29,7 +29,6 @@ export class Output {
       [2, 2],
     ]);
 
-    // @ts-ignore
     this.draw = () => {};
 
     this.vert = `
@@ -47,9 +46,7 @@ export class Output {
     };
 
     this.uniforms = {
-      // @ts-ignore
       time: this.regl.prop('time'),
-      // @ts-ignore
       resolution: this.regl.prop('resolution'),
     };
 

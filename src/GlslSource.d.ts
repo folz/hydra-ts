@@ -1,5 +1,5 @@
 import { Uniforms } from 'regl';
-import { ProcessedTransformDefinition } from './glsl/transformDefinitions';
+import { ProcessedTransformDefinition, TransformDefinitionInput } from './glsl/transformDefinitions';
 import { Output } from './Output';
 import { Precision } from '../HydraRenderer';
 export interface TransformApplication {
@@ -7,7 +7,7 @@ export interface TransformApplication {
     name: string;
     precision: Precision;
     transform: ProcessedTransformDefinition;
-    userArgs: any[];
+    userArgs: (TransformDefinitionInput['default'] | ((context: any, props: any) => TransformDefinitionInput['default']))[];
 }
 export declare type CompiledTransform = ReturnType<GlslSource['compile']>;
 export declare class GlslSource {
@@ -16,14 +16,14 @@ export declare class GlslSource {
     transforms: TransformApplication[];
     constructor(obj: TransformApplication);
     static createTransformOnPrototype: (cls: typeof GlslSource, name: string, transform: ProcessedTransformDefinition) => void;
-    then(...transforms: TransformApplication[]): this;
+    do(...transforms: TransformApplication[]): this;
     skip(...transforms: TransformApplication[]): this;
     out(output: Output): void;
     glsl(): CompiledTransform[];
     compile(transforms: TransformApplication[]): {
         frag: string;
         uniforms: {
-            [x: string]: string | ((context: any, props: any) => number | number[]) | import("regl").Texture2D | import("regl").Uniform | undefined;
+            [x: string]: string | import("regl").Texture2D | ((context: any, props: any) => number | number[]) | import("regl").Uniform | undefined;
         };
     };
 }

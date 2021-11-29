@@ -7,7 +7,7 @@ export class GlslSource {
         this.precision = obj.precision;
         this.transforms.push(obj);
     }
-    then(...transforms) {
+    do(...transforms) {
         this.transforms.push(...transforms);
         return this;
     }
@@ -92,6 +92,5 @@ GlslSource.createTransformOnPrototype = (cls, name, transform) => {
         });
         return this;
     }
-    // @ts-ignore
     cls.prototype[name] = Transform;
 };

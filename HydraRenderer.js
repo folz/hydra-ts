@@ -113,9 +113,7 @@ export class HydraRenderer {
                 ],
             },
             uniforms: {
-                // @ts-ignore
                 tex0: this.regl.prop('tex0'),
-                // @ts-ignore
                 resolution: this.regl.prop('resolution'),
             },
             count: 3,

@@ -20,7 +20,7 @@ export class GeneratorFactory {
   generators: Record<string, () => GlslSource> = {};
   glslTransforms: Record<string, ProcessedTransformDefinition> = {};
   precision: Precision;
-  sourceClass: typeof GlslSource = createSourceClass();
+  sourceClass = class extends GlslSource {};
 
   constructor({
     changeListener,
@@ -87,7 +87,6 @@ export function processGlsl(
 
   // add extra input to beginning for backward compatibility
   if (obj.type === 'combine' || obj.type === 'combineCoord') {
-    // @ts-ignore
     obj.inputs.unshift({
       name: 'color',
       type: 'vec4',
@@ -99,8 +98,4 @@ export function processGlsl(
     glsl: glslFunction,
     processed: true,
   };
-}
-
-function createSourceClass() {
-  return class extends GlslSource {};
 }
