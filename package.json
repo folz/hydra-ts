@@ -1,8 +1,8 @@
 {
-  "name": "hiasynth",
+  "name": "hydra-ts",
   "license": "AGPL",
   "version": "1.3.8",
-  "description": "hiasynth visual synth",
+  "description": "port of hydra-synth to typescript",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/folz/hiasynth.git"
+    "url": "git+https://github.com/folz/hydra-ts.git"
   },
   "keywords": [
     "webgl",
@@ -23,9 +23,9 @@
   ],
   "author": "folz",
   "bugs": {
-    "url": "https://github.com/folz/hiasynth/issues"
+    "url": "https://github.com/folz/hydra-ts/issues"
   },
-  "homepage": "https://github.com/folz/hiasynth#readme",
+  "homepage": "https://github.com/folz/hydra-ts#readme",
   "dependencies": {
     "regl": "^1.3.9",
     "tinykeys": "^1.2.0"
