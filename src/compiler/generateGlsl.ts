@@ -14,15 +14,16 @@ export function generateGlsl(
   let fragColor: GlslGenerator = () => '';
 
   transforms.forEach((transform) => {
-    let f1:
-      | ((uv: string) => string)
-      | (() =>
-          | string
-          | number
-          | number[]
-          | ((context: any, props: any) => number | number[])
-          | Texture2D
-          | undefined);
+    let f1: (
+      uv: string,
+    ) =>
+      | string
+      | number
+      | number[]
+      | ((context: any, props: any) => number | number[])
+      | Texture2D
+      | undefined;
+
     const inputs = formatArguments(transform, shaderParams.uniforms.length);
 
     inputs.forEach((input) => {

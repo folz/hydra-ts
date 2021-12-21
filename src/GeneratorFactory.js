@@ -6,34 +6,45 @@ export class GeneratorFactory {
         this.glslTransforms = {};
         this.sourceClass = class extends GlslSource {
         };
-        this.setFunction = (obj) => {
-            const processedGlsl = processGlsl(obj);
-            if (processedGlsl) {
-                this._addMethod(obj.name, processedGlsl);
+        this.setFunction = (transformDefinition) => {
+            const { name } = transformDefinition;
+            const processedTransformDefinition = processGlsl(transformDefinition);
+            this.glslTransforms[name] = processedTransformDefinition;
+            const { precision } = this;
+            if (processedTransformDefinition.type === 'src') {
+                this.generators[name] = (...args) => new this.sourceClass({
+                    defaultUniforms: this.defaultUniforms,
+                    name,
+                    precision,
+                    transform: processedTransformDefinition,
+                    userArgs: args,
+                });
+                this.changeListener({ synth: this, method: name });
+            }
+            else {
+                createTransformOnPrototype(this.sourceClass, processedTransformDefinition);
             }
         };
         this.changeListener = changeListener;
         this.defaultUniforms = defaultUniforms;
         this.precision = precision;
-        transforms.map((transform) => this.setFunction(transform));
-    }
-    _addMethod(method, transform) {
-        this.glslTransforms[method] = transform;
-        const precision = this.precision;
-        if (transform.type === 'src') {
-            this.generators[method] = (...args) => new this.sourceClass({
-                defaultUniforms: this.defaultUniforms,
-                name: method,
-                precision,
-                transform: transform,
-                userArgs: args,
-            });
-            this.changeListener({ synth: this, method });
-        }
-        else {
-            this.sourceClass.createTransformOnPrototype(this.sourceClass, method, transform);
+        for (const transform of transforms) {
+            this.setFunction(transform);
         }
     }
+}
+export function createTransformOnPrototype(cls, processedTransformDefinition) {
+    function addTransformApplicationToInternalChain(...args) {
+        this.transforms.push({
+            name: processedTransformDefinition.name,
+            transform: processedTransformDefinition,
+            precision: this.precision,
+            userArgs: args,
+        });
+        return this;
+    }
+    cls.prototype[processedTransformDefinition.name] =
+        addTransformApplicationToInternalChain;
 }
 export function processGlsl(obj) {
     let t = typeLookup[obj.type];

@@ -32,39 +32,58 @@ export class GeneratorFactory {
     this.defaultUniforms = defaultUniforms;
     this.precision = precision;
 
-    transforms.map((transform) => this.setFunction(transform));
+    for (const transform of transforms) {
+      this.setFunction(transform);
+    }
   }
 
-  _addMethod(method: string, transform: ProcessedTransformDefinition) {
-    this.glslTransforms[method] = transform;
+  setFunction = (transformDefinition: TransformDefinition) => {
+    const { name } = transformDefinition;
+    const processedTransformDefinition = processGlsl(transformDefinition);
 
-    const precision = this.precision;
-    if (transform.type === 'src') {
-      this.generators[method] = (...args: any[]) =>
+    this.glslTransforms[name] = processedTransformDefinition;
+
+    const { precision } = this;
+
+    if (processedTransformDefinition.type === 'src') {
+      this.generators[name] = (...args: any[]) =>
         new this.sourceClass({
           defaultUniforms: this.defaultUniforms,
-          name: method,
+          name,
           precision,
-          transform: transform,
+          transform: processedTransformDefinition,
           userArgs: args,
         });
-      this.changeListener({ synth: this, method });
+      this.changeListener({ synth: this, method: name });
     } else {
-      this.sourceClass.createTransformOnPrototype(
+      createTransformOnPrototype(
         this.sourceClass,
-        method,
-        transform,
+        processedTransformDefinition,
       );
     }
+  };
+}
+
+export function createTransformOnPrototype(
+  cls: typeof GlslSource,
+  processedTransformDefinition: ProcessedTransformDefinition,
+) {
+  function addTransformApplicationToInternalChain(
+    this: GlslSource,
+    ...args: any[]
+  ): GlslSource {
+    this.transforms.push({
+      name: processedTransformDefinition.name,
+      transform: processedTransformDefinition,
+      precision: this.precision,
+      userArgs: args,
+    });
+
+    return this;
   }
 
-  setFunction = (obj: TransformDefinition) => {
-    const processedGlsl = processGlsl(obj);
-
-    if (processedGlsl) {
-      this._addMethod(obj.name, processedGlsl);
-    }
-  };
+  cls.prototype[processedTransformDefinition.name] =
+    addTransformApplicationToInternalChain;
 }
 
 export function processGlsl(

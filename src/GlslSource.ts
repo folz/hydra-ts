@@ -33,24 +33,6 @@ export class GlslSource {
     this.transforms.push(obj);
   }
 
-  static createTransformOnPrototype = (
-    cls: typeof GlslSource,
-    name: string,
-    transform: ProcessedTransformDefinition,
-  ) => {
-    function Transform(this: GlslSource, ...args: any[]) {
-      this.transforms.push({
-        name,
-        precision: this.precision,
-        transform: transform,
-        userArgs: args,
-      });
-      return this;
-    }
-
-    cls.prototype[name] = Transform;
-  };
-
   do(...transforms: TransformApplication[]) {
     this.transforms.push(...transforms);
     return this;

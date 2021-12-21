@@ -15,7 +15,6 @@ export declare class GlslSource {
     precision: Precision;
     transforms: TransformApplication[];
     constructor(obj: TransformApplication);
-    static createTransformOnPrototype: (cls: typeof GlslSource, name: string, transform: ProcessedTransformDefinition) => void;
     do(...transforms: TransformApplication[]): this;
     skip(...transforms: TransformApplication[]): this;
     out(output: Output): void;
