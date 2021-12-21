@@ -182,9 +182,6 @@ export class HydraRenderer {
   }
 
   hush = () => {
-    this.s.forEach((source) => {
-      source.clear();
-    });
     this.o.forEach((output) => {
       // TODO - should reset output directly without relying on synth
       this.synth.solid(1, 1, 1, 0).out(output);
