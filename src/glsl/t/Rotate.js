@@ -22,7 +22,6 @@ export const rotate = {
 };
 export const Rotate = (angle = 10, speed = 0) => {
     return {
-        name: rotate.name,
         precision: 'mediump',
         transform: processGlsl(rotate),
         userArgs: [angle, speed],

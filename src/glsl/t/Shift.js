@@ -33,7 +33,6 @@ export const shift = {
 };
 export const Shift = (r = 0.5, g = 0.5, b = 0.5, a = 0) => {
     return {
-        name: shift.name,
         transform: processGlsl(shift),
         precision: 'mediump',
         userArgs: [r, g, b, a],

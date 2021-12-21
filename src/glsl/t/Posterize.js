@@ -23,7 +23,6 @@ export const posterize = {
 };
 export const Posterize = (bins = 3, gamma = 0.6) => {
     return {
-        name: posterize.name,
         precision: 'mediump',
         transform: processGlsl(posterize),
         userArgs: [bins, gamma],

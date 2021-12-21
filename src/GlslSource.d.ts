@@ -4,7 +4,6 @@ import { Output } from './Output';
 import { Precision } from '../HydraRenderer';
 export interface TransformApplication {
     defaultUniforms?: GlslSource['defaultUniforms'];
-    name: string;
     precision: Precision;
     transform: ProcessedTransformDefinition;
     userArgs: (TransformDefinitionInput['default'] | ((context: any, props: any) => TransformDefinitionInput['default']))[];

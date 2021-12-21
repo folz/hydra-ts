@@ -46,7 +46,7 @@ export function generateGlsl(
       fragColor = (uv) =>
         `${shaderString(
           uv,
-          transformApplication.name,
+          transformApplication.transform.name,
           typedArgs,
           shaderParams,
         )}`;
@@ -55,7 +55,7 @@ export function generateGlsl(
         `${f0(
           `${shaderString(
             uv,
-            transformApplication.name,
+            transformApplication.transform.name,
             typedArgs,
             shaderParams,
           )}`,
@@ -64,7 +64,7 @@ export function generateGlsl(
       fragColor = (uv) =>
         `${shaderString(
           `${f0(uv)}`,
-          transformApplication.name,
+          transformApplication.transform.name,
           typedArgs,
           shaderParams,
         )}`;
@@ -80,7 +80,7 @@ export function generateGlsl(
       fragColor = (uv) =>
         `${shaderString(
           `${f0(uv)}, ${f1(uv)}`,
-          transformApplication.name,
+          transformApplication.transform.name,
           typedArgs.slice(1),
           shaderParams,
         )}`;
@@ -97,7 +97,7 @@ export function generateGlsl(
         `${f0(
           `${shaderString(
             `${uv}, ${f1(uv)}`,
-            transformApplication.name,
+            transformApplication.transform.name,
             typedArgs.slice(1),
             shaderParams,
           )}`,

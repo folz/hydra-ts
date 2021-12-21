@@ -29,7 +29,6 @@ export const Posterize = (
   gamma: number = 0.6,
 ): TransformApplication => {
   return {
-    name: posterize.name,
     precision: 'mediump',
     transform: processGlsl(posterize),
     userArgs: [bins, gamma],

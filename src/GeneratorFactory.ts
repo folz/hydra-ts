@@ -49,7 +49,6 @@ export class GeneratorFactory {
       this.generators[name] = (...args: any[]) =>
         new this.sourceClass({
           defaultUniforms: this.defaultUniforms,
-          name,
           precision,
           transform: processedTransformDefinition,
           userArgs: args,
@@ -73,7 +72,6 @@ export function createTransformOnPrototype(
     ...args: any[]
   ): GlslSource {
     this.transforms.push({
-      name: processedTransformDefinition.name,
       transform: processedTransformDefinition,
       precision: this.precision,
       userArgs: args,

@@ -1,6 +1,7 @@
 export function contains(transformApplication, transformApplications) {
     for (let i = 0; i < transformApplications.length; i++) {
-        if (transformApplication.name == transformApplications[i].name) {
+        if (transformApplication.transform.name ==
+            transformApplications[i].transform.name) {
             return true;
         }
     }

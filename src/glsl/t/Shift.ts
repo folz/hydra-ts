@@ -41,7 +41,6 @@ export const Shift = (
   a: number = 0,
 ): TransformApplication => {
   return {
-    name: shift.name,
     transform: processGlsl(shift),
     precision: 'mediump',
     userArgs: [r, g, b, a],

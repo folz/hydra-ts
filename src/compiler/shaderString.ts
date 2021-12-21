@@ -1,11 +1,11 @@
-import { TransformApplication } from '../GlslSource';
 import { ShaderParams } from '../compileGlsl';
 import { generateGlsl } from './generateGlsl';
 import { TypedArg } from './formatArguments';
+import { TransformDefinition } from '../glsl/transformDefinitions';
 
 export function shaderString(
   uv: string,
-  method: TransformApplication['name'],
+  method: TransformDefinition['name'],
   inputs: TypedArg[],
   shaderParams: ShaderParams,
 ): string {

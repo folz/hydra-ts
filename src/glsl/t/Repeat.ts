@@ -39,7 +39,6 @@ export const Repeat = (
   offsetY: number = 0,
 ): TransformApplication => {
   return {
-    name: repeat.name,
     precision: 'mediump',
     transform: processGlsl(repeat),
     userArgs: [repeatX, repeatY, offsetX, offsetY],

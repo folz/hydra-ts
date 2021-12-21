@@ -25,7 +25,6 @@ export const Pixelate = (
   pixelY: number = 20,
 ): TransformApplication => {
   return {
-    name: pixelate.name,
     precision: 'mediump',
     transform: processGlsl(pixelate),
     userArgs: [pixelX, pixelY],

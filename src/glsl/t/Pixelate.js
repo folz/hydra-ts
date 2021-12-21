@@ -19,7 +19,6 @@ export const pixelate = {
 };
 export const Pixelate = (pixelX = 20, pixelY = 20) => {
     return {
-        name: pixelate.name,
         precision: 'mediump',
         transform: processGlsl(pixelate),
         userArgs: [pixelX, pixelY],

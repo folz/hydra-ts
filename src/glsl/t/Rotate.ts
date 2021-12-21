@@ -28,7 +28,6 @@ export const Rotate = (
   speed: number = 0,
 ): TransformApplication => {
   return {
-    name: rotate.name,
     precision: 'mediump',
     transform: processGlsl(rotate),
     userArgs: [angle, speed],

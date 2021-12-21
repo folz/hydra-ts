@@ -14,7 +14,6 @@ export class GeneratorFactory {
             if (processedTransformDefinition.type === 'src') {
                 this.generators[name] = (...args) => new this.sourceClass({
                     defaultUniforms: this.defaultUniforms,
-                    name,
                     precision,
                     transform: processedTransformDefinition,
                     userArgs: args,
@@ -36,7 +35,6 @@ export class GeneratorFactory {
 export function createTransformOnPrototype(cls, processedTransformDefinition) {
     function addTransformApplicationToInternalChain(...args) {
         this.transforms.push({
-            name: processedTransformDefinition.name,
             transform: processedTransformDefinition,
             precision: this.precision,
             userArgs: args,

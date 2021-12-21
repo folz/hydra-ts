@@ -13,7 +13,6 @@ export const invert = {
 };
 export const Invert = (amount = 1) => {
     return {
-        name: invert.name,
         precision: 'mediump',
         transform: processGlsl(invert),
         userArgs: [amount],

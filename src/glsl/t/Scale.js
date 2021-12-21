@@ -37,7 +37,6 @@ export const scale = {
 };
 export const Scale = (amount = 1.5, xMult = 1, yMult = 1, offsetX = 0.5, offsetY = 0.5) => {
     return {
-        name: scale.name,
         precision: 'mediump',
         transform: processGlsl(scale),
         userArgs: [amount, xMult, yMult, offsetX, offsetY],

@@ -11,7 +11,6 @@ import { TypedArg } from './compiler/formatArguments';
 
 export interface TransformApplication {
   defaultUniforms?: GlslSource['defaultUniforms'];
-  name: string;
   precision: Precision;
   transform: ProcessedTransformDefinition;
   userArgs: (

@@ -16,7 +16,6 @@ export const invert = {
 
 export const Invert = (amount: number = 1): TransformApplication => {
   return {
-    name: invert.name,
     precision: 'mediump',
     transform: processGlsl(invert),
     userArgs: [amount],
