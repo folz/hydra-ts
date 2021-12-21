@@ -5,4 +5,4 @@ export interface ShaderParams {
     glslFunctions: TransformApplication[];
     fragColor: string;
 }
-export declare function compileGlsl(transforms: TransformApplication[]): ShaderParams;
+export declare function compileGlsl(transformApplications: TransformApplication[]): ShaderParams;

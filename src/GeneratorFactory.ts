@@ -37,10 +37,10 @@ export class GeneratorFactory {
     }
   }
 
-  setFunction = (transformDefinition: TransformDefinition) => {
-    const { name } = transformDefinition;
+  setFunction = (transformDefinition: TransformDefinition): void => {
     const processedTransformDefinition = processGlsl(transformDefinition);
 
+    const { name } = processedTransformDefinition;
     this.glslTransforms[name] = processedTransformDefinition;
 
     const { precision } = this;
@@ -87,33 +87,36 @@ export function createTransformOnPrototype(
 }
 
 export function processGlsl(
-  obj: TransformDefinition,
+  transformDefinition: TransformDefinition,
 ): ProcessedTransformDefinition {
-  let t = typeLookup[obj.type];
+  let t = typeLookup[transformDefinition.type];
 
   let baseArgs = t.args.map((arg) => arg).join(', ');
   // @todo: make sure this works for all input types, add validation
-  let customArgs = obj.inputs
+  let customArgs = transformDefinition.inputs
     .map((input) => `${input.type} ${input.name}`)
     .join(', ');
   let args = `${baseArgs}${customArgs.length > 0 ? ', ' + customArgs : ''}`;
 
   let glslFunction = `
-  ${t.returnType} ${obj.name}(${args}) {
-      ${obj.glsl}
+  ${t.returnType} ${transformDefinition.name}(${args}) {
+      ${transformDefinition.glsl}
   }
 `;
 
   // add extra input to beginning for backward compatibility
-  if (obj.type === 'combine' || obj.type === 'combineCoord') {
-    obj.inputs.unshift({
+  if (
+    transformDefinition.type === 'combine' ||
+    transformDefinition.type === 'combineCoord'
+  ) {
+    transformDefinition.inputs.unshift({
       name: 'color',
       type: 'vec4',
     });
   }
 
   return {
-    ...obj,
+    ...transformDefinition,
     glsl: glslFunction,
     processed: true,
   };

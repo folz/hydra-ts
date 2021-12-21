@@ -1,11 +1,11 @@
 import { TransformApplication } from '../GlslSource';
 
 export function contains(
-  object: TransformApplication,
-  arr: TransformApplication[],
+  transformApplication: TransformApplication,
+  transformApplications: TransformApplication[],
 ): boolean {
-  for (let i = 0; i < arr.length; i++) {
-    if (object.name == arr[i].name) {
+  for (let i = 0; i < transformApplications.length; i++) {
+    if (transformApplication.name == transformApplications[i].name) {
       return true;
     }
   }

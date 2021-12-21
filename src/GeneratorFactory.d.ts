@@ -29,7 +29,7 @@ export declare class GeneratorFactory {
                     [x: string]: string | ((context: any, props: any) => number | number[]) | import("regl").Texture2D | import("regl").Uniform | undefined;
                 };
             }[];
-            compile(transforms: import("./GlslSource").TransformApplication[]): {
+            compile(transformApplications: import("./GlslSource").TransformApplication[]): {
                 frag: string;
                 uniforms: {
                     [x: string]: string | ((context: any, props: any) => number | number[]) | import("regl").Texture2D | import("regl").Uniform | undefined;
@@ -41,5 +41,5 @@ export declare class GeneratorFactory {
     setFunction: (transformDefinition: TransformDefinition) => void;
 }
 export declare function createTransformOnPrototype(cls: typeof GlslSource, processedTransformDefinition: ProcessedTransformDefinition): void;
-export declare function processGlsl(obj: TransformDefinition): ProcessedTransformDefinition;
+export declare function processGlsl(transformDefinition: TransformDefinition): ProcessedTransformDefinition;
 export {};

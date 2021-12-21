@@ -7,4 +7,4 @@ export interface TypedArg {
     name: TransformDefinitionInput['name'];
     vecLen: number;
 }
-export declare function formatArguments(transform: TransformApplication, startIndex: number): TypedArg[];
+export declare function formatArguments(transformApplication: TransformApplication, startIndex: number): TypedArg[];

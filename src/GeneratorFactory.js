@@ -7,8 +7,8 @@ export class GeneratorFactory {
         this.sourceClass = class extends GlslSource {
         };
         this.setFunction = (transformDefinition) => {
-            const { name } = transformDefinition;
             const processedTransformDefinition = processGlsl(transformDefinition);
+            const { name } = processedTransformDefinition;
             this.glslTransforms[name] = processedTransformDefinition;
             const { precision } = this;
             if (processedTransformDefinition.type === 'src') {
@@ -46,25 +46,26 @@ export function createTransformOnPrototype(cls, processedTransformDefinition) {
     cls.prototype[processedTransformDefinition.name] =
         addTransformApplicationToInternalChain;
 }
-export function processGlsl(obj) {
-    let t = typeLookup[obj.type];
+export function processGlsl(transformDefinition) {
+    let t = typeLookup[transformDefinition.type];
     let baseArgs = t.args.map((arg) => arg).join(', ');
     // @todo: make sure this works for all input types, add validation
-    let customArgs = obj.inputs
+    let customArgs = transformDefinition.inputs
         .map((input) => `${input.type} ${input.name}`)
         .join(', ');
     let args = `${baseArgs}${customArgs.length > 0 ? ', ' + customArgs : ''}`;
     let glslFunction = `
-  ${t.returnType} ${obj.name}(${args}) {
-      ${obj.glsl}
+  ${t.returnType} ${transformDefinition.name}(${args}) {
+      ${transformDefinition.glsl}
   }
 `;
     // add extra input to beginning for backward compatibility
-    if (obj.type === 'combine' || obj.type === 'combineCoord') {
-        obj.inputs.unshift({
+    if (transformDefinition.type === 'combine' ||
+        transformDefinition.type === 'combineCoord') {
+        transformDefinition.inputs.unshift({
             name: 'color',
             type: 'vec4',
         });
     }
-    return Object.assign(Object.assign({}, obj), { glsl: glslFunction, processed: true });
+    return Object.assign(Object.assign({}, transformDefinition), { glsl: glslFunction, processed: true });
 }

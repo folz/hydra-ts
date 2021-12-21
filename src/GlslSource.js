@@ -29,15 +29,15 @@ export class GlslSource {
         }
         return [];
     }
-    compile(transforms) {
-        const shaderInfo = compileGlsl(transforms);
+    compile(transformApplications) {
+        const shaderParams = compileGlsl(transformApplications);
         const uniforms = {};
-        shaderInfo.uniforms.forEach((uniform) => {
+        shaderParams.uniforms.forEach((uniform) => {
             uniforms[uniform.name] = uniform.value;
         });
         const frag = `
   precision ${this.precision} float;
-  ${Object.values(shaderInfo.uniforms)
+  ${Object.values(shaderParams.uniforms)
             .map((uniform) => {
             let type = uniform.type;
             switch (uniform.type) {
@@ -62,7 +62,7 @@ export class GlslSource {
         })
             .join('')}
 
-  ${shaderInfo.glslFunctions
+  ${shaderParams.glslFunctions
             .map((transform) => {
             return `
             ${transform.transform.glsl}
@@ -73,7 +73,7 @@ export class GlslSource {
   void main () {
     vec4 c = vec4(1, 0, 0, 1);
     vec2 st = gl_FragCoord.xy/resolution.xy;
-    gl_FragColor = ${shaderInfo.fragColor};
+    gl_FragColor = ${shaderParams.fragColor};
   }
   `;
         return {

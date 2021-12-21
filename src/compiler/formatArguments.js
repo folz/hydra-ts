@@ -11,9 +11,9 @@ const DEFAULT_CONVERSIONS = {
     sampler2D: undefined,
     texture: undefined,
 };
-export function formatArguments(transform, startIndex) {
-    const defaultArgs = transform.transform.inputs;
-    const userArgs = transform.userArgs;
+export function formatArguments(transformApplication, startIndex) {
+    const defaultArgs = transformApplication.transform.inputs;
+    const userArgs = transformApplication.userArgs;
     return defaultArgs.map((input, index) => {
         const typedArg = {
             value: input.default,
@@ -37,7 +37,7 @@ export function formatArguments(transform, startIndex) {
         if (userArgs.length > index) {
             const arg = userArgs[index];
             typedArg.value = arg;
-            // do something if a composite or transform
+            // do something if a composite or transformApplication
             if (typeof arg === 'function') {
                 if (typedArg.vecLen > 0) {
                     // expected input is a vector, not a scalar

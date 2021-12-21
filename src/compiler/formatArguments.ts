@@ -24,11 +24,11 @@ export interface TypedArg {
 }
 
 export function formatArguments(
-  transform: TransformApplication,
+  transformApplication: TransformApplication,
   startIndex: number,
 ): TypedArg[] {
-  const defaultArgs = transform.transform.inputs;
-  const userArgs = transform.userArgs;
+  const defaultArgs = transformApplication.transform.inputs;
+  const userArgs = transformApplication.userArgs;
   return defaultArgs.map((input, index) => {
     const typedArg: TypedArg = {
       value: input.default,
@@ -57,7 +57,7 @@ export function formatArguments(
       const arg = userArgs[index];
 
       typedArg.value = arg;
-      // do something if a composite or transform
+      // do something if a composite or transformApplication
 
       if (typeof arg === 'function') {
         if (typedArg.vecLen > 0) {

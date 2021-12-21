@@ -10,7 +10,9 @@ export interface ShaderParams {
   fragColor: string;
 }
 
-export function compileGlsl(transforms: TransformApplication[]): ShaderParams {
+export function compileGlsl(
+  transformApplications: TransformApplication[],
+): ShaderParams {
   const shaderParams: ShaderParams = {
     uniforms: [],
     glslFunctions: [],
@@ -18,7 +20,7 @@ export function compileGlsl(transforms: TransformApplication[]): ShaderParams {
   };
 
   const newParams = produce(shaderParams, (draft) => {
-    draft.fragColor = generateGlsl(transforms, draft)('st');
+    draft.fragColor = generateGlsl(transformApplications, draft)('st');
     // remove uniforms with duplicate names
     let uniforms: Record<string, TypedArg> = {};
     draft.uniforms.forEach((uniform) => (uniforms[uniform.name] = uniform));
