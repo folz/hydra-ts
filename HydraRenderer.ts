@@ -42,7 +42,6 @@ export class HydraRenderer {
   height: number;
   synth: Synth;
   timeSinceLastUpdate;
-  _time;
   precision: Precision;
   generator?: GeneratorFactory;
   sandbox: EvalSandbox;
@@ -86,7 +85,6 @@ export class HydraRenderer {
     };
 
     this.timeSinceLastUpdate = 0;
-    this._time = 0; // for internal use, only to use for deciding when to render frames
 
     this.precision = precision;
 

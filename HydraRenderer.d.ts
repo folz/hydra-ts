@@ -34,7 +34,6 @@ export declare class HydraRenderer {
     height: number;
     synth: Synth;
     timeSinceLastUpdate: number;
-    _time: number;
     precision: Precision;
     generator?: GeneratorFactory;
     sandbox: EvalSandbox;

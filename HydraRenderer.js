@@ -76,7 +76,6 @@ export class HydraRenderer {
             hush: this.hush,
         };
         this.timeSinceLastUpdate = 0;
-        this._time = 0; // for internal use, only to use for deciding when to render frames
         this.precision = precision;
         // This clears the color buffer to black and the depth buffer to 1
         this.regl.clear({
