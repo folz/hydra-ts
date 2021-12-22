@@ -1,7 +1,6 @@
 import REGL from 'regl';
 import tinykeys from 'tinykeys';
 import Hydra from '../index';
-import * as t from '../src/glsl/t';
 
 // @ts-ignore
 import jelly from './image3A3853_Glitch.jpg';
@@ -31,7 +30,8 @@ const { gradient, noise, osc, src, solid, o0, o1, s0, render } = hydra.synth;
 s0.initImage(jelly);
 
 // prettier-ignore
-const shader = noise(10, 0.1).diff(gradient(1.1))
+const shader = noise(10, 0.1)
+  .diff(gradient(1.1))
 
 shader.out(o0);
 
