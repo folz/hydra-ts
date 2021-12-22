@@ -6,7 +6,7 @@ import { TypedArg } from './compiler/formatArguments';
 
 export interface ShaderParams {
   uniforms: TypedArg[];
-  glslFunctions: TransformApplication[];
+  transformApplications: TransformApplication[];
   fragColor: string;
 }
 
@@ -15,7 +15,7 @@ export function compileGlsl(
 ): ShaderParams {
   const shaderParams: ShaderParams = {
     uniforms: [],
-    glslFunctions: [],
+    transformApplications: [],
     fragColor: '',
   };
 

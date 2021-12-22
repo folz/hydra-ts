@@ -16,25 +16,14 @@ export declare class GeneratorFactory {
     glslTransforms: Record<string, ProcessedTransformDefinition>;
     precision: Precision;
     sourceClass: {
-        new (obj: import("./GlslSource").TransformApplication): {
+        new (transformApplication: import("./GlslSource").TransformApplication): {
             defaultUniforms?: Uniforms | undefined;
             precision: Precision;
             transforms: import("./GlslSource").TransformApplication[];
             do(...transforms: import("./GlslSource").TransformApplication[]): any;
             skip(...transforms: import("./GlslSource").TransformApplication[]): any;
             out(output: import("./Output.js").Output): void;
-            glsl(): {
-                frag: string;
-                uniforms: {
-                    [x: string]: string | import("regl").Texture2D | ((context: any, props: any) => number | number[]) | import("regl").Uniform | undefined;
-                };
-            }[];
-            compile(transformApplications: import("./GlslSource").TransformApplication[]): {
-                frag: string;
-                uniforms: {
-                    [x: string]: string | import("regl").Texture2D | ((context: any, props: any) => number | number[]) | import("regl").Uniform | undefined;
-                };
-            };
+            glsl(): import("./GlslSource").CompiledTransform[];
         };
     };
     constructor({ changeListener, defaultUniforms, precision, transforms, }: GeneratorFactoryOptions);

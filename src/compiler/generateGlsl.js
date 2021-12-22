@@ -12,8 +12,8 @@ export function generateGlsl(transformApplications, shaderParams) {
             }
         });
         // add new glsl function to running list of functions
-        if (!contains(transformApplication, shaderParams.glslFunctions)) {
-            shaderParams.glslFunctions.push(transformApplication);
+        if (!contains(transformApplication, shaderParams.transformApplications)) {
+            shaderParams.transformApplications.push(transformApplication);
         }
         // current function for generating frag color shader code
         const f0 = fragColor;

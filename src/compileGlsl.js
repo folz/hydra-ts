@@ -3,7 +3,7 @@ import { generateGlsl } from './compiler/generateGlsl';
 export function compileGlsl(transformApplications) {
     const shaderParams = {
         uniforms: [],
-        glslFunctions: [],
+        transformApplications: [],
         fragColor: '',
     };
     const newParams = produce(shaderParams, (draft) => {

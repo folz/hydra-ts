@@ -10,11 +10,10 @@ export class GeneratorFactory {
             const processedTransformDefinition = processGlsl(transformDefinition);
             const { name } = processedTransformDefinition;
             this.glslTransforms[name] = processedTransformDefinition;
-            const { precision } = this;
             if (processedTransformDefinition.type === 'src') {
                 this.generators[name] = (...args) => new this.sourceClass({
                     defaultUniforms: this.defaultUniforms,
-                    precision,
+                    precision: this.precision,
                     transform: processedTransformDefinition,
                     userArgs: args,
                 });
