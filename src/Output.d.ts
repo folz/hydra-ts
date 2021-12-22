@@ -15,7 +15,6 @@ export declare class Output {
     pingPongIndex: number;
     fbos: Framebuffer2D[];
     vert: string;
-    uniforms: Record<string, any>;
     attributes: Attributes;
     constructor({ regl, precision, width, height }: OutputOptions);
     resize(width: number, height: number): void;

@@ -1,4 +1,4 @@
-import type { Uniforms } from 'regl';
+import { DynamicVariable, DynamicVariableFn } from 'regl';
 import type { TransformDefinition } from './glsl/transformDefinitions.js';
 import { GlslSource } from './GlslSource';
 import { ProcessedTransformDefinition } from './glsl/transformDefinitions.js';
@@ -11,13 +11,17 @@ interface GeneratorFactoryOptions {
 }
 export declare class GeneratorFactory {
     changeListener: (options: any) => void;
-    defaultUniforms: Uniforms;
+    defaultUniforms: {
+        [name: string]: DynamicVariable<any> | DynamicVariableFn<any, any, any>;
+    };
     generators: Record<string, () => GlslSource>;
     glslTransforms: Record<string, ProcessedTransformDefinition>;
     precision: Precision;
     sourceClass: {
         new (transformApplication: import("./GlslSource").TransformApplication): {
-            defaultUniforms?: Uniforms | undefined;
+            defaultUniforms?: {
+                [name: string]: DynamicVariable<any> | DynamicVariableFn<any, any, any>;
+            } | undefined;
             precision: Precision;
             transforms: import("./GlslSource").TransformApplication[];
             do(...transforms: import("./GlslSource").TransformApplication[]): any;

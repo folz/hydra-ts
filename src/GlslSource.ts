@@ -1,4 +1,4 @@
-import { Texture2D, Uniform, Uniforms } from 'regl';
+import { DynamicVariable, DynamicVariableFn, Texture2D, Uniform } from 'regl';
 import {
   ProcessedTransformDefinition,
   TransformDefinitionInput,
@@ -30,7 +30,9 @@ export type CompiledTransform = {
 };
 
 export class GlslSource {
-  defaultUniforms?: Uniforms;
+  defaultUniforms?: {
+    [name: string]: DynamicVariable<any> | DynamicVariableFn<any, any, any>;
+  };
   precision: Precision;
   transforms: TransformApplication[] = [];
 

@@ -135,8 +135,12 @@ export class HydraRenderer {
             this.o.push(o);
         }
         this.output = this.o[0];
+        const defaultUniforms = {
+            time: this.regl.prop('time'),
+            resolution: this.regl.prop('resolution'),
+        };
         this.generator = new GeneratorFactory({
-            defaultUniforms: this.output.uniforms,
+            defaultUniforms,
             precision: this.output.precision,
             transforms,
             changeListener: ({ method, synth, }) => {

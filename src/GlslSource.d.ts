@@ -1,4 +1,4 @@
-import { Texture2D, Uniform, Uniforms } from 'regl';
+import { DynamicVariable, DynamicVariableFn, Texture2D, Uniform } from 'regl';
 import { ProcessedTransformDefinition, TransformDefinitionInput } from './glsl/transformDefinitions';
 import { Output } from './Output';
 import { Precision } from '../HydraRenderer';
@@ -15,7 +15,9 @@ export declare type CompiledTransform = {
     };
 };
 export declare class GlslSource {
-    defaultUniforms?: Uniforms;
+    defaultUniforms?: {
+        [name: string]: DynamicVariable<any> | DynamicVariableFn<any, any, any>;
+    };
     precision: Precision;
     transforms: TransformApplication[];
     constructor(transformApplication: TransformApplication);

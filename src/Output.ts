@@ -17,7 +17,6 @@ export class Output {
   pingPongIndex: number = 0;
   fbos: Framebuffer2D[];
   vert: string;
-  uniforms: Record<string, any>;
   attributes: Attributes;
 
   constructor({ regl, precision, width, height }: OutputOptions) {
@@ -43,11 +42,6 @@ export class Output {
 
     this.attributes = {
       position: this.positionBuffer,
-    };
-
-    this.uniforms = {
-      time: this.regl.prop('time'),
-      resolution: this.regl.prop('resolution'),
     };
 
     // for each output, create two fbos for pingponging

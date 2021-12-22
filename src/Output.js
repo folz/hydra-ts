@@ -21,10 +21,6 @@ export class Output {
         this.attributes = {
             position: this.positionBuffer,
         };
-        this.uniforms = {
-            time: this.regl.prop('time'),
-            resolution: this.regl.prop('resolution'),
-        };
         // for each output, create two fbos for pingponging
         this.fbos = Array(2)
             .fill(undefined)
