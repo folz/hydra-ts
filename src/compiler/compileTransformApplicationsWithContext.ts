@@ -1,8 +1,8 @@
-import {Precision} from "../../HydraRenderer";
-import {compileGlsl} from "./compileGlsl";
-import {TypedArg} from "./formatArguments";
-import {utilityFunctions} from "../glsl/utilityFunctions";
-import {GlslSource, TransformApplication} from "../GlslSource";
+import { Precision } from '../../HydraRenderer';
+import { compileGlsl } from './compileGlsl';
+import { TypedArg } from './formatArguments';
+import { utilityFunctions } from '../glsl/utilityFunctions';
+import { GlslSource, TransformApplication } from '../GlslSource';
 
 interface TransformApplicationContext {
   defaultUniforms: GlslSource['defaultUniforms'];
@@ -64,6 +64,6 @@ export function compileTransformApplicationsWithContext(
 
   return {
     frag: frag,
-    uniforms: {...context.defaultUniforms, ...uniforms},
+    uniforms: { ...context.defaultUniforms, ...uniforms },
   };
 }

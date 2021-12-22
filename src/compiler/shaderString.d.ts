@@ -1,4 +1,4 @@
 import { ShaderParams } from './compileGlsl';
 import { TypedArg } from './formatArguments';
-import { TransformDefinition } from '../glsl/transformDefinitions';
-export declare function shaderString(uv: string, method: TransformDefinition['name'], inputs: TypedArg[], shaderParams: ShaderParams): string;
+import { TransformApplication } from '../GlslSource';
+export declare function shaderString(uv: string, transformApplication: TransformApplication, inputs: TypedArg[], shaderParams: ShaderParams): string;

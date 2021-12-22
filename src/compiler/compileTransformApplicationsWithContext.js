@@ -1,5 +1,5 @@
-import { compileGlsl } from "./compileGlsl";
-import { utilityFunctions } from "../glsl/utilityFunctions";
+import { compileGlsl } from './compileGlsl';
+import { utilityFunctions } from '../glsl/utilityFunctions';
 export function compileTransformApplicationsWithContext(transformApplications, context) {
     const shaderParams = compileGlsl(transformApplications);
     const uniforms = {};

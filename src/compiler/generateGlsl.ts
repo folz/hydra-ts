@@ -44,27 +44,17 @@ export function generateGlsl(
     const f0 = fragColor;
     if (transformApplication.transform.type === 'src') {
       fragColor = (uv) =>
-        `${shaderString(
-          uv,
-          transformApplication.transform.name,
-          typedArgs,
-          shaderParams,
-        )}`;
+        `${shaderString(uv, transformApplication, typedArgs, shaderParams)}`;
     } else if (transformApplication.transform.type === 'coord') {
       fragColor = (uv) =>
         `${f0(
-          `${shaderString(
-            uv,
-            transformApplication.transform.name,
-            typedArgs,
-            shaderParams,
-          )}`,
+          `${shaderString(uv, transformApplication, typedArgs, shaderParams)}`,
         )}`;
     } else if (transformApplication.transform.type === 'color') {
       fragColor = (uv) =>
         `${shaderString(
           `${f0(uv)}`,
-          transformApplication.transform.name,
+          transformApplication,
           typedArgs,
           shaderParams,
         )}`;
@@ -80,7 +70,7 @@ export function generateGlsl(
       fragColor = (uv) =>
         `${shaderString(
           `${f0(uv)}, ${f1(uv)}`,
-          transformApplication.transform.name,
+          transformApplication,
           typedArgs.slice(1),
           shaderParams,
         )}`;
@@ -97,7 +87,7 @@ export function generateGlsl(
         `${f0(
           `${shaderString(
             `${uv}, ${f1(uv)}`,
-            transformApplication.transform.name,
+            transformApplication,
             typedArgs.slice(1),
             shaderParams,
           )}`,

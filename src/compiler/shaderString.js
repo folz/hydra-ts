@@ -1,5 +1,5 @@
 import { generateGlsl } from './generateGlsl';
-export function shaderString(uv, method, inputs, shaderParams) {
+export function shaderString(uv, transformApplication, inputs, shaderParams) {
     const str = inputs
         .map((input) => {
         if (input.isUniform) {
@@ -12,5 +12,5 @@ export function shaderString(uv, method, inputs, shaderParams) {
         return input.value;
     })
         .reduce((p, c) => `${p}, ${c}`, '');
-    return `${method}(${uv}${str})`;
+    return `${transformApplication.transform.name}(${uv}${str})`;
 }

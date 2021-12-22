@@ -18,13 +18,13 @@ export function generateGlsl(transformApplications, shaderParams) {
         // current function for generating frag color shader code
         const f0 = fragColor;
         if (transformApplication.transform.type === 'src') {
-            fragColor = (uv) => `${shaderString(uv, transformApplication.transform.name, typedArgs, shaderParams)}`;
+            fragColor = (uv) => `${shaderString(uv, transformApplication, typedArgs, shaderParams)}`;
         }
         else if (transformApplication.transform.type === 'coord') {
-            fragColor = (uv) => `${f0(`${shaderString(uv, transformApplication.transform.name, typedArgs, shaderParams)}`)}`;
+            fragColor = (uv) => `${f0(`${shaderString(uv, transformApplication, typedArgs, shaderParams)}`)}`;
         }
         else if (transformApplication.transform.type === 'color') {
-            fragColor = (uv) => `${shaderString(`${f0(uv)}`, transformApplication.transform.name, typedArgs, shaderParams)}`;
+            fragColor = (uv) => `${shaderString(`${f0(uv)}`, transformApplication, typedArgs, shaderParams)}`;
         }
         else if (transformApplication.transform.type === 'combine') {
             // combining two generated shader strings (i.e. for blend, mult, add funtions)
@@ -34,7 +34,7 @@ export function generateGlsl(transformApplications, shaderParams) {
                     : typedArgs[0].isUniform
                         ? () => typedArgs[0].name
                         : () => typedArgs[0].value;
-            fragColor = (uv) => `${shaderString(`${f0(uv)}, ${f1(uv)}`, transformApplication.transform.name, typedArgs.slice(1), shaderParams)}`;
+            fragColor = (uv) => `${shaderString(`${f0(uv)}, ${f1(uv)}`, transformApplication, typedArgs.slice(1), shaderParams)}`;
         }
         else if (transformApplication.transform.type === 'combineCoord') {
             // combining two generated shader strings (i.e. for modulate functions)
@@ -44,7 +44,7 @@ export function generateGlsl(transformApplications, shaderParams) {
                     : typedArgs[0].isUniform
                         ? () => typedArgs[0].name
                         : () => typedArgs[0].value;
-            fragColor = (uv) => `${f0(`${shaderString(`${uv}, ${f1(uv)}`, transformApplication.transform.name, typedArgs.slice(1), shaderParams)}`)}`;
+            fragColor = (uv) => `${f0(`${shaderString(`${uv}, ${f1(uv)}`, transformApplication, typedArgs.slice(1), shaderParams)}`)}`;
         }
     });
     return fragColor;

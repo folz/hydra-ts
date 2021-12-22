@@ -1,11 +1,11 @@
 import { ShaderParams } from './compileGlsl';
 import { generateGlsl } from './generateGlsl';
 import { TypedArg } from './formatArguments';
-import { TransformDefinition } from '../glsl/transformDefinitions';
+import { TransformApplication } from '../GlslSource';
 
 export function shaderString(
   uv: string,
-  method: TransformDefinition['name'],
+  transformApplication: TransformApplication,
   inputs: TypedArg[],
   shaderParams: ShaderParams,
 ): string {
@@ -21,5 +21,5 @@ export function shaderString(
     })
     .reduce((p, c) => `${p}, ${c}`, '');
 
-  return `${method}(${uv}${str})`;
+  return `${transformApplication.transform.name}(${uv}${str})`;
 }
