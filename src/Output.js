@@ -8,6 +8,7 @@ export class Output {
             [0, -2],
             [2, 2],
         ]);
+        // @ts-ignore
         this.draw = () => { };
         this.vert = `
   precision ${this.precision} float;

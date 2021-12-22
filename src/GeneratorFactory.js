@@ -40,6 +40,7 @@ export function createTransformOnPrototype(cls, processedTransformDefinition) {
         });
         return this;
     }
+    // @ts-ignore
     cls.prototype[processedTransformDefinition.name] =
         addTransformApplicationToInternalChain;
 }
@@ -59,6 +60,7 @@ export function processGlsl(transformDefinition) {
     // add extra input to beginning for backward compatibility
     if (transformDefinition.type === 'combine' ||
         transformDefinition.type === 'combineCoord') {
+        // @ts-ignore
         transformDefinition.inputs.unshift({
             name: 'color',
             type: 'vec4',

@@ -81,6 +81,7 @@ export function createTransformOnPrototype(
     return this;
   }
 
+  // @ts-ignore
   cls.prototype[processedTransformDefinition.name] =
     addTransformApplicationToInternalChain;
 }
@@ -108,6 +109,7 @@ export function processGlsl(
     transformDefinition.type === 'combine' ||
     transformDefinition.type === 'combineCoord'
   ) {
+    // @ts-ignore
     transformDefinition.inputs.unshift({
       name: 'color',
       type: 'vec4',

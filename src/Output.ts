@@ -28,6 +28,7 @@ export class Output {
       [2, 2],
     ]);
 
+    // @ts-ignore
     this.draw = () => {};
 
     this.vert = `

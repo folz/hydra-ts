@@ -23,6 +23,7 @@ export class EvalSandbox {
 
   add(name: string) {
     if (this.makeGlobal) {
+      // @ts-ignore
       window[name] = this.parent[name];
     }
     this.sandbox.addToContext(name, `parent.${name}`);
@@ -32,6 +33,7 @@ export class EvalSandbox {
 
   set(property: string, value: number) {
     if (this.makeGlobal) {
+      // @ts-ignore
       window[property] = value;
     }
     this.parent[property] = value;
@@ -40,6 +42,7 @@ export class EvalSandbox {
   tick() {
     if (this.makeGlobal) {
       this.userProps.forEach((property) => {
+        // @ts-ignore
         this.parent[property] = window[property];
       });
     } else {

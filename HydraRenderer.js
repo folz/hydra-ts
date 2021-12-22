@@ -109,7 +109,9 @@ export class HydraRenderer {
                 ],
             },
             uniforms: {
+                // @ts-ignore
                 tex0: this.regl.prop('tex0'),
+                // @ts-ignore
                 resolution: this.regl.prop('resolution'),
             },
             count: 3,
@@ -136,7 +138,9 @@ export class HydraRenderer {
         }
         this.output = this.o[0];
         const defaultUniforms = {
+            // @ts-ignore
             time: this.regl.prop('time'),
+            // @ts-ignore
             resolution: this.regl.prop('resolution'),
         };
         this.generator = new GeneratorFactory({
