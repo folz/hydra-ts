@@ -1,4 +1,4 @@
-import { Uniforms } from 'regl';
+import { Texture2D, Uniforms, Uniform } from 'regl';
 import {
   ProcessedTransformDefinition,
   TransformDefinitionInput,
@@ -19,17 +19,27 @@ export interface TransformApplication {
   )[];
 }
 
-export type CompiledTransform = ReturnType<GlslSource['compile']>;
+export type CompiledTransform = {
+  frag: string;
+  uniforms: {
+    [name: string]:
+      | string
+      | Uniform
+      | ((context: any, props: any) => number | number[])
+      | Texture2D
+      | undefined;
+  };
+};
 
 export class GlslSource {
   defaultUniforms?: Uniforms;
   precision: Precision;
   transforms: TransformApplication[] = [];
 
-  constructor(obj: TransformApplication) {
-    this.defaultUniforms = obj.defaultUniforms;
-    this.precision = obj.precision;
-    this.transforms.push(obj);
+  constructor(transformApplication: TransformApplication) {
+    this.defaultUniforms = transformApplication.defaultUniforms;
+    this.precision = transformApplication.precision;
+    this.transforms.push(transformApplication);
   }
 
   do(...transforms: TransformApplication[]) {
@@ -53,22 +63,38 @@ export class GlslSource {
 
   glsl(): CompiledTransform[] {
     if (this.transforms.length > 0) {
-      return [this.compile(this.transforms)];
+      const context = {
+        defaultUniforms: this.defaultUniforms,
+        precision: this.precision,
+      };
+
+      return [
+        compileTransformApplicationsAgainstContext(this.transforms, context),
+      ];
     }
 
     return [];
   }
+}
 
-  compile(transformApplications: TransformApplication[]) {
-    const shaderParams = compileGlsl(transformApplications);
+interface TransformApplicationContext {
+  defaultUniforms: GlslSource['defaultUniforms'];
+  precision: Precision;
+}
 
-    const uniforms: Record<TypedArg['name'], TypedArg['value']> = {};
-    shaderParams.uniforms.forEach((uniform) => {
-      uniforms[uniform.name] = uniform.value;
-    });
+function compileTransformApplicationsAgainstContext(
+  transformApplications: TransformApplication[],
+  context: TransformApplicationContext,
+) {
+  const shaderParams = compileGlsl(transformApplications);
 
-    const frag = `
-  precision ${this.precision} float;
+  const uniforms: Record<TypedArg['name'], TypedArg['value']> = {};
+  shaderParams.uniforms.forEach((uniform) => {
+    uniforms[uniform.name] = uniform.value;
+  });
+
+  const frag = `
+  precision ${context.precision} float;
   ${Object.values(shaderParams.uniforms)
     .map((uniform) => {
       let type = uniform.type;
@@ -94,10 +120,10 @@ export class GlslSource {
     })
     .join('')}
 
-  ${shaderParams.glslFunctions
-    .map((transform) => {
+  ${shaderParams.transformApplications
+    .map((transformApplication) => {
       return `
-            ${transform.transform.glsl}
+            ${transformApplication.transform.glsl}
           `;
     })
     .join('')}
@@ -109,9 +135,8 @@ export class GlslSource {
   }
   `;
 
-    return {
-      frag: frag,
-      uniforms: { ...this.defaultUniforms, ...uniforms },
-    };
-  }
+  return {
+    frag: frag,
+    uniforms: { ...context.defaultUniforms, ...uniforms },
+  };
 }
