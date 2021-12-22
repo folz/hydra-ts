@@ -3,7 +3,7 @@ import { TransformApplication } from '../GlslSource';
 import { formatArguments } from './formatArguments';
 import { contains } from './contains';
 import { shaderString } from './shaderString';
-import { ShaderParams } from '../compileGlsl';
+import { ShaderParams } from './compileGlsl';
 
 export type GlslGenerator = (uv: string) => string;
 

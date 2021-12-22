@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { generateGlsl } from './compiler/generateGlsl';
+import { generateGlsl } from './generateGlsl';
 export function compileGlsl(transformApplications) {
     const shaderParams = {
         uniforms: [],

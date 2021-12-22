@@ -1,8 +1,8 @@
 import produce from 'immer';
 
-import { TransformApplication } from './GlslSource';
-import { generateGlsl } from './compiler/generateGlsl';
-import { TypedArg } from './compiler/formatArguments';
+import { TransformApplication } from '../GlslSource';
+import { generateGlsl } from './generateGlsl';
+import { TypedArg } from './formatArguments';
 
 export interface ShaderParams {
   uniforms: TypedArg[];

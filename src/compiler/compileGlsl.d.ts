@@ -1,5 +1,5 @@
-import { TransformApplication } from './GlslSource';
-import { TypedArg } from './compiler/formatArguments';
+import { TransformApplication } from '../GlslSource';
+import { TypedArg } from './formatArguments';
 export interface ShaderParams {
     uniforms: TypedArg[];
     transformApplications: TransformApplication[];

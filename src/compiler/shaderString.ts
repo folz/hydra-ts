@@ -1,4 +1,4 @@
-import { ShaderParams } from '../compileGlsl';
+import { ShaderParams } from './compileGlsl';
 import { generateGlsl } from './generateGlsl';
 import { TypedArg } from './formatArguments';
 import { TransformDefinition } from '../glsl/transformDefinitions';

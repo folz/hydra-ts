@@ -1,4 +1,4 @@
-import { Texture2D, Uniforms, Uniform } from 'regl';
+import { Texture2D, Uniform, Uniforms } from 'regl';
 import { ProcessedTransformDefinition, TransformDefinitionInput } from './glsl/transformDefinitions';
 import { Output } from './Output';
 import { Precision } from '../HydraRenderer';
