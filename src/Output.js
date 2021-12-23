@@ -52,19 +52,11 @@ export class Output {
     }
     render(passes) {
         let pass = passes[0];
-        const uniforms = Object.assign(pass.uniforms, {
-            prevBuffer: () => {
-                //var index = this.pingPongIndex ? 0 : 1
-                //   var index = self.pingPong[(passIndex+1)%2]
-                //  console.log('ping pong', self.pingPongIndex)
-                return this.fbos[this.pingPongIndex];
-            },
-        });
         this.draw = this.regl({
             frag: pass.frag,
             vert: this.vert,
             attributes: this.attributes,
-            uniforms: uniforms,
+            uniforms: pass.uniforms,
             count: 3,
             framebuffer: () => {
                 this.pingPongIndex = this.pingPongIndex ? 0 : 1;

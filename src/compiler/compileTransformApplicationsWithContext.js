@@ -23,7 +23,6 @@ export function compileTransformApplicationsWithContext(transformApplications, c
   uniform float time;
   uniform vec2 resolution;
   varying vec2 uv;
-  uniform sampler2D prevBuffer;
 
   ${Object.values(utilityFunctions)
         .map((transform) => {

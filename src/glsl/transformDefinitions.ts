@@ -1078,12 +1078,6 @@ export const transforms: TransformDefinition[] = [
    return vec4(c, _c0.a);`,
   },
   {
-    name: 'prev',
-    type: 'src',
-    inputs: [],
-    glsl: `   return texture2D(prevBuffer, fract(_st));`,
-  },
-  {
     name: 'sum',
     type: 'color',
     inputs: [
