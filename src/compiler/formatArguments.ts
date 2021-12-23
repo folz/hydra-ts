@@ -92,71 +92,64 @@ export function formatArguments(
       }
     }
 
-    if (startIndex < 0) {
-      // pass
-    } else {
-      const valueType = getJsValueType(typedArg.value);
+    const valueType = getJsValueType(typedArg.value);
 
-      if (valueType === JsValueType.HydraSource) {
-        // GLSLSource
+    if (valueType === JsValueType.HydraSource) {
+      // GLSLSource
 
-        const finalTransform =
-          typedArg.value.transforms[typedArg.value.transforms.length - 1];
+      const finalTransform =
+        typedArg.value.transforms[typedArg.value.transforms.length - 1];
 
-        if (finalTransform.transform.glsl_return_type !== input.type) {
-          const defaults = DEFAULT_CONVERSIONS[input.type];
-          if (typeof defaults !== 'undefined') {
-            const default_def =
-              defaults[finalTransform.transform.glsl_return_type];
-            if (typeof default_def !== 'undefined') {
-              const { name, args } = default_def;
-              typedArg.value = typedArg.value[name](...args);
-            }
+      if (finalTransform.transform.glsl_return_type !== input.type) {
+        const defaults = DEFAULT_CONVERSIONS[input.type];
+        if (typeof defaults !== 'undefined') {
+          const default_def =
+            defaults[finalTransform.transform.glsl_return_type];
+          if (typeof default_def !== 'undefined') {
+            const { name, args } = default_def;
+            typedArg.value = typedArg.value[name](...args);
           }
         }
-
-        typedArg.isUniform = false;
-      } else if (
-        typedArg.type === 'float' &&
-        valueType === JsValueType.Number
-      ) {
-        // Number
-
-        typedArg.value = ensureDecimalDot(typedArg.value);
-      } else if (
-        typedArg.type.startsWith('vec') &&
-        valueType === JsValueType.Array
-      ) {
-        // Vector literal (as array)
-
-        typedArg.isUniform = false;
-        typedArg.value = `${typedArg.type}(${typedArg.value
-          .map(ensureDecimalDot)
-          .join(', ')})`;
-      } else if (input.type === 'sampler2D') {
-        // typedArg.tex = typedArg.value
-        const x = typedArg.value;
-        typedArg.value = () => x.getTexture();
-        typedArg.isUniform = true;
-      } else if (valueType === JsValueType.HydraOutput) {
-        // Output (o0, o1, o2, o3, etc)
-
-        // if passing in a texture reference, when function asks for vec4, convert to vec4
-        if (typedArg.value.getTexture && input.type === 'vec4') {
-          const x1 = typedArg.value;
-          // TODO: get texture without relying on makeGlobal src()
-          typedArg.value = src(x1);
-          typedArg.isUniform = false;
-        }
       }
 
-      // add tp uniform array if is a function that will pass in a different value on each render frame,
-      // or a texture/ external source
+      typedArg.isUniform = false;
+    } else if (typedArg.type === 'float' && valueType === JsValueType.Number) {
+      // Number
 
-      if (typedArg.isUniform) {
-        typedArg.name += startIndex;
-        //  shaderParams.uniforms.push(typedArg)
+      typedArg.value = ensureDecimalDot(typedArg.value);
+    } else if (
+      typedArg.type.startsWith('vec') &&
+      valueType === JsValueType.Array
+    ) {
+      // Vector literal (as array)
+
+      typedArg.isUniform = false;
+      typedArg.value = `${typedArg.type}(${typedArg.value
+        .map(ensureDecimalDot)
+        .join(', ')})`;
+    } else if (input.type === 'sampler2D') {
+      // typedArg.tex = typedArg.value
+      const x = typedArg.value;
+      typedArg.value = () => x.getTexture();
+      typedArg.isUniform = true;
+    } else if (valueType === JsValueType.HydraOutput) {
+      // Output (o0, o1, o2, o3, etc)
+
+      // if passing in a texture reference, when function asks for vec4, convert to vec4
+      if (typedArg.value.getTexture && input.type === 'vec4') {
+        const x1 = typedArg.value;
+        // TODO: get texture without relying on makeGlobal src()
+        typedArg.value = src(x1);
+        typedArg.isUniform = false;
       }
+    }
+
+    // add tp uniform array if is a function that will pass in a different value on each render frame,
+    // or a texture/ external source
+
+    if (typedArg.isUniform) {
+      typedArg.name += startIndex;
+      //  shaderParams.uniforms.push(typedArg)
     }
 
     return typedArg;
