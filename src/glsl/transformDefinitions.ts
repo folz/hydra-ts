@@ -69,7 +69,6 @@ const types = {
 */
 
 import { Texture2D } from 'regl';
-import { HydraSource } from '../HydraSource';
 
 export const typeLookup = {
   src: {
@@ -95,20 +94,6 @@ export const typeLookup = {
 };
 
 export type TransformDefinitionType = keyof typeof typeLookup;
-
-type TransformDefinitionInputType = 'float' | 'sampler2D' | 'vec4' | 'texture';
-
-export interface ITransformDefinitionInput {
-  type: TransformDefinitionInputType;
-  name: string;
-  default?:
-    | number
-    | number[]
-    | ((context: any, props: any) => number | number[])
-    | string
-    | Texture2D
-    | HydraSource;
-}
 
 type TransformDefinitionInputTypeFloat = {
   type: 'float';
