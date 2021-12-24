@@ -1,5 +1,4 @@
 import { formatArguments } from './formatArguments';
-import { contains } from './contains';
 import { shaderString } from './shaderString';
 export function generateGlsl(transformApplications, shaderParams) {
     let fragColor = () => '';
@@ -48,4 +47,13 @@ export function generateGlsl(transformApplications, shaderParams) {
         }
     });
     return fragColor;
+}
+export function contains(transformApplication, transformApplications) {
+    for (let i = 0; i < transformApplications.length; i++) {
+        if (transformApplication.transform.name ==
+            transformApplications[i].transform.name) {
+            return true;
+        }
+    }
+    return false;
 }
