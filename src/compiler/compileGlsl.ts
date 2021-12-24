@@ -17,7 +17,7 @@ export function compileGlsl(
     fragColor: '',
   };
 
-  // Note: generateGlsl() also mutates transformApplications
+  // Note: generateGlsl() also mutates shaderParams.transformApplications
   shaderParams.fragColor = generateGlsl(
     transformApplications,
     shaderParams,

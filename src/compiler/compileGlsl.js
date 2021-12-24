@@ -5,7 +5,7 @@ export function compileGlsl(transformApplications) {
         transformApplications: [],
         fragColor: '',
     };
-    // Note: generateGlsl() also mutates transformApplications
+    // Note: generateGlsl() also mutates shaderParams.transformApplications
     shaderParams.fragColor = generateGlsl(transformApplications, shaderParams)('st');
     // remove uniforms with duplicate names
     let uniforms = {};
