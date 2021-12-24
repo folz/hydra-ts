@@ -1,7 +1,6 @@
 import { Texture2D } from 'regl';
 import { TransformApplication } from '../GlslSource';
 import { formatArguments } from './formatArguments';
-import { contains } from './contains';
 import { shaderString } from './shaderString';
 import { ShaderParams } from './compileGlsl';
 
@@ -95,4 +94,19 @@ export function generateGlsl(
     }
   });
   return fragColor;
+}
+
+export function contains(
+  transformApplication: TransformApplication,
+  transformApplications: TransformApplication[],
+): boolean {
+  for (let i = 0; i < transformApplications.length; i++) {
+    if (
+      transformApplication.transform.name ==
+      transformApplications[i].transform.name
+    ) {
+      return true;
+    }
+  }
+  return false;
 }
