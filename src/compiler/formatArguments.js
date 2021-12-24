@@ -10,9 +10,9 @@ const DEFAULT_CONVERSIONS = {
     texture: undefined,
 };
 export function formatArguments(transformApplication, startIndex) {
-    const defaultArgs = transformApplication.transform.inputs;
-    const userArgs = transformApplication.userArgs;
-    return defaultArgs.map((input, index) => {
+    const { transform, userArgs } = transformApplication;
+    const { inputs } = transform;
+    return inputs.map((input, index) => {
         var _a;
         const typedArg = {
             value: input.default,

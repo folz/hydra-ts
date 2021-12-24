@@ -25,9 +25,10 @@ export function formatArguments(
   transformApplication: TransformApplication,
   startIndex: number,
 ): TypedArg[] {
-  const defaultArgs = transformApplication.transform.inputs;
-  const userArgs = transformApplication.userArgs;
-  return defaultArgs.map((input, index) => {
+  const { transform, userArgs } = transformApplication;
+  const { inputs } = transform;
+
+  return inputs.map((input, index) => {
     const typedArg: TypedArg = {
       value: input.default,
       type: input.type, //
