@@ -57,14 +57,5 @@ export function processGlsl(transformDefinition) {
       ${transformDefinition.glsl}
   }
 `;
-    // add extra input to beginning for backward compatibility
-    if (transformDefinition.type === 'combine' ||
-        transformDefinition.type === 'combineCoord') {
-        // @ts-ignore
-        transformDefinition.inputs.unshift({
-            name: 'color',
-            type: 'vec4',
-        });
-    }
     return Object.assign(Object.assign({}, transformDefinition), { glsl: glslFunction, processed: true });
 }

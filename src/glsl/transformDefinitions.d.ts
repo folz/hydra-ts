@@ -41,6 +41,7 @@ declare type TransformDefinitionInputTypeTexture = {
 export declare type TransformDefinitionInputUnion = TransformDefinitionInputTypeFloat | TransformDefinitionInputTypeSampler2D | TransformDefinitionInputTypeVec4 | TransformDefinitionInputTypeTexture;
 export declare type TransformDefinitionInput = TransformDefinitionInputUnion & {
     name: string;
+    vecLen?: number;
 };
 export interface TransformDefinition {
     name: string;

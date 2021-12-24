@@ -104,18 +104,6 @@ export function processGlsl(
   }
 `;
 
-  // add extra input to beginning for backward compatibility
-  if (
-    transformDefinition.type === 'combine' ||
-    transformDefinition.type === 'combineCoord'
-  ) {
-    // @ts-ignore
-    transformDefinition.inputs.unshift({
-      name: 'color',
-      type: 'vec4',
-    });
-  }
-
   return {
     ...transformDefinition,
     glsl: glslFunction,

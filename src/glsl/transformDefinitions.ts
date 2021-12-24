@@ -85,11 +85,11 @@ export const typeLookup = {
   },
   combine: {
     returnType: 'vec4',
-    args: ['vec4 _c0', 'vec4 _c1'],
+    args: ['vec4 _c0'],
   },
   combineCoord: {
     returnType: 'vec2',
-    args: ['vec2 _st', 'vec4 _c0'],
+    args: ['vec2 _st'],
   },
 };
 
@@ -126,6 +126,7 @@ export type TransformDefinitionInputUnion =
 
 export type TransformDefinitionInput = TransformDefinitionInputUnion & {
   name: string;
+  vecLen?: number;
 };
 
 export interface TransformDefinition {
@@ -473,6 +474,11 @@ export const transforms: TransformDefinition[] = [
     type: 'combineCoord',
     inputs: [
       {
+        name: 'color',
+        type: 'vec4',
+        vecLen: 4,
+      },
+      {
         type: 'float',
         name: 'repeatX',
         default: 3,
@@ -494,8 +500,8 @@ export const transforms: TransformDefinition[] = [
       },
     ],
     glsl: `   vec2 st = _st * vec2(repeatX, repeatY);
-   st.x += step(1., mod(st.y,2.0)) + _c0.r * offsetX;
-   st.y += step(1., mod(st.x,2.0)) + _c0.g * offsetY;
+   st.x += step(1., mod(st.y,2.0)) + color.r * offsetX;
+   st.y += step(1., mod(st.x,2.0)) + color.g * offsetY;
    return fract(st);`,
   },
   {
@@ -523,6 +529,11 @@ export const transforms: TransformDefinition[] = [
     type: 'combineCoord',
     inputs: [
       {
+        name: 'color',
+        type: 'vec4',
+        vecLen: 4,
+      },
+      {
         type: 'float',
         name: 'reps',
         default: 3,
@@ -535,7 +546,7 @@ export const transforms: TransformDefinition[] = [
     ],
     glsl: `   vec2 st = _st * vec2(reps, 1.0);
    //  float f =  mod(_st.y,2.0);
-   st.y += step(1., mod(st.x,2.0)) + _c0.r * offset;
+   st.y += step(1., mod(st.x,2.0)) + color.r * offset;
    return fract(st);`,
   },
   {
@@ -563,6 +574,11 @@ export const transforms: TransformDefinition[] = [
     type: 'combineCoord',
     inputs: [
       {
+        name: 'color',
+        type: 'vec4',
+        vecLen: 4,
+      },
+      {
         type: 'float',
         name: 'reps',
         default: 3,
@@ -575,7 +591,7 @@ export const transforms: TransformDefinition[] = [
     ],
     glsl: `   vec2 st = _st * vec2(reps, 1.0);
    //  float f =  mod(_st.y,2.0);
-   st.x += step(1., mod(st.y,2.0)) + _c0.r * offset;
+   st.x += step(1., mod(st.y,2.0)) + color.r * offset;
    return fract(st);`,
   },
   {
@@ -648,6 +664,11 @@ export const transforms: TransformDefinition[] = [
     type: 'combineCoord',
     inputs: [
       {
+        name: 'color',
+        type: 'vec4',
+        vecLen: 4,
+      },
+      {
         type: 'float',
         name: 'nSides',
         default: 4,
@@ -659,7 +680,7 @@ export const transforms: TransformDefinition[] = [
    float pi = 2.*3.1416;
    a = mod(a,pi/nSides);
    a = abs(a-pi/nSides/2.);
-   return (_c0.r+r)*vec2(cos(a), sin(a));`,
+   return (color.r+r)*vec2(cos(a), sin(a));`,
   },
   {
     name: 'scroll',
@@ -714,6 +735,11 @@ export const transforms: TransformDefinition[] = [
     type: 'combineCoord',
     inputs: [
       {
+        name: 'color',
+        type: 'vec4',
+        vecLen: 4,
+      },
+      {
         type: 'float',
         name: 'scrollX',
         default: 0.5,
@@ -724,7 +750,7 @@ export const transforms: TransformDefinition[] = [
         default: 0,
       },
     ],
-    glsl: `   _st.x += _c0.r*scrollX + time*speed;
+    glsl: `   _st.x += color.r*scrollX + time*speed;
    return fract(_st);`,
   },
   {
@@ -750,6 +776,11 @@ export const transforms: TransformDefinition[] = [
     type: 'combineCoord',
     inputs: [
       {
+        name: 'color',
+        type: 'vec4',
+        vecLen: 4,
+      },
+      {
         type: 'float',
         name: 'scrollY',
         default: 0.5,
@@ -760,7 +791,7 @@ export const transforms: TransformDefinition[] = [
         default: 0,
       },
     ],
-    glsl: `   _st.y += _c0.r*scrollY + time*speed;
+    glsl: `   _st.y += color.r*scrollY + time*speed;
    return fract(_st);`,
   },
   {
@@ -768,78 +799,120 @@ export const transforms: TransformDefinition[] = [
     type: 'combine',
     inputs: [
       {
+        name: 'color',
+        type: 'vec4',
+        vecLen: 4,
+      },
+      {
         type: 'float',
         name: 'amount',
         default: 1,
       },
     ],
-    glsl: `   return (_c0+_c1)*amount + _c0*(1.0-amount);`,
+    glsl: `   return (_c0+color)*amount + _c0*(1.0-amount);`,
   },
   {
     name: 'sub',
     type: 'combine',
     inputs: [
       {
+        name: 'color',
+        type: 'vec4',
+        vecLen: 4,
+      },
+      {
         type: 'float',
         name: 'amount',
         default: 1,
       },
     ],
-    glsl: `   return (_c0-_c1)*amount + _c0*(1.0-amount);`,
+    glsl: `   return (_c0-color)*amount + _c0*(1.0-amount);`,
   },
   {
     name: 'layer',
     type: 'combine',
-    inputs: [],
-    glsl: `   return vec4(mix(_c0.rgb, _c1.rgb, _c1.a), _c0.a+_c1.a);`,
+    inputs: [
+      {
+        name: 'color',
+        type: 'vec4',
+        vecLen: 4,
+      },
+    ],
+    glsl: `   return vec4(mix(_c0.rgb, color.rgb, color.a), _c0.a+color.a);`,
   },
   {
     name: 'blend',
     type: 'combine',
     inputs: [
       {
+        name: 'color',
+        type: 'vec4',
+        vecLen: 4,
+      },
+      {
         type: 'float',
         name: 'amount',
         default: 0.5,
       },
     ],
-    glsl: `   return _c0*(1.0-amount)+_c1*amount;`,
+    glsl: `   return _c0*(1.0-amount)+color*amount;`,
   },
   {
     name: 'mult',
     type: 'combine',
     inputs: [
       {
+        name: 'color',
+        type: 'vec4',
+        vecLen: 4,
+      },
+      {
         type: 'float',
         name: 'amount',
         default: 1,
       },
     ],
-    glsl: `   return _c0*(1.0-amount)+(_c0*_c1)*amount;`,
+    glsl: `   return _c0*(1.0-amount)+(_c0*color)*amount;`,
   },
   {
     name: 'diff',
     type: 'combine',
-    inputs: [],
-    glsl: `   return vec4(abs(_c0.rgb-_c1.rgb), max(_c0.a, _c1.a));`,
+    inputs: [
+      {
+        name: 'color',
+        type: 'vec4',
+        vecLen: 4,
+      },
+    ],
+    glsl: `   return vec4(abs(_c0.rgb-color.rgb), max(_c0.a, color.a));`,
   },
   {
     name: 'modulate',
     type: 'combineCoord',
     inputs: [
       {
+        name: 'color',
+        type: 'vec4',
+        vecLen: 4,
+      },
+      {
         type: 'float',
         name: 'amount',
         default: 0.1,
       },
     ],
-    glsl: `   //  return fract(st+(_c0.xy-0.5)*amount);
-   return _st + _c0.xy*amount;`,
+    glsl: `   //  return fract(st+(color.xy-0.5)*amount);
+   return _st + color.xy*amount;`,
   },
   {
     name: 'modulateScale',
     type: 'combineCoord',
     inputs: [
+      {
+        name: 'color',
+        type: 'vec4',
+        vecLen: 4,
+      },
       {
         type: 'float',
         name: 'multiple',
@@ -852,7 +925,7 @@ export const transforms: TransformDefinition[] = [
       },
     ],
     glsl: `   vec2 xy = _st - vec2(0.5);
-   xy*=(1.0/vec2(offset + multiple*_c0.r, offset + multiple*_c0.g));
+   xy*=(1.0/vec2(offset + multiple*color.r, offset + multiple*color.g));
    xy+=vec2(0.5);
    return xy;`,
   },
@@ -860,6 +933,11 @@ export const transforms: TransformDefinition[] = [
     name: 'modulatePixelate',
     type: 'combineCoord',
     inputs: [
+      {
+        name: 'color',
+        type: 'vec4',
+        vecLen: 4,
+      },
       {
         type: 'float',
         name: 'multiple',
@@ -871,13 +949,18 @@ export const transforms: TransformDefinition[] = [
         default: 3,
       },
     ],
-    glsl: `   vec2 xy = vec2(offset + _c0.x*multiple, offset + _c0.y*multiple);
+    glsl: `   vec2 xy = vec2(offset + color.x*multiple, offset + color.y*multiple);
    return (floor(_st * xy) + 0.5)/xy;`,
   },
   {
     name: 'modulateRotate',
     type: 'combineCoord',
     inputs: [
+      {
+        name: 'color',
+        type: 'vec4',
+        vecLen: 4,
+      },
       {
         type: 'float',
         name: 'multiple',
@@ -890,7 +973,7 @@ export const transforms: TransformDefinition[] = [
       },
     ],
     glsl: `   vec2 xy = _st - vec2(0.5);
-   float angle = offset + _c0.x * multiple;
+   float angle = offset + color.x * multiple;
    xy = mat2(cos(angle),-sin(angle), sin(angle),cos(angle))*xy;
    xy += 0.5;
    return xy;`,
@@ -900,12 +983,17 @@ export const transforms: TransformDefinition[] = [
     type: 'combineCoord',
     inputs: [
       {
+        name: 'color',
+        type: 'vec4',
+        vecLen: 4,
+      },
+      {
         type: 'float',
         name: 'amount',
         default: 1,
       },
     ],
-    glsl: `   return _st + (vec2(_c0.g - _c0.r, _c0.b - _c0.g) * amount * 1.0/resolution);`,
+    glsl: `   return _st + (vec2(color.g - color.r, color.b - color.g) * amount * 1.0/resolution);`,
   },
   {
     name: 'invert',
@@ -947,8 +1035,14 @@ export const transforms: TransformDefinition[] = [
   {
     name: 'mask',
     type: 'combine',
-    inputs: [],
-    glsl: `   float a = _luminance(_c1.rgb);
+    inputs: [
+      {
+        name: 'color',
+        type: 'vec4',
+        vecLen: 4,
+      },
+    ],
+    glsl: `   float a = _luminance(color.rgb);
    return vec4(_c0.rgb*a, a);`,
   },
   {

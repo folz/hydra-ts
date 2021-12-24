@@ -13,23 +13,16 @@ export function formatArguments(transformApplication, startIndex) {
     const defaultArgs = transformApplication.transform.inputs;
     const userArgs = transformApplication.userArgs;
     return defaultArgs.map((input, index) => {
+        var _a;
         const typedArg = {
             value: input.default,
             type: input.type,
             isUniform: false,
             name: input.name,
-            vecLen: 0,
+            vecLen: (_a = input.vecLen) !== null && _a !== void 0 ? _a : 0,
         };
         if (typedArg.type === 'float') {
             typedArg.value = ensureDecimalDot(input.default);
-        }
-        if (input.type.startsWith('vec')) {
-            try {
-                typedArg.vecLen = Number.parseInt(input.type.substr(3));
-            }
-            catch (e) {
-                console.log(`Error determining length of vector input type ${input.type} (${input.name})`);
-            }
         }
         // if user has input something for this argument
         if (userArgs.length > index) {

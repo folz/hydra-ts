@@ -33,21 +33,11 @@ export function formatArguments(
       type: input.type, //
       isUniform: false,
       name: input.name,
-      vecLen: 0,
+      vecLen: input.vecLen ?? 0,
     };
 
     if (typedArg.type === 'float') {
       typedArg.value = ensureDecimalDot(input.default);
-    }
-
-    if (input.type.startsWith('vec')) {
-      try {
-        typedArg.vecLen = Number.parseInt(input.type.substr(3));
-      } catch (e) {
-        console.log(
-          `Error determining length of vector input type ${input.type} (${input.name})`,
-        );
-      }
     }
 
     // if user has input something for this argument
