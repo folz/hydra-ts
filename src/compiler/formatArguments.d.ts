@@ -8,3 +8,5 @@ export interface TypedArg {
     vecLen: number;
 }
 export declare function formatArguments(transformApplication: TransformApplication, startIndex: number): TypedArg[];
+export declare function ensureDecimalDot(val: any): string;
+export declare function fillArrayWithDefaults(arr: any[], len: number): any[];

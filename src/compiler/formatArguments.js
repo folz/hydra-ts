@@ -1,5 +1,3 @@
-import { ensureDecimalDot } from './ensureDecimalDot';
-import { fillArrayWithDefaults } from './fillArrayWithDefaults';
 import arrayUtils from '../lib/array-utils';
 import { getJsValueType, JsValueType } from './convertJsValueToGlsl';
 const DEFAULT_CONVERSIONS = {
@@ -121,4 +119,29 @@ export function formatArguments(transformApplication, startIndex) {
         }
         return typedArg;
     });
+}
+function mergeDefaultsAndArgs(defaults, args) {
+    let suppliedUserArgs = args.slice(0, defaults.length);
+    let remainingDefaultArgs = defaults.slice(suppliedUserArgs.length);
+    return [...suppliedUserArgs, ...remainingDefaultArgs];
+}
+export function ensureDecimalDot(val) {
+    val = val.toString();
+    if (val.indexOf('.') < 0) {
+        val += '.';
+    }
+    return val;
+}
+export function fillArrayWithDefaults(arr, len) {
+    // fill the array with default values if it's too short
+    while (arr.length < len) {
+        if (arr.length === 3) {
+            // push a 1 as the default for .a in vec4
+            arr.push(1.0);
+        }
+        else {
+            arr.push(0.0);
+        }
+    }
+    return arr.slice(0, len);
 }
