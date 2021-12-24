@@ -1,4 +1,3 @@
-import produce from 'immer';
 import { generateGlsl } from './generateGlsl';
 export function compileGlsl(transformApplications) {
     const shaderParams = {
@@ -6,13 +5,11 @@ export function compileGlsl(transformApplications) {
         transformApplications: [],
         fragColor: '',
     };
-    const newParams = produce(shaderParams, (draft) => {
-        draft.fragColor = generateGlsl(transformApplications, draft)('st');
-        // remove uniforms with duplicate names
-        let uniforms = {};
-        draft.uniforms.forEach((uniform) => (uniforms[uniform.name] = uniform));
-        draft.uniforms = Object.values(uniforms);
-    });
-    console.log(shaderParams, newParams);
-    return newParams;
+    // Note: generateGlsl() also mutates transformApplications
+    shaderParams.fragColor = generateGlsl(transformApplications, shaderParams)('st');
+    // remove uniforms with duplicate names
+    let uniforms = {};
+    shaderParams.uniforms.forEach((uniform) => (uniforms[uniform.name] = uniform));
+    shaderParams.uniforms = Object.values(uniforms);
+    return shaderParams;
 }

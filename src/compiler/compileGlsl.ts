@@ -1,5 +1,3 @@
-import produce from 'immer';
-
 import { TransformApplication } from '../GlslSource';
 import { generateGlsl } from './generateGlsl';
 import { TypedArg } from './formatArguments';
@@ -19,15 +17,18 @@ export function compileGlsl(
     fragColor: '',
   };
 
-  const newParams = produce(shaderParams, (draft) => {
-    draft.fragColor = generateGlsl(transformApplications, draft)('st');
-    // remove uniforms with duplicate names
-    let uniforms: Record<string, TypedArg> = {};
-    draft.uniforms.forEach((uniform) => (uniforms[uniform.name] = uniform));
-    draft.uniforms = Object.values(uniforms);
-  });
+  // Note: generateGlsl() also mutates transformApplications
+  shaderParams.fragColor = generateGlsl(
+    transformApplications,
+    shaderParams,
+  )('st');
 
-  console.log(shaderParams, newParams);
+  // remove uniforms with duplicate names
+  let uniforms: Record<string, TypedArg> = {};
+  shaderParams.uniforms.forEach(
+    (uniform) => (uniforms[uniform.name] = uniform),
+  );
+  shaderParams.uniforms = Object.values(uniforms);
 
-  return newParams;
+  return shaderParams;
 }
