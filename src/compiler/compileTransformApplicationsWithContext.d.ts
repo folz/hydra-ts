@@ -1,4 +1,4 @@
-import { Precision } from '../../HydraRenderer';
+import { Precision } from '../HydraRenderer';
 import { GlslSource, TransformApplication } from '../GlslSource';
 interface TransformApplicationContext {
     defaultUniforms: GlslSource['defaultUniforms'];

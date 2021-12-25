@@ -1,12 +1,12 @@
-import { Output } from './src/Output';
-import { Loop } from './src/Loop';
-import { HydraSource } from './src/HydraSource';
-import ArrayUtils from './src/lib/array-utils';
-import { EvalSandbox } from './src/EvalSandbox';
+import { Output } from './Output';
+import { Loop } from './Loop';
+import { HydraSource } from './HydraSource';
+import ArrayUtils from './lib/array-utils';
+import { EvalSandbox } from './EvalSandbox';
 import { DrawCommand, Regl } from 'regl';
 
-import { GeneratorFactory } from './src/GeneratorFactory';
-import { transforms } from './src/glsl/transformDefinitions';
+import { GeneratorFactory } from './GeneratorFactory';
+import { transforms } from './glsl/transformDefinitions';
 
 export type Precision = 'lowp' | 'mediump' | 'highp';
 

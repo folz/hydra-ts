@@ -5,7 +5,7 @@ import {
   ProcessedTransformDefinition,
   typeLookup,
 } from './glsl/transformDefinitions.js';
-import { Precision } from '../HydraRenderer';
+import { Precision } from './HydraRenderer';
 
 interface GeneratorFactoryOptions {
   changeListener: GeneratorFactory['changeListener'];

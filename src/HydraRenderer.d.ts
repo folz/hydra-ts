@@ -1,9 +1,9 @@
-import { Output } from './src/Output';
-import { Loop } from './src/Loop';
-import { HydraSource } from './src/HydraSource';
-import { EvalSandbox } from './src/EvalSandbox';
+import { Output } from './Output';
+import { Loop } from './Loop';
+import { HydraSource } from './HydraSource';
+import { EvalSandbox } from './EvalSandbox';
 import { DrawCommand, Regl } from 'regl';
-import { GeneratorFactory } from './src/GeneratorFactory';
+import { GeneratorFactory } from './GeneratorFactory';
 export declare type Precision = 'lowp' | 'mediump' | 'highp';
 export interface Synth {
     time: number;

@@ -2,7 +2,7 @@ import { DynamicVariable, DynamicVariableFn } from 'regl';
 import type { TransformDefinition } from './glsl/transformDefinitions.js';
 import { GlslSource } from './GlslSource';
 import { ProcessedTransformDefinition } from './glsl/transformDefinitions.js';
-import { Precision } from '../HydraRenderer';
+import { Precision } from './HydraRenderer';
 interface GeneratorFactoryOptions {
     changeListener: GeneratorFactory['changeListener'];
     defaultUniforms: GeneratorFactory['defaultUniforms'];

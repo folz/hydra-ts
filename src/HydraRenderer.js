@@ -1,10 +1,10 @@
-import { Output } from './src/Output';
-import { Loop } from './src/Loop';
-import { HydraSource } from './src/HydraSource';
-import ArrayUtils from './src/lib/array-utils';
-import { EvalSandbox } from './src/EvalSandbox';
-import { GeneratorFactory } from './src/GeneratorFactory';
-import { transforms } from './src/glsl/transformDefinitions';
+import { Output } from './Output';
+import { Loop } from './Loop';
+import { HydraSource } from './HydraSource';
+import ArrayUtils from './lib/array-utils';
+import { EvalSandbox } from './EvalSandbox';
+import { GeneratorFactory } from './GeneratorFactory';
+import { transforms } from './glsl/transformDefinitions';
 // to do: add ability to pass in certain uniforms and transforms
 export class HydraRenderer {
     constructor({ width = 1280, height = 720, numSources = 4, numOutputs = 4, makeGlobal = true, precision = 'mediump', regl, }) {

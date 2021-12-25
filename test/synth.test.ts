@@ -1,4 +1,4 @@
-import { HydraRenderer as Synth } from '../HydraRenderer';
+import { HydraRenderer as Synth } from '../src/HydraRenderer';
 
 import { transforms } from '../src/glsl/transformDefinitions';
 import REGL from 'regl';
