@@ -1,7 +1,6 @@
 import { Output } from './Output';
 import { Loop } from './Loop';
 import { HydraSource } from './HydraSource';
-import ArrayUtils from './lib/array-utils';
 import { EvalSandbox } from './EvalSandbox';
 import { GeneratorFactory } from './GeneratorFactory';
 import { transforms } from './glsl/transformDefinitions';
@@ -56,7 +55,6 @@ export class HydraRenderer {
                 this.timeSinceLastUpdate = 0;
             }
         };
-        ArrayUtils.init();
         this.width = width;
         this.height = height;
         this.regl = regl;

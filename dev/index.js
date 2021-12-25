@@ -1,12 +1,13 @@
 import REGL from 'regl';
 import tinykeys from 'tinykeys';
 import Hydra from '../index';
-import * as t from '../src/glsl/t';
+import ArrayUtils from '../src/lib/array-utils';
 // @ts-ignore
 import jelly from './image3A3853_Glitch.jpg';
 import './style.css';
 const WIDTH = 1080;
 const HEIGHT = 1080;
+ArrayUtils.init();
 const canvas = document.createElement('canvas');
 canvas.style.backgroundColor = '#000000';
 canvas.width = WIDTH;

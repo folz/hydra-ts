@@ -1,7 +1,6 @@
 import { Output } from './Output';
 import { Loop } from './Loop';
 import { HydraSource } from './HydraSource';
-import ArrayUtils from './lib/array-utils';
 import { EvalSandbox } from './EvalSandbox';
 import { DrawCommand, Regl } from 'regl';
 
@@ -61,8 +60,6 @@ export class HydraRenderer {
     precision = 'mediump',
     regl,
   }: HydraRendererOptions) {
-    ArrayUtils.init();
-
     this.width = width;
     this.height = height;
 
