@@ -71,7 +71,7 @@ export default {
   },
 
   getValue:
-    (arr = []) =>
+    (arr: any[] = []) =>
     ({ time, bpm }: any) => {
       let speed = arr._speed ? arr._speed : 1;
       let smooth = arr._smooth ? arr._smooth : 0;

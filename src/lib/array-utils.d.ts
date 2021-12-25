@@ -15,6 +15,6 @@ declare global {
 }
 declare const _default: {
     init: () => void;
-    getValue: (arr?: never[]) => ({ time, bpm }: any) => number;
+    getValue: (arr?: any[]) => ({ time, bpm }: any) => any;
 };
 export default _default;
