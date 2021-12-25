@@ -14,28 +14,24 @@ export function formatArguments(transformApplication, startIndex) {
     const { inputs } = transform;
     return inputs.map((input, index) => {
         var _a;
-        const typedArg = {
-            value: input.default,
-            type: input.type,
-            isUniform: false,
-            name: input.name,
-            vecLen: (_a = input.vecLen) !== null && _a !== void 0 ? _a : 0,
-        };
-        if (typedArg.type === 'float') {
-            typedArg.value = ensureDecimalDot(input.default);
+        const vecLen = (_a = input.vecLen) !== null && _a !== void 0 ? _a : 0;
+        let value = input.default;
+        let isUniform = false;
+        if (input.type === 'float') {
+            value = ensureDecimalDot(value);
         }
         // if user has input something for this argument
         if (userArgs.length > index) {
             const arg = userArgs[index];
-            typedArg.value = arg;
+            value = arg;
             // do something if a composite or transformApplication
             if (typeof arg === 'function') {
-                if (typedArg.vecLen > 0) {
+                if (vecLen > 0) {
                     // expected input is a vector, not a scalar
-                    typedArg.value = (context, props) => fillArrayWithDefaults(arg(props), typedArg.vecLen);
+                    value = (context, props) => fillArrayWithDefaults(arg(props), vecLen);
                 }
                 else {
-                    typedArg.value = (context, props) => {
+                    value = (context, props) => {
                         try {
                             return arg(props);
                         }
@@ -45,72 +41,75 @@ export function formatArguments(transformApplication, startIndex) {
                         }
                     };
                 }
-                typedArg.isUniform = true;
+                isUniform = true;
             }
-            else if (arg.constructor === Array) {
-                if (typedArg.vecLen > 0) {
+            else if (Array.isArray(arg)) {
+                if (vecLen > 0) {
                     // expected input is a vector, not a scalar
-                    typedArg.isUniform = true;
-                    typedArg.value = fillArrayWithDefaults(typedArg.value, typedArg.vecLen);
+                    isUniform = true;
+                    value = fillArrayWithDefaults(value, vecLen);
                 }
                 else {
                     // is Array
-                    typedArg.value = (context, props) => arrayUtils.getValue(arg)(props);
-                    typedArg.isUniform = true;
+                    value = (context, props) => arrayUtils.getValue(arg)(props);
+                    isUniform = true;
                 }
             }
         }
-        const valueType = getJsValueType(typedArg.value);
+        const valueType = getJsValueType(value);
         if (valueType === JsValueType.HydraSource) {
             // GLSLSource
-            const finalTransform = typedArg.value.transforms[typedArg.value.transforms.length - 1];
+            const finalTransform = value.transforms[value.transforms.length - 1];
             if (finalTransform.transform.glsl_return_type !== input.type) {
                 const defaults = DEFAULT_CONVERSIONS[input.type];
                 if (typeof defaults !== 'undefined') {
                     const default_def = defaults[finalTransform.transform.glsl_return_type];
                     if (typeof default_def !== 'undefined') {
                         const { name, args } = default_def;
-                        typedArg.value = typedArg.value[name](...args);
+                        value = value[name](...args);
                     }
                 }
             }
-            typedArg.isUniform = false;
+            isUniform = false;
         }
-        else if (typedArg.type === 'float' && valueType === JsValueType.Number) {
+        else if (input.type === 'float' && valueType === JsValueType.Number) {
             // Number
-            typedArg.value = ensureDecimalDot(typedArg.value);
+            value = ensureDecimalDot(value);
         }
-        else if (typedArg.type.startsWith('vec') &&
+        else if (input.type.startsWith('vec') &&
             valueType === JsValueType.Array) {
             // Vector literal (as array)
-            typedArg.isUniform = false;
-            typedArg.value = `${typedArg.type}(${typedArg.value
-                .map(ensureDecimalDot)
-                .join(', ')})`;
+            isUniform = false;
+            value = `${input.type}(${value.map(ensureDecimalDot).join(', ')})`;
         }
         else if (input.type === 'sampler2D') {
-            // typedArg.tex = typedArg.value
-            const x = typedArg.value;
-            typedArg.value = () => x.getTexture();
-            typedArg.isUniform = true;
+            const x = value;
+            value = () => x.getTexture();
+            isUniform = true;
         }
         else if (valueType === JsValueType.HydraOutput) {
             // Output (o0, o1, o2, o3, etc)
             // if passing in a texture reference, when function asks for vec4, convert to vec4
-            if (typedArg.value.getTexture && input.type === 'vec4') {
-                const x1 = typedArg.value;
+            if (value.getTexture && input.type === 'vec4') {
+                const x1 = value;
                 // TODO: get texture without relying on makeGlobal src()
-                typedArg.value = src(x1);
-                typedArg.isUniform = false;
+                value = src(x1);
+                isUniform = false;
             }
         }
         // add tp uniform array if is a function that will pass in a different value on each render frame,
         // or a texture/ external source
-        if (typedArg.isUniform) {
-            typedArg.name += startIndex;
-            //  shaderParams.uniforms.push(typedArg)
+        let { name } = input;
+        if (isUniform) {
+            name += startIndex;
         }
-        return typedArg;
+        return {
+            value,
+            type: input.type,
+            isUniform,
+            vecLen,
+            name,
+        };
     });
 }
 function mergeDefaultsAndArgs(defaults, args) {
