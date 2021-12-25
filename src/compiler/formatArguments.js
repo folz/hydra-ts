@@ -1,6 +1,5 @@
 import { GlslSource } from '../GlslSource';
 import arrayUtils from '../lib/array-utils';
-import { Output } from '../Output';
 const DEFAULT_CONVERSIONS = {
     float: {
         vec4: { name: 'sum', args: [[1, 1, 1, 1]] },
@@ -86,14 +85,13 @@ export function formatArguments(transformApplication, startIndex) {
             value = () => x.getTexture();
             isUniform = true;
         }
-        else if (value instanceof Output) {
+        else if (Boolean(value.getTexture) && input.type === 'vec4') {
+            // Note: Need to refactor logic to allow for instanceof check against GlslSource/Output
             // if passing in a texture reference, when function asks for vec4, convert to vec4
-            if (input.type === 'vec4') {
-                const x1 = value;
-                // TODO: get texture without relying on makeGlobal src()
-                value = src(x1);
-                isUniform = false;
-            }
+            const x1 = value;
+            // TODO: get texture without relying on makeGlobal src()
+            value = src(x1);
+            isUniform = false;
         }
         // add tp uniform array if is a function that will pass in a different value on each render frame,
         // or a texture/ external source
