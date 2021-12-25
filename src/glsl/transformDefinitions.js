@@ -229,8 +229,7 @@ export const transforms = [
                 default: NaN,
             },
         ],
-        glsl: `   //  vec2 uv = gl_FragCoord.xy/vec2(1280., 720.);
-   return texture2D(tex, fract(_st));`,
+        glsl: `return texture2D(tex, fract(_st));`,
     },
     {
         name: 'solid',
