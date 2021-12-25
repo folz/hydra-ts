@@ -370,10 +370,15 @@ Object {
 exports[`processGlsl($definition.name): initial 14`] = `
 Object {
   "glsl": "   vec2 st = _st * vec2(repeatX, repeatY);
-   st.x += step(1., mod(st.y,2.0)) + _c0.r * offsetX;
-   st.y += step(1., mod(st.x,2.0)) + _c0.g * offsetY;
+   st.x += step(1., mod(st.y,2.0)) + color.r * offsetX;
+   st.y += step(1., mod(st.x,2.0)) + color.g * offsetY;
    return fract(st);",
   "inputs": Array [
+    Object {
+      "name": "color",
+      "type": "vec4",
+      "vecLen": 4,
+    },
     Object {
       "default": 3,
       "name": "repeatX",
@@ -427,9 +432,14 @@ exports[`processGlsl($definition.name): initial 16`] = `
 Object {
   "glsl": "   vec2 st = _st * vec2(reps, 1.0);
    //  float f =  mod(_st.y,2.0);
-   st.y += step(1., mod(st.x,2.0)) + _c0.r * offset;
+   st.y += step(1., mod(st.x,2.0)) + color.r * offset;
    return fract(st);",
   "inputs": Array [
+    Object {
+      "name": "color",
+      "type": "vec4",
+      "vecLen": 4,
+    },
     Object {
       "default": 3,
       "name": "reps",
@@ -473,9 +483,14 @@ exports[`processGlsl($definition.name): initial 18`] = `
 Object {
   "glsl": "   vec2 st = _st * vec2(reps, 1.0);
    //  float f =  mod(_st.y,2.0);
-   st.x += step(1., mod(st.y,2.0)) + _c0.r * offset;
+   st.x += step(1., mod(st.y,2.0)) + color.r * offset;
    return fract(st);",
   "inputs": Array [
+    Object {
+      "name": "color",
+      "type": "vec4",
+      "vecLen": 4,
+    },
     Object {
       "default": 3,
       "name": "reps",
@@ -571,8 +586,13 @@ Object {
    float pi = 2.*3.1416;
    a = mod(a,pi/nSides);
    a = abs(a-pi/nSides/2.);
-   return (_c0.r+r)*vec2(cos(a), sin(a));",
+   return (color.r+r)*vec2(cos(a), sin(a));",
   "inputs": Array [
+    Object {
+      "name": "color",
+      "type": "vec4",
+      "vecLen": 4,
+    },
     Object {
       "default": 4,
       "name": "nSides",
@@ -640,9 +660,14 @@ Object {
 
 exports[`processGlsl($definition.name): initial 24`] = `
 Object {
-  "glsl": "   _st.x += _c0.r*scrollX + time*speed;
+  "glsl": "   _st.x += color.r*scrollX + time*speed;
    return fract(_st);",
   "inputs": Array [
+    Object {
+      "name": "color",
+      "type": "vec4",
+      "vecLen": 4,
+    },
     Object {
       "default": 0.5,
       "name": "scrollX",
@@ -682,9 +707,14 @@ Object {
 
 exports[`processGlsl($definition.name): initial 26`] = `
 Object {
-  "glsl": "   _st.y += _c0.r*scrollY + time*speed;
+  "glsl": "   _st.y += color.r*scrollY + time*speed;
    return fract(_st);",
   "inputs": Array [
+    Object {
+      "name": "color",
+      "type": "vec4",
+      "vecLen": 4,
+    },
     Object {
       "default": 0.5,
       "name": "scrollY",
@@ -703,8 +733,13 @@ Object {
 
 exports[`processGlsl($definition.name): initial 27`] = `
 Object {
-  "glsl": "   return (_c0+_c1)*amount + _c0*(1.0-amount);",
+  "glsl": "   return (_c0+color)*amount + _c0*(1.0-amount);",
   "inputs": Array [
+    Object {
+      "name": "color",
+      "type": "vec4",
+      "vecLen": 4,
+    },
     Object {
       "default": 1,
       "name": "amount",
@@ -718,8 +753,13 @@ Object {
 
 exports[`processGlsl($definition.name): initial 28`] = `
 Object {
-  "glsl": "   return (_c0-_c1)*amount + _c0*(1.0-amount);",
+  "glsl": "   return (_c0-color)*amount + _c0*(1.0-amount);",
   "inputs": Array [
+    Object {
+      "name": "color",
+      "type": "vec4",
+      "vecLen": 4,
+    },
     Object {
       "default": 1,
       "name": "amount",
@@ -733,8 +773,14 @@ Object {
 
 exports[`processGlsl($definition.name): initial 29`] = `
 Object {
-  "glsl": "   return vec4(mix(_c0.rgb, _c1.rgb, _c1.a), _c0.a+_c1.a);",
-  "inputs": Array [],
+  "glsl": "   return vec4(mix(_c0.rgb, color.rgb, color.a), _c0.a+color.a);",
+  "inputs": Array [
+    Object {
+      "name": "color",
+      "type": "vec4",
+      "vecLen": 4,
+    },
+  ],
   "name": "layer",
   "type": "combine",
 }
@@ -742,8 +788,13 @@ Object {
 
 exports[`processGlsl($definition.name): initial 30`] = `
 Object {
-  "glsl": "   return _c0*(1.0-amount)+_c1*amount;",
+  "glsl": "   return _c0*(1.0-amount)+color*amount;",
   "inputs": Array [
+    Object {
+      "name": "color",
+      "type": "vec4",
+      "vecLen": 4,
+    },
     Object {
       "default": 0.5,
       "name": "amount",
@@ -757,8 +808,13 @@ Object {
 
 exports[`processGlsl($definition.name): initial 31`] = `
 Object {
-  "glsl": "   return _c0*(1.0-amount)+(_c0*_c1)*amount;",
+  "glsl": "   return _c0*(1.0-amount)+(_c0*color)*amount;",
   "inputs": Array [
+    Object {
+      "name": "color",
+      "type": "vec4",
+      "vecLen": 4,
+    },
     Object {
       "default": 1,
       "name": "amount",
@@ -772,8 +828,14 @@ Object {
 
 exports[`processGlsl($definition.name): initial 32`] = `
 Object {
-  "glsl": "   return vec4(abs(_c0.rgb-_c1.rgb), max(_c0.a, _c1.a));",
-  "inputs": Array [],
+  "glsl": "   return vec4(abs(_c0.rgb-color.rgb), max(_c0.a, color.a));",
+  "inputs": Array [
+    Object {
+      "name": "color",
+      "type": "vec4",
+      "vecLen": 4,
+    },
+  ],
   "name": "diff",
   "type": "combine",
 }
@@ -781,9 +843,14 @@ Object {
 
 exports[`processGlsl($definition.name): initial 33`] = `
 Object {
-  "glsl": "   //  return fract(st+(_c0.xy-0.5)*amount);
-   return _st + _c0.xy*amount;",
+  "glsl": "   //  return fract(st+(color.xy-0.5)*amount);
+   return _st + color.xy*amount;",
   "inputs": Array [
+    Object {
+      "name": "color",
+      "type": "vec4",
+      "vecLen": 4,
+    },
     Object {
       "default": 0.1,
       "name": "amount",
@@ -798,10 +865,15 @@ Object {
 exports[`processGlsl($definition.name): initial 34`] = `
 Object {
   "glsl": "   vec2 xy = _st - vec2(0.5);
-   xy*=(1.0/vec2(offset + multiple*_c0.r, offset + multiple*_c0.g));
+   xy*=(1.0/vec2(offset + multiple*color.r, offset + multiple*color.g));
    xy+=vec2(0.5);
    return xy;",
   "inputs": Array [
+    Object {
+      "name": "color",
+      "type": "vec4",
+      "vecLen": 4,
+    },
     Object {
       "default": 1,
       "name": "multiple",
@@ -820,9 +892,14 @@ Object {
 
 exports[`processGlsl($definition.name): initial 35`] = `
 Object {
-  "glsl": "   vec2 xy = vec2(offset + _c0.x*multiple, offset + _c0.y*multiple);
+  "glsl": "   vec2 xy = vec2(offset + color.x*multiple, offset + color.y*multiple);
    return (floor(_st * xy) + 0.5)/xy;",
   "inputs": Array [
+    Object {
+      "name": "color",
+      "type": "vec4",
+      "vecLen": 4,
+    },
     Object {
       "default": 10,
       "name": "multiple",
@@ -842,11 +919,16 @@ Object {
 exports[`processGlsl($definition.name): initial 36`] = `
 Object {
   "glsl": "   vec2 xy = _st - vec2(0.5);
-   float angle = offset + _c0.x * multiple;
+   float angle = offset + color.x * multiple;
    xy = mat2(cos(angle),-sin(angle), sin(angle),cos(angle))*xy;
    xy += 0.5;
    return xy;",
   "inputs": Array [
+    Object {
+      "name": "color",
+      "type": "vec4",
+      "vecLen": 4,
+    },
     Object {
       "default": 1,
       "name": "multiple",
@@ -865,8 +947,13 @@ Object {
 
 exports[`processGlsl($definition.name): initial 37`] = `
 Object {
-  "glsl": "   return _st + (vec2(_c0.g - _c0.r, _c0.b - _c0.g) * amount * 1.0/resolution);",
+  "glsl": "   return _st + (vec2(color.g - color.r, color.b - color.g) * amount * 1.0/resolution);",
   "inputs": Array [
+    Object {
+      "name": "color",
+      "type": "vec4",
+      "vecLen": 4,
+    },
     Object {
       "default": 1,
       "name": "amount",
@@ -926,9 +1013,15 @@ Object {
 
 exports[`processGlsl($definition.name): initial 41`] = `
 Object {
-  "glsl": "   float a = _luminance(_c1.rgb);
+  "glsl": "   float a = _luminance(color.rgb);
    return vec4(_c0.rgb*a, a);",
-  "inputs": Array [],
+  "inputs": Array [
+    Object {
+      "name": "color",
+      "type": "vec4",
+      "vecLen": 4,
+    },
+  ],
   "name": "mask",
   "type": "combine",
 }
@@ -1065,15 +1158,6 @@ Object {
 
 exports[`processGlsl($definition.name): initial 48`] = `
 Object {
-  "glsl": "   return texture2D(prevBuffer, fract(_st));",
-  "inputs": Array [],
-  "name": "prev",
-  "type": "src",
-}
-`;
-
-exports[`processGlsl($definition.name): initial 49`] = `
-Object {
   "glsl": "   vec4 v = _c0 * s;
    return v.r + v.g + v.b + v.a;
    }
@@ -1092,7 +1176,7 @@ Object {
 }
 `;
 
-exports[`processGlsl($definition.name): initial 50`] = `
+exports[`processGlsl($definition.name): initial 49`] = `
 Object {
   "glsl": "   return vec4(_c0.r * scale + offset);",
   "inputs": Array [
@@ -1112,7 +1196,7 @@ Object {
 }
 `;
 
-exports[`processGlsl($definition.name): initial 51`] = `
+exports[`processGlsl($definition.name): initial 50`] = `
 Object {
   "glsl": "   return vec4(_c0.g * scale + offset);",
   "inputs": Array [
@@ -1132,7 +1216,7 @@ Object {
 }
 `;
 
-exports[`processGlsl($definition.name): initial 52`] = `
+exports[`processGlsl($definition.name): initial 51`] = `
 Object {
   "glsl": "   return vec4(_c0.b * scale + offset);",
   "inputs": Array [
@@ -1152,7 +1236,7 @@ Object {
 }
 `;
 
-exports[`processGlsl($definition.name): initial 53`] = `
+exports[`processGlsl($definition.name): initial 52`] = `
 Object {
   "glsl": "   return vec4(_c0.a * scale + offset);",
   "inputs": Array [
@@ -1607,10 +1691,10 @@ Object {
 exports[`processGlsl($definition.name): processed 14`] = `
 Object {
   "glsl": "
-  vec2 modulateRepeat(vec2 _st, vec4 _c0, float repeatX, float repeatY, float offsetX, float offsetY) {
+  vec2 modulateRepeat(vec2 _st, vec4 color, float repeatX, float repeatY, float offsetX, float offsetY) {
          vec2 st = _st * vec2(repeatX, repeatY);
-   st.x += step(1., mod(st.y,2.0)) + _c0.r * offsetX;
-   st.y += step(1., mod(st.x,2.0)) + _c0.g * offsetY;
+   st.x += step(1., mod(st.y,2.0)) + color.r * offsetX;
+   st.y += step(1., mod(st.x,2.0)) + color.g * offsetY;
    return fract(st);
   }
 ",
@@ -1618,6 +1702,7 @@ Object {
     Object {
       "name": "color",
       "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 3,
@@ -1677,10 +1762,10 @@ Object {
 exports[`processGlsl($definition.name): processed 16`] = `
 Object {
   "glsl": "
-  vec2 modulateRepeatX(vec2 _st, vec4 _c0, float reps, float offset) {
+  vec2 modulateRepeatX(vec2 _st, vec4 color, float reps, float offset) {
          vec2 st = _st * vec2(reps, 1.0);
    //  float f =  mod(_st.y,2.0);
-   st.y += step(1., mod(st.x,2.0)) + _c0.r * offset;
+   st.y += step(1., mod(st.x,2.0)) + color.r * offset;
    return fract(st);
   }
 ",
@@ -1688,6 +1773,7 @@ Object {
     Object {
       "name": "color",
       "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 3,
@@ -1737,10 +1823,10 @@ Object {
 exports[`processGlsl($definition.name): processed 18`] = `
 Object {
   "glsl": "
-  vec2 modulateRepeatY(vec2 _st, vec4 _c0, float reps, float offset) {
+  vec2 modulateRepeatY(vec2 _st, vec4 color, float reps, float offset) {
          vec2 st = _st * vec2(reps, 1.0);
    //  float f =  mod(_st.y,2.0);
-   st.x += step(1., mod(st.y,2.0)) + _c0.r * offset;
+   st.x += step(1., mod(st.y,2.0)) + color.r * offset;
    return fract(st);
   }
 ",
@@ -1748,6 +1834,7 @@ Object {
     Object {
       "name": "color",
       "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 3,
@@ -1850,20 +1937,21 @@ Object {
 exports[`processGlsl($definition.name): processed 21`] = `
 Object {
   "glsl": "
-  vec2 modulateKaleid(vec2 _st, vec4 _c0, float nSides) {
+  vec2 modulateKaleid(vec2 _st, vec4 color, float nSides) {
          vec2 st = _st - 0.5;
    float r = length(st);
    float a = atan(st.y, st.x);
    float pi = 2.*3.1416;
    a = mod(a,pi/nSides);
    a = abs(a-pi/nSides/2.);
-   return (_c0.r+r)*vec2(cos(a), sin(a));
+   return (color.r+r)*vec2(cos(a), sin(a));
   }
 ",
   "inputs": Array [
     Object {
       "name": "color",
       "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 4,
@@ -1944,8 +2032,8 @@ Object {
 exports[`processGlsl($definition.name): processed 24`] = `
 Object {
   "glsl": "
-  vec2 modulateScrollX(vec2 _st, vec4 _c0, float scrollX, float speed) {
-         _st.x += _c0.r*scrollX + time*speed;
+  vec2 modulateScrollX(vec2 _st, vec4 color, float scrollX, float speed) {
+         _st.x += color.r*scrollX + time*speed;
    return fract(_st);
   }
 ",
@@ -1953,6 +2041,7 @@ Object {
     Object {
       "name": "color",
       "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 0.5,
@@ -2000,8 +2089,8 @@ Object {
 exports[`processGlsl($definition.name): processed 26`] = `
 Object {
   "glsl": "
-  vec2 modulateScrollY(vec2 _st, vec4 _c0, float scrollY, float speed) {
-         _st.y += _c0.r*scrollY + time*speed;
+  vec2 modulateScrollY(vec2 _st, vec4 color, float scrollY, float speed) {
+         _st.y += color.r*scrollY + time*speed;
    return fract(_st);
   }
 ",
@@ -2009,6 +2098,7 @@ Object {
     Object {
       "name": "color",
       "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 0.5,
@@ -2030,14 +2120,15 @@ Object {
 exports[`processGlsl($definition.name): processed 27`] = `
 Object {
   "glsl": "
-  vec4 add(vec4 _c0, vec4 _c1, float amount) {
-         return (_c0+_c1)*amount + _c0*(1.0-amount);
+  vec4 add(vec4 _c0, vec4 color, float amount) {
+         return (_c0+color)*amount + _c0*(1.0-amount);
   }
 ",
   "inputs": Array [
     Object {
       "name": "color",
       "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 1,
@@ -2054,14 +2145,15 @@ Object {
 exports[`processGlsl($definition.name): processed 28`] = `
 Object {
   "glsl": "
-  vec4 sub(vec4 _c0, vec4 _c1, float amount) {
-         return (_c0-_c1)*amount + _c0*(1.0-amount);
+  vec4 sub(vec4 _c0, vec4 color, float amount) {
+         return (_c0-color)*amount + _c0*(1.0-amount);
   }
 ",
   "inputs": Array [
     Object {
       "name": "color",
       "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 1,
@@ -2078,14 +2170,15 @@ Object {
 exports[`processGlsl($definition.name): processed 29`] = `
 Object {
   "glsl": "
-  vec4 layer(vec4 _c0, vec4 _c1) {
-         return vec4(mix(_c0.rgb, _c1.rgb, _c1.a), _c0.a+_c1.a);
+  vec4 layer(vec4 _c0, vec4 color) {
+         return vec4(mix(_c0.rgb, color.rgb, color.a), _c0.a+color.a);
   }
 ",
   "inputs": Array [
     Object {
       "name": "color",
       "type": "vec4",
+      "vecLen": 4,
     },
   ],
   "name": "layer",
@@ -2097,14 +2190,15 @@ Object {
 exports[`processGlsl($definition.name): processed 30`] = `
 Object {
   "glsl": "
-  vec4 blend(vec4 _c0, vec4 _c1, float amount) {
-         return _c0*(1.0-amount)+_c1*amount;
+  vec4 blend(vec4 _c0, vec4 color, float amount) {
+         return _c0*(1.0-amount)+color*amount;
   }
 ",
   "inputs": Array [
     Object {
       "name": "color",
       "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 0.5,
@@ -2121,14 +2215,15 @@ Object {
 exports[`processGlsl($definition.name): processed 31`] = `
 Object {
   "glsl": "
-  vec4 mult(vec4 _c0, vec4 _c1, float amount) {
-         return _c0*(1.0-amount)+(_c0*_c1)*amount;
+  vec4 mult(vec4 _c0, vec4 color, float amount) {
+         return _c0*(1.0-amount)+(_c0*color)*amount;
   }
 ",
   "inputs": Array [
     Object {
       "name": "color",
       "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 1,
@@ -2145,14 +2240,15 @@ Object {
 exports[`processGlsl($definition.name): processed 32`] = `
 Object {
   "glsl": "
-  vec4 diff(vec4 _c0, vec4 _c1) {
-         return vec4(abs(_c0.rgb-_c1.rgb), max(_c0.a, _c1.a));
+  vec4 diff(vec4 _c0, vec4 color) {
+         return vec4(abs(_c0.rgb-color.rgb), max(_c0.a, color.a));
   }
 ",
   "inputs": Array [
     Object {
       "name": "color",
       "type": "vec4",
+      "vecLen": 4,
     },
   ],
   "name": "diff",
@@ -2164,15 +2260,16 @@ Object {
 exports[`processGlsl($definition.name): processed 33`] = `
 Object {
   "glsl": "
-  vec2 modulate(vec2 _st, vec4 _c0, float amount) {
-         //  return fract(st+(_c0.xy-0.5)*amount);
-   return _st + _c0.xy*amount;
+  vec2 modulate(vec2 _st, vec4 color, float amount) {
+         //  return fract(st+(color.xy-0.5)*amount);
+   return _st + color.xy*amount;
   }
 ",
   "inputs": Array [
     Object {
       "name": "color",
       "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 0.1,
@@ -2189,9 +2286,9 @@ Object {
 exports[`processGlsl($definition.name): processed 34`] = `
 Object {
   "glsl": "
-  vec2 modulateScale(vec2 _st, vec4 _c0, float multiple, float offset) {
+  vec2 modulateScale(vec2 _st, vec4 color, float multiple, float offset) {
          vec2 xy = _st - vec2(0.5);
-   xy*=(1.0/vec2(offset + multiple*_c0.r, offset + multiple*_c0.g));
+   xy*=(1.0/vec2(offset + multiple*color.r, offset + multiple*color.g));
    xy+=vec2(0.5);
    return xy;
   }
@@ -2200,6 +2297,7 @@ Object {
     Object {
       "name": "color",
       "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 1,
@@ -2221,8 +2319,8 @@ Object {
 exports[`processGlsl($definition.name): processed 35`] = `
 Object {
   "glsl": "
-  vec2 modulatePixelate(vec2 _st, vec4 _c0, float multiple, float offset) {
-         vec2 xy = vec2(offset + _c0.x*multiple, offset + _c0.y*multiple);
+  vec2 modulatePixelate(vec2 _st, vec4 color, float multiple, float offset) {
+         vec2 xy = vec2(offset + color.x*multiple, offset + color.y*multiple);
    return (floor(_st * xy) + 0.5)/xy;
   }
 ",
@@ -2230,6 +2328,7 @@ Object {
     Object {
       "name": "color",
       "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 10,
@@ -2251,9 +2350,9 @@ Object {
 exports[`processGlsl($definition.name): processed 36`] = `
 Object {
   "glsl": "
-  vec2 modulateRotate(vec2 _st, vec4 _c0, float multiple, float offset) {
+  vec2 modulateRotate(vec2 _st, vec4 color, float multiple, float offset) {
          vec2 xy = _st - vec2(0.5);
-   float angle = offset + _c0.x * multiple;
+   float angle = offset + color.x * multiple;
    xy = mat2(cos(angle),-sin(angle), sin(angle),cos(angle))*xy;
    xy += 0.5;
    return xy;
@@ -2263,6 +2362,7 @@ Object {
     Object {
       "name": "color",
       "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 1,
@@ -2284,14 +2384,15 @@ Object {
 exports[`processGlsl($definition.name): processed 37`] = `
 Object {
   "glsl": "
-  vec2 modulateHue(vec2 _st, vec4 _c0, float amount) {
-         return _st + (vec2(_c0.g - _c0.r, _c0.b - _c0.g) * amount * 1.0/resolution);
+  vec2 modulateHue(vec2 _st, vec4 color, float amount) {
+         return _st + (vec2(color.g - color.r, color.b - color.g) * amount * 1.0/resolution);
   }
 ",
   "inputs": Array [
     Object {
       "name": "color",
       "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 1,
@@ -2369,8 +2470,8 @@ Object {
 exports[`processGlsl($definition.name): processed 41`] = `
 Object {
   "glsl": "
-  vec4 mask(vec4 _c0, vec4 _c1) {
-         float a = _luminance(_c1.rgb);
+  vec4 mask(vec4 _c0, vec4 color) {
+         float a = _luminance(color.rgb);
    return vec4(_c0.rgb*a, a);
   }
 ",
@@ -2378,6 +2479,7 @@ Object {
     Object {
       "name": "color",
       "type": "vec4",
+      "vecLen": 4,
     },
   ],
   "name": "mask",
@@ -2548,20 +2650,6 @@ Object {
 exports[`processGlsl($definition.name): processed 48`] = `
 Object {
   "glsl": "
-  vec4 prev(vec2 _st) {
-         return texture2D(prevBuffer, fract(_st));
-  }
-",
-  "inputs": Array [],
-  "name": "prev",
-  "processed": true,
-  "type": "src",
-}
-`;
-
-exports[`processGlsl($definition.name): processed 49`] = `
-Object {
-  "glsl": "
   vec4 sum(vec4 _c0, vec4 scale) {
          vec4 v = _c0 * s;
    return v.r + v.g + v.b + v.a;
@@ -2584,7 +2672,7 @@ Object {
 }
 `;
 
-exports[`processGlsl($definition.name): processed 50`] = `
+exports[`processGlsl($definition.name): processed 49`] = `
 Object {
   "glsl": "
   vec4 r(vec4 _c0, float scale, float offset) {
@@ -2609,7 +2697,7 @@ Object {
 }
 `;
 
-exports[`processGlsl($definition.name): processed 51`] = `
+exports[`processGlsl($definition.name): processed 50`] = `
 Object {
   "glsl": "
   vec4 g(vec4 _c0, float scale, float offset) {
@@ -2634,7 +2722,7 @@ Object {
 }
 `;
 
-exports[`processGlsl($definition.name): processed 52`] = `
+exports[`processGlsl($definition.name): processed 51`] = `
 Object {
   "glsl": "
   vec4 b(vec4 _c0, float scale, float offset) {
@@ -2659,7 +2747,7 @@ Object {
 }
 `;
 
-exports[`processGlsl($definition.name): processed 53`] = `
+exports[`processGlsl($definition.name): processed 52`] = `
 Object {
   "glsl": "
   vec4 a(vec4 _c0, float scale, float offset) {
@@ -3119,10 +3207,10 @@ Object {
 exports[`processGlsl($definition.name): processed+mutated 14`] = `
 Object {
   "glsl": "
-  vec2 modulateRepeat(vec2 _st, vec4 _c0, vec4 color, float repeatX, float repeatY, float offsetX, float offsetY) {
+  vec2 modulateRepeat(vec2 _st, vec4 color, float repeatX, float repeatY, float offsetX, float offsetY) {
          vec2 st = _st * vec2(repeatX, repeatY);
-   st.x += step(1., mod(st.y,2.0)) + _c0.r * offsetX;
-   st.y += step(1., mod(st.x,2.0)) + _c0.g * offsetY;
+   st.x += step(1., mod(st.y,2.0)) + color.r * offsetX;
+   st.y += step(1., mod(st.x,2.0)) + color.g * offsetY;
    return fract(st);
   }
 ",
@@ -3130,10 +3218,7 @@ Object {
     Object {
       "name": "color",
       "type": "vec4",
-    },
-    Object {
-      "name": "color",
-      "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 3,
@@ -3193,10 +3278,10 @@ Object {
 exports[`processGlsl($definition.name): processed+mutated 16`] = `
 Object {
   "glsl": "
-  vec2 modulateRepeatX(vec2 _st, vec4 _c0, vec4 color, float reps, float offset) {
+  vec2 modulateRepeatX(vec2 _st, vec4 color, float reps, float offset) {
          vec2 st = _st * vec2(reps, 1.0);
    //  float f =  mod(_st.y,2.0);
-   st.y += step(1., mod(st.x,2.0)) + _c0.r * offset;
+   st.y += step(1., mod(st.x,2.0)) + color.r * offset;
    return fract(st);
   }
 ",
@@ -3204,10 +3289,7 @@ Object {
     Object {
       "name": "color",
       "type": "vec4",
-    },
-    Object {
-      "name": "color",
-      "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 3,
@@ -3257,10 +3339,10 @@ Object {
 exports[`processGlsl($definition.name): processed+mutated 18`] = `
 Object {
   "glsl": "
-  vec2 modulateRepeatY(vec2 _st, vec4 _c0, vec4 color, float reps, float offset) {
+  vec2 modulateRepeatY(vec2 _st, vec4 color, float reps, float offset) {
          vec2 st = _st * vec2(reps, 1.0);
    //  float f =  mod(_st.y,2.0);
-   st.x += step(1., mod(st.y,2.0)) + _c0.r * offset;
+   st.x += step(1., mod(st.y,2.0)) + color.r * offset;
    return fract(st);
   }
 ",
@@ -3268,10 +3350,7 @@ Object {
     Object {
       "name": "color",
       "type": "vec4",
-    },
-    Object {
-      "name": "color",
-      "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 3,
@@ -3374,24 +3453,21 @@ Object {
 exports[`processGlsl($definition.name): processed+mutated 21`] = `
 Object {
   "glsl": "
-  vec2 modulateKaleid(vec2 _st, vec4 _c0, vec4 color, float nSides) {
+  vec2 modulateKaleid(vec2 _st, vec4 color, float nSides) {
          vec2 st = _st - 0.5;
    float r = length(st);
    float a = atan(st.y, st.x);
    float pi = 2.*3.1416;
    a = mod(a,pi/nSides);
    a = abs(a-pi/nSides/2.);
-   return (_c0.r+r)*vec2(cos(a), sin(a));
+   return (color.r+r)*vec2(cos(a), sin(a));
   }
 ",
   "inputs": Array [
     Object {
       "name": "color",
       "type": "vec4",
-    },
-    Object {
-      "name": "color",
-      "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 4,
@@ -3472,8 +3548,8 @@ Object {
 exports[`processGlsl($definition.name): processed+mutated 24`] = `
 Object {
   "glsl": "
-  vec2 modulateScrollX(vec2 _st, vec4 _c0, vec4 color, float scrollX, float speed) {
-         _st.x += _c0.r*scrollX + time*speed;
+  vec2 modulateScrollX(vec2 _st, vec4 color, float scrollX, float speed) {
+         _st.x += color.r*scrollX + time*speed;
    return fract(_st);
   }
 ",
@@ -3481,10 +3557,7 @@ Object {
     Object {
       "name": "color",
       "type": "vec4",
-    },
-    Object {
-      "name": "color",
-      "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 0.5,
@@ -3532,8 +3605,8 @@ Object {
 exports[`processGlsl($definition.name): processed+mutated 26`] = `
 Object {
   "glsl": "
-  vec2 modulateScrollY(vec2 _st, vec4 _c0, vec4 color, float scrollY, float speed) {
-         _st.y += _c0.r*scrollY + time*speed;
+  vec2 modulateScrollY(vec2 _st, vec4 color, float scrollY, float speed) {
+         _st.y += color.r*scrollY + time*speed;
    return fract(_st);
   }
 ",
@@ -3541,10 +3614,7 @@ Object {
     Object {
       "name": "color",
       "type": "vec4",
-    },
-    Object {
-      "name": "color",
-      "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 0.5,
@@ -3566,18 +3636,15 @@ Object {
 exports[`processGlsl($definition.name): processed+mutated 27`] = `
 Object {
   "glsl": "
-  vec4 add(vec4 _c0, vec4 _c1, vec4 color, float amount) {
-         return (_c0+_c1)*amount + _c0*(1.0-amount);
+  vec4 add(vec4 _c0, vec4 color, float amount) {
+         return (_c0+color)*amount + _c0*(1.0-amount);
   }
 ",
   "inputs": Array [
     Object {
       "name": "color",
       "type": "vec4",
-    },
-    Object {
-      "name": "color",
-      "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 1,
@@ -3594,18 +3661,15 @@ Object {
 exports[`processGlsl($definition.name): processed+mutated 28`] = `
 Object {
   "glsl": "
-  vec4 sub(vec4 _c0, vec4 _c1, vec4 color, float amount) {
-         return (_c0-_c1)*amount + _c0*(1.0-amount);
+  vec4 sub(vec4 _c0, vec4 color, float amount) {
+         return (_c0-color)*amount + _c0*(1.0-amount);
   }
 ",
   "inputs": Array [
     Object {
       "name": "color",
       "type": "vec4",
-    },
-    Object {
-      "name": "color",
-      "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 1,
@@ -3622,18 +3686,15 @@ Object {
 exports[`processGlsl($definition.name): processed+mutated 29`] = `
 Object {
   "glsl": "
-  vec4 layer(vec4 _c0, vec4 _c1, vec4 color) {
-         return vec4(mix(_c0.rgb, _c1.rgb, _c1.a), _c0.a+_c1.a);
+  vec4 layer(vec4 _c0, vec4 color) {
+         return vec4(mix(_c0.rgb, color.rgb, color.a), _c0.a+color.a);
   }
 ",
   "inputs": Array [
     Object {
       "name": "color",
       "type": "vec4",
-    },
-    Object {
-      "name": "color",
-      "type": "vec4",
+      "vecLen": 4,
     },
   ],
   "name": "layer",
@@ -3645,18 +3706,15 @@ Object {
 exports[`processGlsl($definition.name): processed+mutated 30`] = `
 Object {
   "glsl": "
-  vec4 blend(vec4 _c0, vec4 _c1, vec4 color, float amount) {
-         return _c0*(1.0-amount)+_c1*amount;
+  vec4 blend(vec4 _c0, vec4 color, float amount) {
+         return _c0*(1.0-amount)+color*amount;
   }
 ",
   "inputs": Array [
     Object {
       "name": "color",
       "type": "vec4",
-    },
-    Object {
-      "name": "color",
-      "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 0.5,
@@ -3673,18 +3731,15 @@ Object {
 exports[`processGlsl($definition.name): processed+mutated 31`] = `
 Object {
   "glsl": "
-  vec4 mult(vec4 _c0, vec4 _c1, vec4 color, float amount) {
-         return _c0*(1.0-amount)+(_c0*_c1)*amount;
+  vec4 mult(vec4 _c0, vec4 color, float amount) {
+         return _c0*(1.0-amount)+(_c0*color)*amount;
   }
 ",
   "inputs": Array [
     Object {
       "name": "color",
       "type": "vec4",
-    },
-    Object {
-      "name": "color",
-      "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 1,
@@ -3701,18 +3756,15 @@ Object {
 exports[`processGlsl($definition.name): processed+mutated 32`] = `
 Object {
   "glsl": "
-  vec4 diff(vec4 _c0, vec4 _c1, vec4 color) {
-         return vec4(abs(_c0.rgb-_c1.rgb), max(_c0.a, _c1.a));
+  vec4 diff(vec4 _c0, vec4 color) {
+         return vec4(abs(_c0.rgb-color.rgb), max(_c0.a, color.a));
   }
 ",
   "inputs": Array [
     Object {
       "name": "color",
       "type": "vec4",
-    },
-    Object {
-      "name": "color",
-      "type": "vec4",
+      "vecLen": 4,
     },
   ],
   "name": "diff",
@@ -3724,19 +3776,16 @@ Object {
 exports[`processGlsl($definition.name): processed+mutated 33`] = `
 Object {
   "glsl": "
-  vec2 modulate(vec2 _st, vec4 _c0, vec4 color, float amount) {
-         //  return fract(st+(_c0.xy-0.5)*amount);
-   return _st + _c0.xy*amount;
+  vec2 modulate(vec2 _st, vec4 color, float amount) {
+         //  return fract(st+(color.xy-0.5)*amount);
+   return _st + color.xy*amount;
   }
 ",
   "inputs": Array [
     Object {
       "name": "color",
       "type": "vec4",
-    },
-    Object {
-      "name": "color",
-      "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 0.1,
@@ -3753,9 +3802,9 @@ Object {
 exports[`processGlsl($definition.name): processed+mutated 34`] = `
 Object {
   "glsl": "
-  vec2 modulateScale(vec2 _st, vec4 _c0, vec4 color, float multiple, float offset) {
+  vec2 modulateScale(vec2 _st, vec4 color, float multiple, float offset) {
          vec2 xy = _st - vec2(0.5);
-   xy*=(1.0/vec2(offset + multiple*_c0.r, offset + multiple*_c0.g));
+   xy*=(1.0/vec2(offset + multiple*color.r, offset + multiple*color.g));
    xy+=vec2(0.5);
    return xy;
   }
@@ -3764,10 +3813,7 @@ Object {
     Object {
       "name": "color",
       "type": "vec4",
-    },
-    Object {
-      "name": "color",
-      "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 1,
@@ -3789,8 +3835,8 @@ Object {
 exports[`processGlsl($definition.name): processed+mutated 35`] = `
 Object {
   "glsl": "
-  vec2 modulatePixelate(vec2 _st, vec4 _c0, vec4 color, float multiple, float offset) {
-         vec2 xy = vec2(offset + _c0.x*multiple, offset + _c0.y*multiple);
+  vec2 modulatePixelate(vec2 _st, vec4 color, float multiple, float offset) {
+         vec2 xy = vec2(offset + color.x*multiple, offset + color.y*multiple);
    return (floor(_st * xy) + 0.5)/xy;
   }
 ",
@@ -3798,10 +3844,7 @@ Object {
     Object {
       "name": "color",
       "type": "vec4",
-    },
-    Object {
-      "name": "color",
-      "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 10,
@@ -3823,9 +3866,9 @@ Object {
 exports[`processGlsl($definition.name): processed+mutated 36`] = `
 Object {
   "glsl": "
-  vec2 modulateRotate(vec2 _st, vec4 _c0, vec4 color, float multiple, float offset) {
+  vec2 modulateRotate(vec2 _st, vec4 color, float multiple, float offset) {
          vec2 xy = _st - vec2(0.5);
-   float angle = offset + _c0.x * multiple;
+   float angle = offset + color.x * multiple;
    xy = mat2(cos(angle),-sin(angle), sin(angle),cos(angle))*xy;
    xy += 0.5;
    return xy;
@@ -3835,10 +3878,7 @@ Object {
     Object {
       "name": "color",
       "type": "vec4",
-    },
-    Object {
-      "name": "color",
-      "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 1,
@@ -3860,18 +3900,15 @@ Object {
 exports[`processGlsl($definition.name): processed+mutated 37`] = `
 Object {
   "glsl": "
-  vec2 modulateHue(vec2 _st, vec4 _c0, vec4 color, float amount) {
-         return _st + (vec2(_c0.g - _c0.r, _c0.b - _c0.g) * amount * 1.0/resolution);
+  vec2 modulateHue(vec2 _st, vec4 color, float amount) {
+         return _st + (vec2(color.g - color.r, color.b - color.g) * amount * 1.0/resolution);
   }
 ",
   "inputs": Array [
     Object {
       "name": "color",
       "type": "vec4",
-    },
-    Object {
-      "name": "color",
-      "type": "vec4",
+      "vecLen": 4,
     },
     Object {
       "default": 1,
@@ -3949,8 +3986,8 @@ Object {
 exports[`processGlsl($definition.name): processed+mutated 41`] = `
 Object {
   "glsl": "
-  vec4 mask(vec4 _c0, vec4 _c1, vec4 color) {
-         float a = _luminance(_c1.rgb);
+  vec4 mask(vec4 _c0, vec4 color) {
+         float a = _luminance(color.rgb);
    return vec4(_c0.rgb*a, a);
   }
 ",
@@ -3958,10 +3995,7 @@ Object {
     Object {
       "name": "color",
       "type": "vec4",
-    },
-    Object {
-      "name": "color",
-      "type": "vec4",
+      "vecLen": 4,
     },
   ],
   "name": "mask",
@@ -4132,20 +4166,6 @@ Object {
 exports[`processGlsl($definition.name): processed+mutated 48`] = `
 Object {
   "glsl": "
-  vec4 prev(vec2 _st) {
-         return texture2D(prevBuffer, fract(_st));
-  }
-",
-  "inputs": Array [],
-  "name": "prev",
-  "processed": true,
-  "type": "src",
-}
-`;
-
-exports[`processGlsl($definition.name): processed+mutated 49`] = `
-Object {
-  "glsl": "
   vec4 sum(vec4 _c0, vec4 scale) {
          vec4 v = _c0 * s;
    return v.r + v.g + v.b + v.a;
@@ -4168,7 +4188,7 @@ Object {
 }
 `;
 
-exports[`processGlsl($definition.name): processed+mutated 50`] = `
+exports[`processGlsl($definition.name): processed+mutated 49`] = `
 Object {
   "glsl": "
   vec4 r(vec4 _c0, float scale, float offset) {
@@ -4193,7 +4213,7 @@ Object {
 }
 `;
 
-exports[`processGlsl($definition.name): processed+mutated 51`] = `
+exports[`processGlsl($definition.name): processed+mutated 50`] = `
 Object {
   "glsl": "
   vec4 g(vec4 _c0, float scale, float offset) {
@@ -4218,7 +4238,7 @@ Object {
 }
 `;
 
-exports[`processGlsl($definition.name): processed+mutated 52`] = `
+exports[`processGlsl($definition.name): processed+mutated 51`] = `
 Object {
   "glsl": "
   vec4 b(vec4 _c0, float scale, float offset) {
@@ -4243,7 +4263,7 @@ Object {
 }
 `;
 
-exports[`processGlsl($definition.name): processed+mutated 53`] = `
+exports[`processGlsl($definition.name): processed+mutated 52`] = `
 Object {
   "glsl": "
   vec4 a(vec4 _c0, float scale, float offset) {
