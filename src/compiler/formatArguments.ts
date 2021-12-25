@@ -1,7 +1,7 @@
-import { TransformApplication } from '../GlslSource';
+import { GlslSource, TransformApplication } from '../GlslSource';
 import arrayUtils from '../lib/array-utils';
-import { getJsValueType, JsValueType } from './convertJsValueToGlsl';
 import { TransformDefinitionInput } from '../glsl/transformDefinitions';
+import { Output } from '../Output';
 
 const DEFAULT_CONVERSIONS = {
   float: {
@@ -31,7 +31,7 @@ export function formatArguments(
   return inputs.map((input, index) => {
     const vecLen = input.vecLen ?? 0;
 
-    let value = input.default;
+    let value: any = input.default;
     let isUniform = false;
 
     if (input.type === 'float') {
@@ -75,9 +75,7 @@ export function formatArguments(
       }
     }
 
-    const valueType = getJsValueType(value);
-
-    if (valueType === JsValueType.HydraSource) {
+    if (value instanceof GlslSource) {
       // GLSLSource
 
       const finalTransform = value.transforms[value.transforms.length - 1];
@@ -95,14 +93,11 @@ export function formatArguments(
       }
 
       isUniform = false;
-    } else if (input.type === 'float' && valueType === JsValueType.Number) {
+    } else if (input.type === 'float' && typeof value === 'number') {
       // Number
 
       value = ensureDecimalDot(value);
-    } else if (
-      input.type.startsWith('vec') &&
-      valueType === JsValueType.Array
-    ) {
+    } else if (input.type.startsWith('vec') && Array.isArray(value)) {
       // Vector literal (as array)
 
       isUniform = false;
@@ -111,11 +106,9 @@ export function formatArguments(
       const x = value;
       value = () => x.getTexture();
       isUniform = true;
-    } else if (valueType === JsValueType.HydraOutput) {
-      // Output (o0, o1, o2, o3, etc)
-
+    } else if (value instanceof Output) {
       // if passing in a texture reference, when function asks for vec4, convert to vec4
-      if (value.getTexture && input.type === 'vec4') {
+      if (input.type === 'vec4') {
         const x1 = value;
         // TODO: get texture without relying on makeGlobal src()
         value = src(x1);
