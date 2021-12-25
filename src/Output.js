@@ -34,8 +34,6 @@ export class Output {
             }),
             depthStencil: false,
         }));
-        // array containing render passes
-        //  this.passes = []  }
     }
     resize(width, height) {
         this.fbos.forEach((fbo) => {
