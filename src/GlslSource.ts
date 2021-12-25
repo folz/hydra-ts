@@ -1,8 +1,5 @@
 import { DynamicVariable, DynamicVariableFn, Texture2D, Uniform } from 'regl';
-import {
-  ProcessedTransformDefinition,
-  TransformDefinitionInput,
-} from './glsl/transformDefinitions';
+import { ProcessedTransformDefinition } from './glsl/transformDefinitions';
 import { Output } from './Output';
 import { Precision } from '../HydraRenderer';
 import { compileTransformApplicationsWithContext } from './compiler/compileTransformApplicationsWithContext';
@@ -11,10 +8,7 @@ export interface TransformApplication {
   defaultUniforms?: GlslSource['defaultUniforms'];
   precision: Precision;
   transform: ProcessedTransformDefinition;
-  userArgs: (
-    | TransformDefinitionInput['default']
-    | ((context: any, props: any) => TransformDefinitionInput['default'])
-  )[];
+  userArgs: unknown[];
 }
 
 export type CompiledTransform = {
