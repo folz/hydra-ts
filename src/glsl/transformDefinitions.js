@@ -46,49 +46,27 @@ The value in the 'type' field lets the parser know which type the function will 
 const types = {
   'src': {
     returnType: 'vec4',
-    args: ['vec2 _st']
+    implicitFirstArg: ['vec2 _st']
   },
   'coord': {
     returnType: 'vec2',
-    args: ['vec2 _st']
+    implicitFirstArg: ['vec2 _st']
   },
   'color': {
     returnType: 'vec4',
-    args: ['vec4 _c0']
+    implicitFirstArg: ['vec4 _c0']
   },
   'combine': {
     returnType: 'vec4',
-    args: ['vec4 _c0', 'vec4 _c1']
+    implicitFirstArg: ['vec4 _c0', 'vec4 _c1']
   },
   'combineCoord': {
     returnType: 'vec2',
-    args: ['vec2 _st', 'vec4 _c0']
+    implicitFirstArg: ['vec2 _st', 'vec4 _c0']
   }
 }
 
 */
-export const typeLookup = {
-    src: {
-        returnType: 'vec4',
-        args: ['vec2 _st'],
-    },
-    coord: {
-        returnType: 'vec2',
-        args: ['vec2 _st'],
-    },
-    color: {
-        returnType: 'vec4',
-        args: ['vec4 _c0'],
-    },
-    combine: {
-        returnType: 'vec4',
-        args: ['vec4 _c0'],
-    },
-    combineCoord: {
-        returnType: 'vec2',
-        args: ['vec2 _st'],
-    },
-};
 export const transforms = [
     {
         name: 'noise',

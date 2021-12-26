@@ -3,7 +3,7 @@ import type { TransformDefinition } from './glsl/transformDefinitions.js';
 import { GlslSource } from './GlslSource';
 import {
   ProcessedTransformDefinition,
-  typeLookup,
+  TransformDefinitionType,
 } from './glsl/transformDefinitions.js';
 import { Precision } from './HydraRenderer';
 
@@ -86,20 +86,46 @@ export function createTransformOnPrototype(
     addTransformApplicationToInternalChain;
 }
 
+const typeLookup: Record<
+  TransformDefinitionType,
+  { returnType: string; implicitFirstArg: string }
+> = {
+  src: {
+    returnType: 'vec4',
+    implicitFirstArg: 'vec2 _st',
+  },
+  coord: {
+    returnType: 'vec2',
+    implicitFirstArg: 'vec2 _st',
+  },
+  color: {
+    returnType: 'vec4',
+    implicitFirstArg: 'vec4 _c0',
+  },
+  combine: {
+    returnType: 'vec4',
+    implicitFirstArg: 'vec4 _c0',
+  },
+  combineCoord: {
+    returnType: 'vec2',
+    implicitFirstArg: 'vec2 _st',
+  },
+};
+
 export function processGlsl(
   transformDefinition: TransformDefinition,
 ): ProcessedTransformDefinition {
-  let t = typeLookup[transformDefinition.type];
+  let { implicitFirstArg, returnType } = typeLookup[transformDefinition.type];
 
-  let baseArgs = t.args.map((arg) => arg).join(', ');
-  // @todo: make sure this works for all input types, add validation
   let customArgs = transformDefinition.inputs
     .map((input) => `${input.type} ${input.name}`)
     .join(', ');
-  let args = `${baseArgs}${customArgs.length > 0 ? ', ' + customArgs : ''}`;
+  let args = `${implicitFirstArg}${
+    customArgs.length > 0 ? ', ' + customArgs : ''
+  }`;
 
   let glslFunction = `
-  ${t.returnType} ${transformDefinition.name}(${args}) {
+  ${returnType} ${transformDefinition.name}(${args}) {
       ${transformDefinition.glsl}
   }
 `;

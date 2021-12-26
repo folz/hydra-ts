@@ -1,5 +1,4 @@
 import { GlslSource } from './GlslSource';
-import { typeLookup, } from './glsl/transformDefinitions.js';
 export class GeneratorFactory {
     constructor({ changeListener, defaultUniforms, precision, transforms, }) {
         this.generators = {};
@@ -44,16 +43,36 @@ export function createTransformOnPrototype(cls, processedTransformDefinition) {
     cls.prototype[processedTransformDefinition.name] =
         addTransformApplicationToInternalChain;
 }
+const typeLookup = {
+    src: {
+        returnType: 'vec4',
+        implicitFirstArg: 'vec2 _st',
+    },
+    coord: {
+        returnType: 'vec2',
+        implicitFirstArg: 'vec2 _st',
+    },
+    color: {
+        returnType: 'vec4',
+        implicitFirstArg: 'vec4 _c0',
+    },
+    combine: {
+        returnType: 'vec4',
+        implicitFirstArg: 'vec4 _c0',
+    },
+    combineCoord: {
+        returnType: 'vec2',
+        implicitFirstArg: 'vec2 _st',
+    },
+};
 export function processGlsl(transformDefinition) {
-    let t = typeLookup[transformDefinition.type];
-    let baseArgs = t.args.map((arg) => arg).join(', ');
-    // @todo: make sure this works for all input types, add validation
+    let { implicitFirstArg, returnType } = typeLookup[transformDefinition.type];
     let customArgs = transformDefinition.inputs
         .map((input) => `${input.type} ${input.name}`)
         .join(', ');
-    let args = `${baseArgs}${customArgs.length > 0 ? ', ' + customArgs : ''}`;
+    let args = `${implicitFirstArg}${customArgs.length > 0 ? ', ' + customArgs : ''}`;
     let glslFunction = `
-  ${t.returnType} ${transformDefinition.name}(${args}) {
+  ${returnType} ${transformDefinition.name}(${args}) {
       ${transformDefinition.glsl}
   }
 `;

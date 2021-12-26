@@ -1,27 +1,5 @@
 import { Texture2D } from 'regl';
-export declare const typeLookup: {
-    src: {
-        returnType: string;
-        args: string[];
-    };
-    coord: {
-        returnType: string;
-        args: string[];
-    };
-    color: {
-        returnType: string;
-        args: string[];
-    };
-    combine: {
-        returnType: string;
-        args: string[];
-    };
-    combineCoord: {
-        returnType: string;
-        args: string[];
-    };
-};
-export declare type TransformDefinitionType = keyof typeof typeLookup;
+export declare type TransformDefinitionType = 'src' | 'coord' | 'color' | 'combine' | 'combineCoord';
 declare type TransformDefinitionInputTypeFloat = {
     type: 'float';
     default?: number | number[] | ((context: any, props: any) => number | number[]);
