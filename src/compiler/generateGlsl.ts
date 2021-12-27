@@ -1,7 +1,6 @@
 import { Texture2D } from 'regl';
 import { TransformApplication } from '../GlslSource';
-import { formatArguments } from './formatArguments';
-import { shaderString } from './shaderString';
+import { formatArguments, TypedArg } from './formatArguments';
 import { ShaderParams } from './compileGlsl';
 
 export type GlslGenerator = (uv: string) => string;
@@ -96,7 +95,28 @@ export function generateGlsl(
   return fragColor;
 }
 
-export function contains(
+function shaderString(
+  uv: string,
+  transformApplication: TransformApplication,
+  inputs: TypedArg[],
+  shaderParams: ShaderParams,
+): string {
+  const str = inputs
+    .map((input) => {
+      if (input.isUniform) {
+        return input.name;
+      } else if (input.value && input.value.transforms) {
+        // this by definition needs to be a generator, hence we start with 'st' as the initial value for generating the glsl fragment
+        return `${generateGlsl(input.value.transforms, shaderParams)('st')}`;
+      }
+      return input.value;
+    })
+    .reduce((p, c) => `${p}, ${c}`, '');
+
+  return `${transformApplication.transform.name}(${uv}${str})`;
+}
+
+function contains(
   transformApplication: TransformApplication,
   transformApplications: TransformApplication[],
 ): boolean {
