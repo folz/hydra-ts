@@ -141,17 +141,12 @@ export class HydraRenderer {
             // @ts-ignore
             resolution: this.regl.prop('resolution'),
         };
-        GeneratorFactory({
+        const generators = GeneratorFactory({
             defaultUniforms,
             precision: this.output.precision,
             transformDefinitions: transforms,
-            changeListener: ({ name, generator }) => {
-                this.synth[name] = generator;
-                if (this.sandbox) {
-                    this.sandbox.add(name);
-                }
-            },
         });
+        this.synth = Object.assign(Object.assign({}, this.synth), generators);
         this.loop = new Loop(this.tick);
         // final argument is properties that the user can set, all others are treated as read-only
         this.sandbox = new EvalSandbox(this.synth, makeGlobal, [

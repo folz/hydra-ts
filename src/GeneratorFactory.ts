@@ -7,23 +7,21 @@ import {
 } from './glsl/transformDefinitions.js';
 import { Precision } from './HydraRenderer';
 
+type GeneratorMap = Record<string, () => GlslSource>;
+
 export function GeneratorFactory({
-  changeListener,
   defaultUniforms,
   precision,
   transformDefinitions,
 }: {
-  changeListener: (options: {
-    generator: () => GlslSource;
-    name: string;
-  }) => void;
   defaultUniforms: {
     [name: string]: DynamicVariable<any> | DynamicVariableFn<any, any, any>;
   };
   precision: Precision;
   transformDefinitions: TransformDefinition[];
-}) {
+}): GeneratorMap {
   const sourceClass = class extends GlslSource {};
+  const ret: GeneratorMap = {};
 
   for (const transformDefinition of transformDefinitions) {
     const processedTransformDefinition = processGlsl(transformDefinition);
@@ -31,18 +29,19 @@ export function GeneratorFactory({
     const { name } = processedTransformDefinition;
 
     if (processedTransformDefinition.type === 'src') {
-      const generator = (...args: any[]) =>
+      ret[name] = (...args: any[]) =>
         new sourceClass({
           defaultUniforms,
           precision,
           transform: processedTransformDefinition,
           userArgs: args,
         });
-      changeListener({ generator, name });
     } else {
       createTransformOnPrototype(sourceClass, processedTransformDefinition);
     }
   }
+
+  return ret;
 }
 
 export function createTransformOnPrototype(

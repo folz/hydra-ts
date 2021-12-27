@@ -156,17 +156,16 @@ export class HydraRenderer {
       resolution: this.regl.prop('resolution'),
     };
 
-    GeneratorFactory({
+    const generators = GeneratorFactory({
       defaultUniforms,
       precision: this.output.precision,
       transformDefinitions: transforms,
-      changeListener: ({ name, generator }) => {
-        this.synth[name] = generator;
-        if (this.sandbox) {
-          this.sandbox.add(name);
-        }
-      },
     });
+
+    this.synth = {
+      ...this.synth,
+      ...generators,
+    };
 
     this.loop = new Loop(this.tick);
 
