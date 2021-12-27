@@ -1,5 +1,7 @@
 import { GlslSource } from '../GlslSource';
 import arrayUtils from '../lib/array-utils';
+import { HydraSource } from '../HydraSource';
+import { Output } from '../Output';
 export function formatArguments(transformApplication, startIndex) {
     const { transform, userArgs } = transformApplication;
     const { inputs } = transform;
@@ -61,16 +63,14 @@ export function formatArguments(transformApplication, startIndex) {
             value = `${input.type}(${value.map(ensureDecimalDot).join(', ')})`;
         }
         else if (input.type === 'sampler2D') {
-            const x = value;
-            value = () => x.getTexture();
+            const ref = value;
+            value = () => ref.getTexture();
             isUniform = true;
         }
-        else if (Boolean(value.getTexture) && input.type === 'vec4') {
-            // Note: Need to refactor logic to allow for instanceof check against GlslSource/Output
-            // if passing in a texture reference, when function asks for vec4, convert to vec4
-            const x1 = value;
-            // TODO: get texture without relying on makeGlobal src()
-            value = src(x1);
+        else if (value instanceof HydraSource || value instanceof Output) {
+            const ref = value;
+            // @ts-ignore
+            value = window.src(ref);
             isUniform = false;
         }
         // add tp uniform array if is a function that will pass in a different value on each render frame,

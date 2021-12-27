@@ -1,6 +1,8 @@
 import { GlslSource, TransformApplication } from '../GlslSource';
 import arrayUtils from '../lib/array-utils';
 import { TransformDefinitionInput } from '../glsl/transformDefinitions';
+import { HydraSource } from '../HydraSource';
+import { Output } from '../Output';
 
 export interface TypedArg {
   value: TransformDefinitionInput['default'];
@@ -78,16 +80,15 @@ export function formatArguments(
       isUniform = false;
       value = `${input.type}(${value.map(ensureDecimalDot).join(', ')})`;
     } else if (input.type === 'sampler2D') {
-      const x = value;
-      value = () => x.getTexture();
-      isUniform = true;
-    } else if (Boolean(value.getTexture) && input.type === 'vec4') {
-      // Note: Need to refactor logic to allow for instanceof check against GlslSource/Output
+      const ref = value;
 
-      // if passing in a texture reference, when function asks for vec4, convert to vec4
-      const x1 = value;
-      // TODO: get texture without relying on makeGlobal src()
-      value = src(x1);
+      value = () => ref.getTexture();
+      isUniform = true;
+    } else if (value instanceof HydraSource || value instanceof Output) {
+      const ref = value;
+
+      // @ts-ignore
+      value = window.src(ref);
       isUniform = false;
     }
 
