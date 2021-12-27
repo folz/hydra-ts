@@ -1,7 +1,6 @@
 import { Output } from './Output';
 import { Loop } from './Loop';
 import { HydraSource } from './HydraSource';
-import { EvalSandbox } from './EvalSandbox';
 import { DrawCommand, Regl } from 'regl';
 export declare type Precision = 'lowp' | 'mediump' | 'highp';
 export interface Synth {
@@ -24,7 +23,6 @@ interface HydraRendererOptions {
     height?: HydraRenderer['height'];
     numSources?: number;
     numOutputs?: number;
-    makeGlobal?: boolean;
     regl: HydraRenderer['regl'];
     precision?: HydraRenderer['precision'];
 }
@@ -34,14 +32,13 @@ export declare class HydraRenderer {
     synth: Synth;
     timeSinceLastUpdate: number;
     precision: Precision;
-    sandbox: EvalSandbox;
     regl: Regl;
     renderFbo: DrawCommand;
     s: HydraSource[];
     o: Output[];
     output: Output;
     loop: Loop;
-    constructor({ width, height, numSources, numOutputs, makeGlobal, precision, regl, }: HydraRendererOptions);
+    constructor({ width, height, numSources, numOutputs, precision, regl, }: HydraRendererOptions);
     hush: () => void;
     setResolution: (width: number, height: number) => void;
     render: (output: Output) => void;

@@ -1,7 +1,6 @@
 import { Output } from './Output';
 import { Loop } from './Loop';
 import { HydraSource } from './HydraSource';
-import { EvalSandbox } from './EvalSandbox';
 import { DrawCommand, Regl } from 'regl';
 
 import { createGenerators } from './createGenerators';
@@ -30,7 +29,6 @@ interface HydraRendererOptions {
   height?: HydraRenderer['height'];
   numSources?: number;
   numOutputs?: number;
-  makeGlobal?: boolean;
   regl: HydraRenderer['regl'];
   precision?: HydraRenderer['precision'];
 }
@@ -42,7 +40,6 @@ export class HydraRenderer {
   synth: Synth;
   timeSinceLastUpdate;
   precision: Precision;
-  sandbox: EvalSandbox;
   regl: Regl;
   renderFbo: DrawCommand;
   s: HydraSource[] = [];
@@ -55,7 +52,6 @@ export class HydraRenderer {
     height = 720,
     numSources = 4,
     numOutputs = 4,
-    makeGlobal = true,
     precision = 'mediump',
     regl,
   }: HydraRendererOptions) {
@@ -168,13 +164,6 @@ export class HydraRenderer {
     };
 
     this.loop = new Loop(this.tick);
-
-    // final argument is properties that the user can set, all others are treated as read-only
-    this.sandbox = new EvalSandbox(this.synth, makeGlobal, [
-      'speed',
-      'bpm',
-      'fps',
-    ]);
   }
 
   hush = () => {
@@ -208,11 +197,8 @@ export class HydraRenderer {
 
   // dt in ms
   tick = (dt: number) => {
-    this.sandbox.tick();
-    this.sandbox.set(
-      'time',
-      (this.synth.time += dt * 0.001 * this.synth.speed),
-    );
+    this.synth.time += dt * 0.001 * this.synth.speed;
+
     this.timeSinceLastUpdate += dt;
 
     if (!this.synth.fps || this.timeSinceLastUpdate >= 1000 / this.synth.fps) {
