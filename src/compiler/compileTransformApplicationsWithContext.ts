@@ -2,7 +2,11 @@ import { Precision } from '../HydraRenderer';
 import { compileGlsl } from './compileGlsl';
 import { TypedArg } from './formatArguments';
 import { utilityFunctions } from '../glsl/utilityFunctions';
-import { GlslSource, TransformApplication } from '../GlslSource';
+import {
+  CompiledTransform,
+  GlslSource,
+  TransformApplication,
+} from '../GlslSource';
 
 interface TransformApplicationContext {
   defaultUniforms: GlslSource['defaultUniforms'];
@@ -12,7 +16,7 @@ interface TransformApplicationContext {
 export function compileTransformApplicationsWithContext(
   transformApplications: TransformApplication[],
   context: TransformApplicationContext,
-) {
+): CompiledTransform {
   const shaderParams = compileGlsl(transformApplications);
 
   const uniforms: Record<TypedArg['name'], TypedArg['value']> = {};
