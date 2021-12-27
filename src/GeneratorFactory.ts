@@ -11,16 +11,17 @@ interface GeneratorFactoryOptions {
   changeListener: GeneratorFactory['changeListener'];
   defaultUniforms: GeneratorFactory['defaultUniforms'];
   precision: Precision;
-  transforms: TransformDefinition[];
+  transformDefinitions: TransformDefinition[];
 }
 
 export class GeneratorFactory {
-  changeListener: (options: any) => void;
+  changeListener: (options: {
+    generator: () => GlslSource;
+    name: string;
+  }) => void;
   defaultUniforms: {
     [name: string]: DynamicVariable<any> | DynamicVariableFn<any, any, any>;
   };
-  generators: Record<string, () => GlslSource> = {};
-  glslTransforms: Record<string, ProcessedTransformDefinition> = {};
   precision: Precision;
   sourceClass = class extends GlslSource {};
 
@@ -28,14 +29,14 @@ export class GeneratorFactory {
     changeListener,
     defaultUniforms,
     precision,
-    transforms,
+    transformDefinitions,
   }: GeneratorFactoryOptions) {
     this.changeListener = changeListener;
     this.defaultUniforms = defaultUniforms;
     this.precision = precision;
 
-    for (const transform of transforms) {
-      this.setFunction(transform);
+    for (const transformDefinition of transformDefinitions) {
+      this.setFunction(transformDefinition);
     }
   }
 
@@ -44,17 +45,15 @@ export class GeneratorFactory {
 
     const { name } = processedTransformDefinition;
 
-    this.glslTransforms[name] = processedTransformDefinition;
-
     if (processedTransformDefinition.type === 'src') {
-      this.generators[name] = (...args: any[]) =>
+      const generator = (...args: any[]) =>
         new this.sourceClass({
           defaultUniforms: this.defaultUniforms,
           precision: this.precision,
           transform: processedTransformDefinition,
           userArgs: args,
         });
-      this.changeListener({ synth: this, method: name });
+      this.changeListener({ generator, name });
     } else {
       createTransformOnPrototype(
         this.sourceClass,

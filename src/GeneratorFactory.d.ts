@@ -7,15 +7,16 @@ interface GeneratorFactoryOptions {
     changeListener: GeneratorFactory['changeListener'];
     defaultUniforms: GeneratorFactory['defaultUniforms'];
     precision: Precision;
-    transforms: TransformDefinition[];
+    transformDefinitions: TransformDefinition[];
 }
 export declare class GeneratorFactory {
-    changeListener: (options: any) => void;
+    changeListener: (options: {
+        generator: () => GlslSource;
+        name: string;
+    }) => void;
     defaultUniforms: {
         [name: string]: DynamicVariable<any> | DynamicVariableFn<any, any, any>;
     };
-    generators: Record<string, () => GlslSource>;
-    glslTransforms: Record<string, ProcessedTransformDefinition>;
     precision: Precision;
     sourceClass: {
         new (transformApplication: import("./GlslSource").TransformApplication): {
@@ -30,7 +31,7 @@ export declare class GeneratorFactory {
             glsl(): import("./GlslSource").CompiledTransform[];
         };
     };
-    constructor({ changeListener, defaultUniforms, precision, transforms, }: GeneratorFactoryOptions);
+    constructor({ changeListener, defaultUniforms, precision, transformDefinitions, }: GeneratorFactoryOptions);
     setFunction: (transformDefinition: TransformDefinition) => void;
 }
 export declare function createTransformOnPrototype(cls: typeof GlslSource, processedTransformDefinition: ProcessedTransformDefinition): void;

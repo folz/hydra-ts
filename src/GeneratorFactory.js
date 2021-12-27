@@ -1,22 +1,19 @@
 import { GlslSource } from './GlslSource';
 export class GeneratorFactory {
-    constructor({ changeListener, defaultUniforms, precision, transforms, }) {
-        this.generators = {};
-        this.glslTransforms = {};
+    constructor({ changeListener, defaultUniforms, precision, transformDefinitions, }) {
         this.sourceClass = class extends GlslSource {
         };
         this.setFunction = (transformDefinition) => {
             const processedTransformDefinition = processGlsl(transformDefinition);
             const { name } = processedTransformDefinition;
-            this.glslTransforms[name] = processedTransformDefinition;
             if (processedTransformDefinition.type === 'src') {
-                this.generators[name] = (...args) => new this.sourceClass({
+                const generator = (...args) => new this.sourceClass({
                     defaultUniforms: this.defaultUniforms,
                     precision: this.precision,
                     transform: processedTransformDefinition,
                     userArgs: args,
                 });
-                this.changeListener({ synth: this, method: name });
+                this.changeListener({ generator, name });
             }
             else {
                 createTransformOnPrototype(this.sourceClass, processedTransformDefinition);
@@ -25,8 +22,8 @@ export class GeneratorFactory {
         this.changeListener = changeListener;
         this.defaultUniforms = defaultUniforms;
         this.precision = precision;
-        for (const transform of transforms) {
-            this.setFunction(transform);
+        for (const transformDefinition of transformDefinitions) {
+            this.setFunction(transformDefinition);
         }
     }
 }
