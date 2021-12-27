@@ -41,10 +41,10 @@ export class HydraSource {
 
   initCam = (index: number) => {
     Webcam(index)
-      .then((response) => {
-        this.src = response.video;
+      .then((video) => {
+        this.src = video;
         this.dynamic = true;
-        this.tex = this.regl.texture(response.video);
+        this.tex = this.regl.texture(video);
       })
       .catch((err) => console.log('could not get camera', err));
   };
@@ -78,8 +78,8 @@ export class HydraSource {
 
   initScreen = () => {
     Screen()
-      .then((response) => {
-        this.src = response.video;
+      .then((video) => {
+        this.src = video;
         this.tex = this.regl.texture(this.src);
         this.dynamic = true;
       })

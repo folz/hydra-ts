@@ -1,28 +1,32 @@
-//const enumerateDevices = require('enumerate-devices')
-
-export function Webcam(deviceId: number): Promise<{ video: HTMLVideoElement }> {
+export function Webcam(deviceId: number): Promise<HTMLVideoElement> {
   return navigator.mediaDevices
     .enumerateDevices()
     .then((devices) =>
       devices.filter((devices) => devices.kind === 'videoinput'),
     )
     .then((cameras) => {
-      let constraints: MediaStreamConstraints = { audio: false, video: true };
+      let constraints: MediaStreamConstraints = {
+        audio: false,
+        video: true,
+      };
+
       if (cameras[deviceId]) {
         constraints['video'] = {
-          deviceId: { exact: cameras[deviceId].deviceId },
+          deviceId: {
+            exact: cameras[deviceId].deviceId,
+          },
         };
       }
-      //  console.log(cameras)
+
       return window.navigator.mediaDevices.getUserMedia(constraints);
     })
     .then((stream) => {
       const video = document.createElement('video');
-      //  video.src = window.URL.createObjectURL(stream)
       video.srcObject = stream;
-      return new Promise<{ video: HTMLVideoElement }>((resolve, reject) => {
+
+      return new Promise((resolve, _reject) => {
         video.addEventListener('loadedmetadata', () => {
-          video.play().then(() => resolve({ video: video }));
+          video.play().then(() => resolve(video));
         });
       });
     });

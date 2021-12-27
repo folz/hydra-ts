@@ -1,14 +1,16 @@
-export function Screen(options?: DisplayMediaStreamConstraints) {
-  return new Promise<{ video: HTMLVideoElement }>(function (resolve, reject) {
-    //  async function startCapture(displayMediaOptions) {
+export function Screen(
+  options?: DisplayMediaStreamConstraints,
+): Promise<HTMLVideoElement> {
+  return new Promise(function (resolve, reject) {
     navigator.mediaDevices
       .getDisplayMedia(options)
       .then((stream) => {
         const video = document.createElement('video');
         video.srcObject = stream;
+
         video.addEventListener('loadedmetadata', () => {
           video.play();
-          resolve({ video: video });
+          resolve(video);
         });
       })
       .catch((err) => reject(err));

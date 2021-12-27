@@ -1,6 +1,5 @@
 export function Screen(options) {
     return new Promise(function (resolve, reject) {
-        //  async function startCapture(displayMediaOptions) {
         navigator.mediaDevices
             .getDisplayMedia(options)
             .then((stream) => {
@@ -8,7 +7,7 @@ export function Screen(options) {
             video.srcObject = stream;
             video.addEventListener('loadedmetadata', () => {
                 video.play();
-                resolve({ video: video });
+                resolve(video);
             });
         })
             .catch((err) => reject(err));
