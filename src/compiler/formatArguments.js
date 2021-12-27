@@ -1,14 +1,5 @@
 import { GlslSource } from '../GlslSource';
 import arrayUtils from '../lib/array-utils';
-const DEFAULT_CONVERSIONS = {
-    float: {
-        vec4: { name: 'sum', args: [[1, 1, 1, 1]] },
-        vec2: { name: 'sum', args: [[1, 1]] },
-    },
-    vec4: undefined,
-    sampler2D: undefined,
-    texture: undefined,
-};
 export function formatArguments(transformApplication, startIndex) {
     const { transform, userArgs } = transformApplication;
     const { inputs } = transform;
@@ -58,17 +49,6 @@ export function formatArguments(transformApplication, startIndex) {
         }
         if (value instanceof GlslSource) {
             // GLSLSource
-            const finalTransform = value.transforms[value.transforms.length - 1];
-            if (finalTransform.transform.glsl_return_type !== input.type) {
-                const defaults = DEFAULT_CONVERSIONS[input.type];
-                if (typeof defaults !== 'undefined') {
-                    const default_def = defaults[finalTransform.transform.glsl_return_type];
-                    if (typeof default_def !== 'undefined') {
-                        const { name, args } = default_def;
-                        value = value[name](...args);
-                    }
-                }
-            }
             isUniform = false;
         }
         else if (input.type === 'float' && typeof value === 'number') {
