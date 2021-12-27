@@ -22,6 +22,9 @@ export function Webcam(deviceId: number): Promise<HTMLVideoElement> {
     })
     .then((stream) => {
       const video = document.createElement('video');
+      video.setAttribute('autoplay', '');
+      video.setAttribute('muted', '');
+      video.setAttribute('playsinline', '');
       video.srcObject = stream;
 
       return new Promise((resolve, _reject) => {
