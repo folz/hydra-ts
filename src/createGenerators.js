@@ -1,5 +1,5 @@
 import { GlslSource } from './GlslSource';
-export function GeneratorFactory({ defaultUniforms, precision, transformDefinitions, }) {
+export function createGenerators({ defaultUniforms, precision, transformDefinitions, }) {
     const sourceClass = class extends GlslSource {
     };
     const ret = {};

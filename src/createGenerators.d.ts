@@ -4,7 +4,7 @@ import { GlslSource } from './GlslSource';
 import { ProcessedTransformDefinition } from './glsl/transformDefinitions.js';
 import { Precision } from './HydraRenderer';
 declare type GeneratorMap = Record<string, () => GlslSource>;
-export declare function GeneratorFactory({ defaultUniforms, precision, transformDefinitions, }: {
+export declare function createGenerators({ defaultUniforms, precision, transformDefinitions, }: {
     defaultUniforms: {
         [name: string]: DynamicVariable<any> | DynamicVariableFn<any, any, any>;
     };

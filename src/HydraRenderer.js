@@ -2,7 +2,7 @@ import { Output } from './Output';
 import { Loop } from './Loop';
 import { HydraSource } from './HydraSource';
 import { EvalSandbox } from './EvalSandbox';
-import { GeneratorFactory } from './GeneratorFactory';
+import { createGenerators } from './createGenerators';
 import { transforms } from './glsl/transformDefinitions';
 // to do: add ability to pass in certain uniforms and transforms
 export class HydraRenderer {
@@ -141,7 +141,7 @@ export class HydraRenderer {
             // @ts-ignore
             resolution: this.regl.prop('resolution'),
         };
-        const generators = GeneratorFactory({
+        const generators = createGenerators({
             defaultUniforms,
             precision: this.output.precision,
             transformDefinitions: transforms,

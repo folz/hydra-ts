@@ -4,7 +4,7 @@ import { HydraSource } from './HydraSource';
 import { EvalSandbox } from './EvalSandbox';
 import { DrawCommand, Regl } from 'regl';
 
-import { GeneratorFactory } from './GeneratorFactory';
+import { createGenerators } from './createGenerators';
 import { transforms } from './glsl/transformDefinitions';
 
 export type Precision = 'lowp' | 'mediump' | 'highp';
@@ -156,7 +156,7 @@ export class HydraRenderer {
       resolution: this.regl.prop('resolution'),
     };
 
-    const generators = GeneratorFactory({
+    const generators = createGenerators({
       defaultUniforms,
       precision: this.output.precision,
       transformDefinitions: transforms,

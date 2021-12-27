@@ -9,7 +9,7 @@ import { Precision } from './HydraRenderer';
 
 type GeneratorMap = Record<string, () => GlslSource>;
 
-export function GeneratorFactory({
+export function createGenerators({
   defaultUniforms,
   precision,
   transformDefinitions,
