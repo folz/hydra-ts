@@ -88,11 +88,6 @@ export function formatArguments(transformApplication, startIndex) {
         };
     });
 }
-function mergeDefaultsAndArgs(defaults, args) {
-    let suppliedUserArgs = args.slice(0, defaults.length);
-    let remainingDefaultArgs = defaults.slice(suppliedUserArgs.length);
-    return [...suppliedUserArgs, ...remainingDefaultArgs];
-}
 export function ensureDecimalDot(val) {
     val = val.toString();
     if (val.indexOf('.') < 0) {
