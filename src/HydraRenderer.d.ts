@@ -3,7 +3,6 @@ import { Loop } from './Loop';
 import { HydraSource } from './HydraSource';
 import { EvalSandbox } from './EvalSandbox';
 import { DrawCommand, Regl } from 'regl';
-import { GeneratorFactory } from './GeneratorFactory';
 export declare type Precision = 'lowp' | 'mediump' | 'highp';
 export interface Synth {
     time: number;
@@ -35,7 +34,6 @@ export declare class HydraRenderer {
     synth: Synth;
     timeSinceLastUpdate: number;
     precision: Precision;
-    generator?: GeneratorFactory;
     sandbox: EvalSandbox;
     regl: Regl;
     renderFbo: DrawCommand;

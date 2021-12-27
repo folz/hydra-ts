@@ -7,14 +7,12 @@ import {
 } from './glsl/transformDefinitions.js';
 import { Precision } from './HydraRenderer';
 
-interface GeneratorFactoryOptions {
-  changeListener: GeneratorFactory['changeListener'];
-  defaultUniforms: GeneratorFactory['defaultUniforms'];
-  precision: Precision;
-  transformDefinitions: TransformDefinition[];
-}
-
-export class GeneratorFactory {
+export function GeneratorFactory({
+  changeListener,
+  defaultUniforms,
+  precision,
+  transformDefinitions,
+}: {
   changeListener: (options: {
     generator: () => GlslSource;
     name: string;
@@ -23,44 +21,28 @@ export class GeneratorFactory {
     [name: string]: DynamicVariable<any> | DynamicVariableFn<any, any, any>;
   };
   precision: Precision;
-  sourceClass = class extends GlslSource {};
+  transformDefinitions: TransformDefinition[];
+}) {
+  const sourceClass = class extends GlslSource {};
 
-  constructor({
-    changeListener,
-    defaultUniforms,
-    precision,
-    transformDefinitions,
-  }: GeneratorFactoryOptions) {
-    this.changeListener = changeListener;
-    this.defaultUniforms = defaultUniforms;
-    this.precision = precision;
-
-    for (const transformDefinition of transformDefinitions) {
-      this.setFunction(transformDefinition);
-    }
-  }
-
-  setFunction = (transformDefinition: TransformDefinition): void => {
+  for (const transformDefinition of transformDefinitions) {
     const processedTransformDefinition = processGlsl(transformDefinition);
 
     const { name } = processedTransformDefinition;
 
     if (processedTransformDefinition.type === 'src') {
       const generator = (...args: any[]) =>
-        new this.sourceClass({
-          defaultUniforms: this.defaultUniforms,
-          precision: this.precision,
+        new sourceClass({
+          defaultUniforms,
+          precision,
           transform: processedTransformDefinition,
           userArgs: args,
         });
-      this.changeListener({ generator, name });
+      changeListener({ generator, name });
     } else {
-      createTransformOnPrototype(
-        this.sourceClass,
-        processedTransformDefinition,
-      );
+      createTransformOnPrototype(sourceClass, processedTransformDefinition);
     }
-  };
+  }
 }
 
 export function createTransformOnPrototype(

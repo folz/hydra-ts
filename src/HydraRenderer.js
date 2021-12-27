@@ -141,7 +141,7 @@ export class HydraRenderer {
             // @ts-ignore
             resolution: this.regl.prop('resolution'),
         };
-        this.generator = new GeneratorFactory({
+        GeneratorFactory({
             defaultUniforms,
             precision: this.output.precision,
             transformDefinitions: transforms,

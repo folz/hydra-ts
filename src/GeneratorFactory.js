@@ -1,29 +1,21 @@
 import { GlslSource } from './GlslSource';
-export class GeneratorFactory {
-    constructor({ changeListener, defaultUniforms, precision, transformDefinitions, }) {
-        this.sourceClass = class extends GlslSource {
-        };
-        this.setFunction = (transformDefinition) => {
-            const processedTransformDefinition = processGlsl(transformDefinition);
-            const { name } = processedTransformDefinition;
-            if (processedTransformDefinition.type === 'src') {
-                const generator = (...args) => new this.sourceClass({
-                    defaultUniforms: this.defaultUniforms,
-                    precision: this.precision,
-                    transform: processedTransformDefinition,
-                    userArgs: args,
-                });
-                this.changeListener({ generator, name });
-            }
-            else {
-                createTransformOnPrototype(this.sourceClass, processedTransformDefinition);
-            }
-        };
-        this.changeListener = changeListener;
-        this.defaultUniforms = defaultUniforms;
-        this.precision = precision;
-        for (const transformDefinition of transformDefinitions) {
-            this.setFunction(transformDefinition);
+export function GeneratorFactory({ changeListener, defaultUniforms, precision, transformDefinitions, }) {
+    const sourceClass = class extends GlslSource {
+    };
+    for (const transformDefinition of transformDefinitions) {
+        const processedTransformDefinition = processGlsl(transformDefinition);
+        const { name } = processedTransformDefinition;
+        if (processedTransformDefinition.type === 'src') {
+            const generator = (...args) => new sourceClass({
+                defaultUniforms,
+                precision,
+                transform: processedTransformDefinition,
+                userArgs: args,
+            });
+            changeListener({ generator, name });
+        }
+        else {
+            createTransformOnPrototype(sourceClass, processedTransformDefinition);
         }
     }
 }

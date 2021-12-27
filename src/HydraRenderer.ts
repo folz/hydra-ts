@@ -42,7 +42,6 @@ export class HydraRenderer {
   synth: Synth;
   timeSinceLastUpdate;
   precision: Precision;
-  generator?: GeneratorFactory;
   sandbox: EvalSandbox;
   regl: Regl;
   renderFbo: DrawCommand;
@@ -157,7 +156,7 @@ export class HydraRenderer {
       resolution: this.regl.prop('resolution'),
     };
 
-    this.generator = new GeneratorFactory({
+    GeneratorFactory({
       defaultUniforms,
       precision: this.output.precision,
       transformDefinitions: transforms,
