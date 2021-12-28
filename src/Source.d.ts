@@ -1,10 +1,10 @@
 import { Regl, Texture2D, TextureImageData } from 'regl';
 interface HydraSourceOptions {
-    regl: HydraSource['regl'];
-    width: HydraSource['width'];
-    height: HydraSource['height'];
+    regl: Source['regl'];
+    width: Source['width'];
+    height: Source['height'];
 }
-export declare class HydraSource {
+export declare class Source {
     regl: Regl;
     width: number;
     height: number;
@@ -13,7 +13,7 @@ export declare class HydraSource {
     tex: Texture2D;
     constructor({ regl, width, height }: HydraSourceOptions);
     init: (opts: {
-        src: HydraSource['src'];
+        src: Source['src'];
         dynamic: boolean;
     }) => void;
     initCam: (index: number) => void;

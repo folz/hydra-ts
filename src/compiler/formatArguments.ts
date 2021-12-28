@@ -1,7 +1,7 @@
 import { GlslSource, TransformApplication } from '../GlslSource';
 import arrayUtils from '../lib/array-utils';
 import { TransformDefinitionInput } from '../glsl/transformDefinitions';
-import { HydraSource } from '../HydraSource';
+import { Source } from '../Source';
 import { Output } from '../Output';
 
 export interface TypedArg {
@@ -84,7 +84,7 @@ export function formatArguments(
 
       value = () => ref.getTexture();
       isUniform = true;
-    } else if (value instanceof HydraSource || value instanceof Output) {
+    } else if (value instanceof Source || value instanceof Output) {
       const ref = value;
 
       // @ts-ignore

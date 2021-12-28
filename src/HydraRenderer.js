@@ -1,6 +1,6 @@
 import { Output } from './Output';
 import { Loop } from './Loop';
-import { HydraSource } from './HydraSource';
+import { Source } from './Source';
 import { createGenerators } from './createGenerators';
 import { transforms } from './glsl/transformDefinitions';
 // to do: add ability to pass in certain uniforms and transforms
@@ -114,7 +114,7 @@ export class HydraRenderer {
             depth: { enable: false },
         });
         for (let i = 0; i < numSources; i++) {
-            let s = new HydraSource({
+            let s = new Source({
                 regl: this.regl,
                 width: this.width,
                 height: this.height,

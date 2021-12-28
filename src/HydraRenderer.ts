@@ -1,6 +1,6 @@
 import { Output } from './Output';
 import { Loop } from './Loop';
-import { HydraSource } from './HydraSource';
+import { Source } from './Source';
 import { DrawCommand, Regl } from 'regl';
 
 import { createGenerators } from './createGenerators';
@@ -42,7 +42,7 @@ export class HydraRenderer {
   precision: Precision;
   regl: Regl;
   renderFbo: DrawCommand;
-  s: HydraSource[] = [];
+  s: Source[] = [];
   o: Output[] = [];
   output: Output;
   loop: Loop;
@@ -123,7 +123,7 @@ export class HydraRenderer {
     });
 
     for (let i = 0; i < numSources; i++) {
-      let s = new HydraSource({
+      let s = new Source({
         regl: this.regl,
         width: this.width,
         height: this.height,

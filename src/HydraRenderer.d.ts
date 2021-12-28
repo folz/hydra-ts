@@ -1,6 +1,6 @@
 import { Output } from './Output';
 import { Loop } from './Loop';
-import { HydraSource } from './HydraSource';
+import { Source } from './Source';
 import { DrawCommand, Regl } from 'regl';
 export declare type Precision = 'lowp' | 'mediump' | 'highp';
 export interface Synth {
@@ -34,7 +34,7 @@ export declare class HydraRenderer {
     precision: Precision;
     regl: Regl;
     renderFbo: DrawCommand;
-    s: HydraSource[];
+    s: Source[];
     o: Output[];
     output: Output;
     loop: Loop;

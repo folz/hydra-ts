@@ -1,6 +1,6 @@
 import { GlslSource } from '../GlslSource';
 import arrayUtils from '../lib/array-utils';
-import { HydraSource } from '../HydraSource';
+import { Source } from '../Source';
 import { Output } from '../Output';
 export function formatArguments(transformApplication, startIndex) {
     const { transform, userArgs } = transformApplication;
@@ -67,7 +67,7 @@ export function formatArguments(transformApplication, startIndex) {
             value = () => ref.getTexture();
             isUniform = true;
         }
-        else if (value instanceof HydraSource || value instanceof Output) {
+        else if (value instanceof Source || value instanceof Output) {
             const ref = value;
             // @ts-ignore
             value = window.src(ref);

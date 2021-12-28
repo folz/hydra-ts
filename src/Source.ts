@@ -3,12 +3,12 @@ import { Screen } from './lib/Screen';
 import { Regl, Texture2D, TextureImageData } from 'regl';
 
 interface HydraSourceOptions {
-  regl: HydraSource['regl'];
-  width: HydraSource['width'];
-  height: HydraSource['height'];
+  regl: Source['regl'];
+  width: Source['width'];
+  height: Source['height'];
 }
 
-export class HydraSource {
+export class Source {
   regl: Regl;
   width: number;
   height: number;
@@ -28,7 +28,7 @@ export class HydraSource {
     });
   }
 
-  init = (opts: { src: HydraSource['src']; dynamic: boolean }) => {
+  init = (opts: { src: Source['src']; dynamic: boolean }) => {
     if (opts.src) {
       this.src = opts.src;
       this.tex = this.regl.texture(this.src);

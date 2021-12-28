@@ -1,6 +1,6 @@
 import { Webcam } from './lib/Webcam';
 import { Screen } from './lib/Screen';
-export class HydraSource {
+export class Source {
     constructor({ regl, width, height }) {
         this.init = (opts) => {
             if (opts.src) {
