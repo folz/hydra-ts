@@ -78,6 +78,13 @@ export class HydraRenderer {
 
     this.timeSinceLastUpdate = 0;
 
+    const defaultUniforms = {
+      // @ts-ignore
+      time: this.regl.prop('time'),
+      // @ts-ignore
+      resolution: this.regl.prop('resolution'),
+    };
+
     this.precision = precision;
 
     // This clears the color buffer to black and the depth buffer to 1
@@ -138,6 +145,7 @@ export class HydraRenderer {
         width: this.width,
         height: this.height,
         precision: this.precision,
+        defaultUniforms,
       });
       this.synth[`o${i}`] = o;
       this.o.push(o);
@@ -145,16 +153,7 @@ export class HydraRenderer {
 
     this.output = this.o[0];
 
-    const defaultUniforms = {
-      // @ts-ignore
-      time: this.regl.prop('time'),
-      // @ts-ignore
-      resolution: this.regl.prop('resolution'),
-    };
-
     const generators = createGenerators({
-      defaultUniforms,
-      precision: this.output.precision,
       transformDefinitions: transforms,
     });
 

@@ -1,23 +1,15 @@
-import { DynamicVariable, DynamicVariableFn } from 'regl';
 import type { TransformDefinition } from './glsl/transformDefinitions.js';
-import { Glsl } from './Glsl';
 import {
   ProcessedTransformDefinition,
   TransformDefinitionType,
 } from './glsl/transformDefinitions.js';
-import { Precision } from './HydraRenderer';
+import { Glsl } from './Glsl';
 
 type GeneratorMap = Record<string, () => Glsl>;
 
 export function createGenerators({
-  defaultUniforms,
-  precision,
   transformDefinitions,
 }: {
-  defaultUniforms: {
-    [name: string]: DynamicVariable<any> | DynamicVariableFn<any, any, any>;
-  };
-  precision: Precision;
   transformDefinitions: TransformDefinition[];
 }): GeneratorMap {
   const sourceClass = class extends Glsl {};
@@ -31,8 +23,6 @@ export function createGenerators({
     if (processedTransformDefinition.type === 'src') {
       ret[name] = (...args: any[]) =>
         new sourceClass({
-          defaultUniforms,
-          precision,
           transform: processedTransformDefinition,
           userArgs: args,
         });
@@ -54,7 +44,6 @@ export function createTransformOnPrototype(
   ): Glsl {
     this.transforms.push({
       transform: processedTransformDefinition,
-      precision: this.precision,
       userArgs: args,
     });
 

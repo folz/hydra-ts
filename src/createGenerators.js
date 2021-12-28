@@ -1,5 +1,5 @@
 import { Glsl } from './Glsl';
-export function createGenerators({ defaultUniforms, precision, transformDefinitions, }) {
+export function createGenerators({ transformDefinitions, }) {
     const sourceClass = class extends Glsl {
     };
     const ret = {};
@@ -8,8 +8,6 @@ export function createGenerators({ defaultUniforms, precision, transformDefiniti
         const { name } = processedTransformDefinition;
         if (processedTransformDefinition.type === 'src') {
             ret[name] = (...args) => new sourceClass({
-                defaultUniforms,
-                precision,
                 transform: processedTransformDefinition,
                 userArgs: args,
             });
@@ -24,7 +22,6 @@ export function createTransformOnPrototype(cls, processedTransformDefinition) {
     function addTransformApplicationToInternalChain(...args) {
         this.transforms.push({
             transform: processedTransformDefinition,
-            precision: this.precision,
             userArgs: args,
         });
         return this;

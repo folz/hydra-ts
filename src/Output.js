@@ -1,13 +1,10 @@
+import { compileTransformApplicationsWithContext } from './compiler/compileTransformApplicationsWithContext';
 export class Output {
-    constructor({ regl, precision, width, height }) {
+    constructor({ defaultUniforms, height, precision, regl, width, }) {
         this.pingPongIndex = 0;
         this.regl = regl;
+        this.defaultUniforms = defaultUniforms;
         this.precision = precision;
-        this.positionBuffer = this.regl.buffer([
-            [-2, 0],
-            [0, -2],
-            [2, 2],
-        ]);
         // @ts-ignore
         this.draw = () => { };
         this.vert = `
@@ -20,7 +17,11 @@ export class Output {
     gl_Position = vec4(2.0 * position - 1.0, 0, 1);
   }`;
         this.attributes = {
-            position: this.positionBuffer,
+            position: this.regl.buffer([
+                [-2, 0],
+                [0, -2],
+                [2, 2],
+            ]),
         };
         // for each output, create two fbos for pingponging
         this.fbos = Array(2)
@@ -48,8 +49,14 @@ export class Output {
         const index = this.pingPongIndex ? 0 : 1;
         return this.fbos[index];
     }
-    render(passes) {
-        let pass = passes[0];
+    render(transformApplications) {
+        if (transformApplications.length === 0) {
+            return;
+        }
+        let pass = compileTransformApplicationsWithContext(transformApplications, {
+            defaultUniforms: this.defaultUniforms,
+            precision: this.precision,
+        });
         this.draw = this.regl({
             frag: pass.frag,
             vert: this.vert,

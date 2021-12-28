@@ -1,32 +1,46 @@
-import { Attributes, Buffer, DrawCommand, Framebuffer2D, Regl } from 'regl';
+import {
+  Attributes,
+  DrawCommand,
+  DynamicVariable,
+  DynamicVariableFn,
+  Framebuffer2D,
+  Regl,
+} from 'regl';
 import { Precision } from './HydraRenderer';
-import { CompiledTransform } from './Glsl';
+import { TransformApplication } from './Glsl';
+import { compileTransformApplicationsWithContext } from './compiler/compileTransformApplicationsWithContext';
 
 interface OutputOptions {
-  regl: Output['regl'];
-  precision: Output['precision'];
-  width: number;
+  defaultUniforms: Output['defaultUniforms'];
   height: number;
+  precision: Output['precision'];
+  regl: Output['regl'];
+  width: number;
 }
 
 export class Output {
-  regl: Regl;
-  precision: Precision;
-  positionBuffer: Buffer;
-  draw: DrawCommand;
-  pingPongIndex: number = 0;
-  fbos: Framebuffer2D[];
-  vert: string;
   attributes: Attributes;
+  defaultUniforms?: {
+    [name: string]: DynamicVariable<any> | DynamicVariableFn<any, any, any>;
+  };
+  draw: DrawCommand;
+  fbos: Framebuffer2D[];
+  pingPongIndex: number = 0;
+  precision: Precision;
+  regl: Regl;
+  vert: string;
 
-  constructor({ regl, precision, width, height }: OutputOptions) {
+  constructor({
+    defaultUniforms,
+    height,
+    precision,
+    regl,
+    width,
+  }: OutputOptions) {
     this.regl = regl;
+
+    this.defaultUniforms = defaultUniforms;
     this.precision = precision;
-    this.positionBuffer = this.regl.buffer([
-      [-2, 0],
-      [0, -2],
-      [2, 2],
-    ]);
 
     // @ts-ignore
     this.draw = () => {};
@@ -42,7 +56,11 @@ export class Output {
   }`;
 
     this.attributes = {
-      position: this.positionBuffer,
+      position: this.regl.buffer([
+        [-2, 0],
+        [0, -2],
+        [2, 2],
+      ]),
     };
 
     // for each output, create two fbos for pingponging
@@ -77,8 +95,15 @@ export class Output {
     return this.fbos[index];
   }
 
-  render(passes: CompiledTransform[]) {
-    let pass = passes[0];
+  render(transformApplications: TransformApplication[]) {
+    if (transformApplications.length === 0) {
+      return;
+    }
+
+    let pass = compileTransformApplicationsWithContext(transformApplications, {
+      defaultUniforms: this.defaultUniforms,
+      precision: this.precision,
+    });
 
     this.draw = this.regl({
       frag: pass.frag,

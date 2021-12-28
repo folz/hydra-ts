@@ -2,16 +2,27 @@ import { Precision } from '../HydraRenderer';
 import { compileGlsl } from './compileGlsl';
 import { TypedArg } from './formatArguments';
 import { utilityFunctions } from '../glsl/utilityFunctions';
-import {
-  CompiledTransform,
-  Glsl,
-  TransformApplication,
-} from '../Glsl';
+import { TransformApplication } from '../Glsl';
+import { DynamicVariable, DynamicVariableFn, Texture2D, Uniform } from 'regl';
 
 interface TransformApplicationContext {
-  defaultUniforms: Glsl['defaultUniforms'];
+  defaultUniforms?: {
+    [name: string]: DynamicVariable<any> | DynamicVariableFn<any, any, any>;
+  };
   precision: Precision;
 }
+
+export type CompiledTransform = {
+  frag: string;
+  uniforms: {
+    [name: string]:
+      | string
+      | Uniform
+      | ((context: any, props: any) => number | number[])
+      | Texture2D
+      | undefined;
+  };
+};
 
 export function compileTransformApplicationsWithContext(
   transformApplications: TransformApplication[],
