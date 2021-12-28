@@ -8,30 +8,32 @@ import { Glsl } from './Glsl';
 type GeneratorMap = Record<string, () => Glsl>;
 
 export function createGenerators({
-  transformDefinitions,
+  generatorTransforms,
+  modifierTransforms,
 }: {
-  transformDefinitions: TransformDefinition[];
+  generatorTransforms: TransformDefinition[];
+  modifierTransforms: TransformDefinition[];
 }): GeneratorMap {
   const sourceClass = class extends Glsl {};
-  const ret: GeneratorMap = {};
+  const generatorMap: GeneratorMap = {};
 
-  for (const transformDefinition of transformDefinitions) {
-    const processedTransformDefinition = processGlsl(transformDefinition);
+  for (const transform of generatorTransforms) {
+    const processed = processGlsl(transform);
 
-    const { name } = processedTransformDefinition;
-
-    if (processedTransformDefinition.type === 'src') {
-      ret[name] = (...args: unknown[]) =>
-        new sourceClass({
-          transform: processedTransformDefinition,
-          userArgs: args,
-        });
-    } else {
-      createTransformOnPrototype(sourceClass, processedTransformDefinition);
-    }
+    generatorMap[processed.name] = (...args: unknown[]) =>
+      new sourceClass({
+        transform: processed,
+        userArgs: args,
+      });
   }
 
-  return ret;
+  for (const transform of modifierTransforms) {
+    const processed = processGlsl(transform);
+
+    createTransformOnPrototype(sourceClass, processed);
+  }
+
+  return generatorMap;
 }
 
 export function createTransformOnPrototype(

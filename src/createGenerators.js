@@ -1,22 +1,20 @@
 import { Glsl } from './Glsl';
-export function createGenerators({ transformDefinitions, }) {
+export function createGenerators({ generatorTransforms, modifierTransforms, }) {
     const sourceClass = class extends Glsl {
     };
-    const ret = {};
-    for (const transformDefinition of transformDefinitions) {
-        const processedTransformDefinition = processGlsl(transformDefinition);
-        const { name } = processedTransformDefinition;
-        if (processedTransformDefinition.type === 'src') {
-            ret[name] = (...args) => new sourceClass({
-                transform: processedTransformDefinition,
-                userArgs: args,
-            });
-        }
-        else {
-            createTransformOnPrototype(sourceClass, processedTransformDefinition);
-        }
+    const generatorMap = {};
+    for (const transform of generatorTransforms) {
+        const processed = processGlsl(transform);
+        generatorMap[processed.name] = (...args) => new sourceClass({
+            transform: processed,
+            userArgs: args,
+        });
     }
-    return ret;
+    for (const transform of modifierTransforms) {
+        const processed = processGlsl(transform);
+        createTransformOnPrototype(sourceClass, processed);
+    }
+    return generatorMap;
 }
 export function createTransformOnPrototype(cls, processedTransformDefinition) {
     function addTransformApplicationToInternalChain(...args) {

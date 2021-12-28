@@ -30,4 +30,5 @@ export interface TransformDefinition {
 export interface ProcessedTransformDefinition extends TransformDefinition {
     processed: true;
 }
-export declare const transforms: TransformDefinition[];
+export declare const generatorTransforms: TransformDefinition[];
+export declare const modifierTransforms: TransformDefinition[];

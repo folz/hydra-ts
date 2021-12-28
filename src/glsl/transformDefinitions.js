@@ -67,7 +67,7 @@ const types = {
 }
 
 */
-export const transforms = [
+export const generatorTransforms = [
     {
         name: 'noise',
         type: 'src',
@@ -236,6 +236,8 @@ export const transforms = [
         ],
         glsl: `   return vec4(r, g, b, a);`,
     },
+];
+export const modifierTransforms = [
     {
         name: 'rotate',
         type: 'coord',
