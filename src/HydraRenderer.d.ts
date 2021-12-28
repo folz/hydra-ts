@@ -2,6 +2,7 @@ import { Output } from './Output';
 import { Loop } from './Loop';
 import { Source } from './Source';
 import { DrawCommand, Regl } from 'regl';
+import { Glsl } from './Glsl';
 export declare type Precision = 'lowp' | 'mediump' | 'highp';
 export interface Synth {
     time: number;
@@ -16,7 +17,9 @@ export interface Synth {
     render: any;
     setResolution: any;
     hush: () => void;
-    [name: string]: any;
+    sources: Source[];
+    outputs: Output[];
+    generators: Record<string, (...args: unknown[]) => Glsl>;
 }
 interface HydraRendererOptions {
     width?: HydraRenderer['width'];
@@ -34,8 +37,6 @@ export declare class HydraRenderer {
     precision: Precision;
     regl: Regl;
     renderFbo: DrawCommand;
-    s: Source[];
-    o: Output[];
     output: Output;
     loop: Loop;
     constructor({ width, height, numSources, numOutputs, precision, regl, }: HydraRendererOptions);

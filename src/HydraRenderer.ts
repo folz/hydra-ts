@@ -5,6 +5,7 @@ import { DrawCommand, Regl } from 'regl';
 
 import { createGenerators } from './createGenerators';
 import { transforms } from './glsl/transformDefinitions';
+import { Glsl } from './Glsl';
 
 export type Precision = 'lowp' | 'mediump' | 'highp';
 
@@ -21,7 +22,9 @@ export interface Synth {
   render: any;
   setResolution: any;
   hush: () => void;
-  [name: string]: any;
+  sources: Source[];
+  outputs: Output[];
+  generators: Record<string, (...args: unknown[]) => Glsl>;
 }
 
 interface HydraRendererOptions {
@@ -42,8 +45,6 @@ export class HydraRenderer {
   precision: Precision;
   regl: Regl;
   renderFbo: DrawCommand;
-  s: Source[] = [];
-  o: Output[] = [];
   output: Output;
   loop: Loop;
 
@@ -74,6 +75,9 @@ export class HydraRenderer {
       render: this.render,
       setResolution: this.setResolution,
       hush: this.hush,
+      sources: [],
+      outputs: [],
+      generators: {},
     };
 
     this.timeSinceLastUpdate = 0;
@@ -135,8 +139,7 @@ export class HydraRenderer {
         width: this.width,
         height: this.height,
       });
-      this.synth[`s${i}`] = s;
-      this.s.push(s);
+      this.synth.sources.push(s);
     }
 
     for (let i = 0; i < numOutputs; i++) {
@@ -147,28 +150,22 @@ export class HydraRenderer {
         precision: this.precision,
         defaultUniforms,
       });
-      this.synth[`o${i}`] = o;
-      this.o.push(o);
+      this.synth.outputs.push(o);
     }
 
-    this.output = this.o[0];
+    this.output = this.synth.outputs[0];
 
-    const generators = createGenerators({
+    this.synth.generators = createGenerators({
       transformDefinitions: transforms,
     });
-
-    this.synth = {
-      ...this.synth,
-      ...generators,
-    };
 
     this.loop = new Loop(this.tick);
   }
 
   hush = () => {
-    this.o.forEach((output) => {
+    this.synth.outputs.forEach((output) => {
       // TODO - should reset output directly without relying on synth
-      this.synth.solid(1, 1, 1, 0).out(output);
+      this.synth.generators.solid(1, 1, 1, 0).out(output);
     });
   };
 
@@ -179,11 +176,11 @@ export class HydraRenderer {
     this.width = width;
     this.height = height;
 
-    this.s.forEach((source) => {
+    this.synth.sources.forEach((source) => {
       source.resize(width, height);
     });
 
-    this.o.forEach((output) => {
+    this.synth.outputs.forEach((output) => {
       output.resize(width, height);
     });
 
@@ -191,7 +188,7 @@ export class HydraRenderer {
   };
 
   render = (output: Output) => {
-    this.output = output ?? this.o[0];
+    this.output = output ?? this.synth.outputs[0];
   };
 
   // dt in ms
@@ -203,11 +200,11 @@ export class HydraRenderer {
     if (!this.synth.fps || this.timeSinceLastUpdate >= 1000 / this.synth.fps) {
       this.synth.stats.fps = Math.ceil(1000 / this.timeSinceLastUpdate);
 
-      this.s.forEach((source) => {
+      this.synth.sources.forEach((source) => {
         source.tick(this.synth.time);
       });
 
-      this.o.forEach((output) => {
+      this.synth.outputs.forEach((output) => {
         output.tick({
           time: this.synth.time,
           bpm: this.synth.bpm,
