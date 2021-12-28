@@ -19,8 +19,8 @@ export interface Synth {
     fps: number;
   };
   speed: number;
-  render: any;
-  setResolution: any;
+  render: (output?: Output) => void;
+  setResolution: (width: number, height: number) => void;
   hush: () => void;
   sources: Source[];
   outputs: Output[];
@@ -187,7 +187,7 @@ export class HydraRenderer {
     this.regl._refresh();
   };
 
-  render = (output: Output) => {
+  render = (output?: Output) => {
     this.output = output ?? this.synth.outputs[0];
   };
 

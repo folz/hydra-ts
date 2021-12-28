@@ -21,7 +21,7 @@ export function createGenerators({
     const { name } = processedTransformDefinition;
 
     if (processedTransformDefinition.type === 'src') {
-      ret[name] = (...args: any[]) =>
+      ret[name] = (...args: unknown[]) =>
         new sourceClass({
           transform: processedTransformDefinition,
           userArgs: args,
@@ -40,7 +40,7 @@ export function createTransformOnPrototype(
 ) {
   function addTransformApplicationToInternalChain(
     this: Glsl,
-    ...args: any[]
+    ...args: unknown[]
   ): Glsl {
     this.transforms.push({
       transform: processedTransformDefinition,

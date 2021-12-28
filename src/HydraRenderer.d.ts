@@ -14,8 +14,8 @@ export interface Synth {
         fps: number;
     };
     speed: number;
-    render: any;
-    setResolution: any;
+    render: (output?: Output) => void;
+    setResolution: (width: number, height: number) => void;
     hush: () => void;
     sources: Source[];
     outputs: Output[];
@@ -42,7 +42,7 @@ export declare class HydraRenderer {
     constructor({ width, height, numSources, numOutputs, precision, regl, }: HydraRendererOptions);
     hush: () => void;
     setResolution: (width: number, height: number) => void;
-    render: (output: Output) => void;
+    render: (output?: Output | undefined) => void;
     tick: (dt: number) => void;
 }
 export {};
