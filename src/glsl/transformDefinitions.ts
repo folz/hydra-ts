@@ -77,7 +77,7 @@ export type TransformDefinitionType =
   | 'combine'
   | 'combineCoord';
 
-type TransformDefinitionInputTypeFloat = {
+export type TransformDefinitionInputTypeFloat = {
   type: 'float';
   default?:
     | number
@@ -85,17 +85,17 @@ type TransformDefinitionInputTypeFloat = {
     | ((context: any, props: any) => number | number[]);
 };
 
-type TransformDefinitionInputTypeSampler2D = {
+export type TransformDefinitionInputTypeSampler2D = {
   type: 'sampler2D';
   default?: Texture2D | number;
 };
 
-type TransformDefinitionInputTypeVec4 = {
+export type TransformDefinitionInputTypeVec4 = {
   type: 'vec4';
   default?: string | number;
 };
 
-type TransformDefinitionInputTypeTexture = {
+export type TransformDefinitionInputTypeTexture = {
   type: 'texture';
   default?: Texture2D;
 };

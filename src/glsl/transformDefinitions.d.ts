@@ -1,18 +1,18 @@
 import { Texture2D } from 'regl';
 export declare type TransformDefinitionType = 'src' | 'coord' | 'color' | 'combine' | 'combineCoord';
-declare type TransformDefinitionInputTypeFloat = {
+export declare type TransformDefinitionInputTypeFloat = {
     type: 'float';
     default?: number | number[] | ((context: any, props: any) => number | number[]);
 };
-declare type TransformDefinitionInputTypeSampler2D = {
+export declare type TransformDefinitionInputTypeSampler2D = {
     type: 'sampler2D';
     default?: Texture2D | number;
 };
-declare type TransformDefinitionInputTypeVec4 = {
+export declare type TransformDefinitionInputTypeVec4 = {
     type: 'vec4';
     default?: string | number;
 };
-declare type TransformDefinitionInputTypeTexture = {
+export declare type TransformDefinitionInputTypeTexture = {
     type: 'texture';
     default?: Texture2D;
 };
@@ -31,4 +31,3 @@ export interface ProcessedTransformDefinition extends TransformDefinition {
     processed: true;
 }
 export declare const transforms: TransformDefinition[];
-export {};
