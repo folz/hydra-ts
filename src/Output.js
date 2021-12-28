@@ -1,4 +1,4 @@
-import { compileTransformApplicationsWithContext } from './compiler/compileTransformApplicationsWithContext';
+import { compileWithContext } from './compiler/compileWithContext';
 export class Output {
     constructor({ defaultUniforms, height, precision, regl, width, }) {
         this.pingPongIndex = 0;
@@ -53,7 +53,7 @@ export class Output {
         if (transformApplications.length === 0) {
             return;
         }
-        let pass = compileTransformApplicationsWithContext(transformApplications, {
+        let pass = compileWithContext(transformApplications, {
             defaultUniforms: this.defaultUniforms,
             precision: this.precision,
         });

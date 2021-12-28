@@ -1,6 +1,6 @@
-import { compileGlsl } from './compileGlsl';
 import { utilityFunctions } from '../glsl/utilityFunctions';
-export function compileTransformApplicationsWithContext(transformApplications, context) {
+import { generateGlsl } from './generateGlsl';
+export function compileWithContext(transformApplications, context) {
     const shaderParams = compileGlsl(transformApplications);
     const uniforms = {};
     shaderParams.uniforms.forEach((uniform) => {
@@ -50,4 +50,18 @@ export function compileTransformApplicationsWithContext(transformApplications, c
         frag: frag,
         uniforms: Object.assign(Object.assign({}, context.defaultUniforms), uniforms),
     };
+}
+export function compileGlsl(transformApplications) {
+    const shaderParams = {
+        uniforms: [],
+        transformApplications: [],
+        fragColor: '',
+    };
+    // Note: generateGlsl() also mutates shaderParams.transformApplications
+    shaderParams.fragColor = generateGlsl(transformApplications, shaderParams)('st');
+    // remove uniforms with duplicate names
+    let uniforms = {};
+    shaderParams.uniforms.forEach((uniform) => (uniforms[uniform.name] = uniform));
+    shaderParams.uniforms = Object.values(uniforms);
+    return shaderParams;
 }

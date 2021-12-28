@@ -1,11 +1,11 @@
 import { Precision } from '../HydraRenderer';
-import { compileGlsl } from './compileGlsl';
 import { TypedArg } from './formatArguments';
 import { utilityFunctions } from '../glsl/utilityFunctions';
 import { TransformApplication } from '../Glsl';
 import { DynamicVariable, DynamicVariableFn, Texture2D, Uniform } from 'regl';
+import { generateGlsl } from './generateGlsl';
 
-interface TransformApplicationContext {
+export interface TransformApplicationContext {
   defaultUniforms?: {
     [name: string]: DynamicVariable<any> | DynamicVariableFn<any, any, any>;
   };
@@ -24,7 +24,13 @@ export type CompiledTransform = {
   };
 };
 
-export function compileTransformApplicationsWithContext(
+export interface ShaderParams {
+  uniforms: TypedArg[];
+  transformApplications: TransformApplication[];
+  fragColor: string;
+}
+
+export function compileWithContext(
   transformApplications: TransformApplication[],
   context: TransformApplicationContext,
 ): CompiledTransform {
@@ -80,4 +86,29 @@ export function compileTransformApplicationsWithContext(
     frag: frag,
     uniforms: { ...context.defaultUniforms, ...uniforms },
   };
+}
+
+export function compileGlsl(
+  transformApplications: TransformApplication[],
+): ShaderParams {
+  const shaderParams: ShaderParams = {
+    uniforms: [],
+    transformApplications: [],
+    fragColor: '',
+  };
+
+  // Note: generateGlsl() also mutates shaderParams.transformApplications
+  shaderParams.fragColor = generateGlsl(
+    transformApplications,
+    shaderParams,
+  )('st');
+
+  // remove uniforms with duplicate names
+  let uniforms: Record<string, TypedArg> = {};
+  shaderParams.uniforms.forEach(
+    (uniform) => (uniforms[uniform.name] = uniform),
+  );
+  shaderParams.uniforms = Object.values(uniforms);
+
+  return shaderParams;
 }

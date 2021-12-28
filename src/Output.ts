@@ -8,7 +8,7 @@ import {
 } from 'regl';
 import { Precision } from './HydraRenderer';
 import { TransformApplication } from './Glsl';
-import { compileTransformApplicationsWithContext } from './compiler/compileTransformApplicationsWithContext';
+import { compileWithContext } from './compiler/compileWithContext';
 
 interface OutputOptions {
   defaultUniforms: Output['defaultUniforms'];
@@ -100,7 +100,7 @@ export class Output {
       return;
     }
 
-    let pass = compileTransformApplicationsWithContext(transformApplications, {
+    let pass = compileWithContext(transformApplications, {
       defaultUniforms: this.defaultUniforms,
       precision: this.precision,
     });
