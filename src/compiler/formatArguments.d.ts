@@ -1,4 +1,4 @@
-import { TransformApplication } from '../GlslSource';
+import { TransformApplication } from '../Glsl';
 import { TransformDefinitionInput } from '../glsl/transformDefinitions';
 export interface TypedArg {
     value: TransformDefinitionInput['default'];

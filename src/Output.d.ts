@@ -1,6 +1,6 @@
 import { Attributes, Buffer, DrawCommand, Framebuffer2D, Regl } from 'regl';
 import { Precision } from './HydraRenderer';
-import { CompiledTransform } from './GlslSource';
+import { CompiledTransform } from './Glsl';
 interface OutputOptions {
     regl: Output['regl'];
     precision: Output['precision'];

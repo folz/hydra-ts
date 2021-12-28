@@ -4,12 +4,12 @@ import { TypedArg } from './formatArguments';
 import { utilityFunctions } from '../glsl/utilityFunctions';
 import {
   CompiledTransform,
-  GlslSource,
+  Glsl,
   TransformApplication,
-} from '../GlslSource';
+} from '../Glsl';
 
 interface TransformApplicationContext {
-  defaultUniforms: GlslSource['defaultUniforms'];
+  defaultUniforms: Glsl['defaultUniforms'];
   precision: Precision;
 }
 

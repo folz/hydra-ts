@@ -1,5 +1,5 @@
 import { compileTransformApplicationsWithContext } from './compiler/compileTransformApplicationsWithContext';
-export class GlslSource {
+export class Glsl {
     constructor(transformApplication) {
         this.transforms = [];
         this.defaultUniforms = transformApplication.defaultUniforms;

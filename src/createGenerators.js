@@ -1,6 +1,6 @@
-import { GlslSource } from './GlslSource';
+import { Glsl } from './Glsl';
 export function createGenerators({ defaultUniforms, precision, transformDefinitions, }) {
-    const sourceClass = class extends GlslSource {
+    const sourceClass = class extends Glsl {
     };
     const ret = {};
     for (const transformDefinition of transformDefinitions) {

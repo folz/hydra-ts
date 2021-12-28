@@ -1,4 +1,4 @@
-import { GlslSource } from '../GlslSource';
+import { Glsl } from '../Glsl';
 import arrayUtils from '../lib/array-utils';
 import { Source } from '../Source';
 import { Output } from '../Output';
@@ -49,7 +49,7 @@ export function formatArguments(transformApplication, startIndex) {
                 }
             }
         }
-        if (value instanceof GlslSource) {
+        if (value instanceof Glsl) {
             // GLSLSource
             isUniform = false;
         }

@@ -1,4 +1,4 @@
-import { GlslSource, TransformApplication } from '../GlslSource';
+import { Glsl, TransformApplication } from '../Glsl';
 import arrayUtils from '../lib/array-utils';
 import { TransformDefinitionInput } from '../glsl/transformDefinitions';
 import { Source } from '../Source';
@@ -66,7 +66,7 @@ export function formatArguments(
       }
     }
 
-    if (value instanceof GlslSource) {
+    if (value instanceof Glsl) {
       // GLSLSource
 
       isUniform = false;

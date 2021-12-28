@@ -1,7 +1,7 @@
 import { Precision } from '../HydraRenderer';
-import { CompiledTransform, GlslSource, TransformApplication } from '../GlslSource';
+import { CompiledTransform, Glsl, TransformApplication } from '../Glsl';
 interface TransformApplicationContext {
-    defaultUniforms: GlslSource['defaultUniforms'];
+    defaultUniforms: Glsl['defaultUniforms'];
     precision: Precision;
 }
 export declare function compileTransformApplicationsWithContext(transformApplications: TransformApplication[], context: TransformApplicationContext): CompiledTransform;

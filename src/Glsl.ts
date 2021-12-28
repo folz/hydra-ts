@@ -5,7 +5,7 @@ import { Precision } from './HydraRenderer';
 import { compileTransformApplicationsWithContext } from './compiler/compileTransformApplicationsWithContext';
 
 export interface TransformApplication {
-  defaultUniforms?: GlslSource['defaultUniforms'];
+  defaultUniforms?: Glsl['defaultUniforms'];
   precision: Precision;
   transform: ProcessedTransformDefinition;
   userArgs: unknown[];
@@ -23,7 +23,7 @@ export type CompiledTransform = {
   };
 };
 
-export class GlslSource {
+export class Glsl {
   defaultUniforms?: {
     [name: string]: DynamicVariable<any> | DynamicVariableFn<any, any, any>;
   };

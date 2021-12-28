@@ -1,4 +1,4 @@
-import { TransformApplication } from '../GlslSource';
+import { TransformApplication } from '../Glsl';
 import { generateGlsl } from './generateGlsl';
 import { TypedArg } from './formatArguments';
 
