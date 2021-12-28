@@ -2,8 +2,6 @@ import REGL from 'regl';
 import tinykeys from 'tinykeys';
 import Hydra from '../index';
 import ArrayUtils from '../src/lib/array-utils';
-// @ts-ignore
-import jelly from './image3A3853_Glitch.jpg';
 import './style.css';
 const WIDTH = 1080;
 const HEIGHT = 1080;
@@ -21,25 +19,21 @@ const hydra = new Hydra({
     regl,
 });
 hydra.loop.start();
-const { osc, src, solid, o0, o1, s0, render } = hydra.synth;
-s0.initImage(jelly);
-// prettier-ignore
-const shader = osc(12, 0.1, Math.PI / 2)
-    .do(t.Rotate())
-    .scrollX(0.01, 0.01)
-    .scrollY(0.01, 0.01)
-    .do(t.Posterize(12 * Math.PI), t.Invert())
-    .pixelate(12 * Math.PI)
-    .koch(1, 4)
-    .koch(0.5, 5)
-    .modulateRepeat(osc(2))
-    .rotate((Math.PI * 5) / 6);
+const { generators, sources, outputs, render } = hydra.synth;
+const [s0, s1, s2, s3] = sources;
+const [o0, o1, o2, o3] = outputs;
+const { src, osc, gradient, shape, voronoi, noise } = generators;
+window.hydra = hydra;
+window.src = src;
+const shader = osc(() => 10 * Math.PI)
+    .add(o0, 0.5)
+    .mult(src(o0).rotate(Math.PI / 2), 0.5);
 shader.out(o0);
 render(o0);
-const debugLog = document.createElement('pre');
-const frag = shader.glsl()[0].frag;
-debugLog.innerText = frag;
-document.body.appendChild(debugLog);
+// const debugLog = document.createElement('pre');
+// const frag = shader.glsl()[0].frag;
+// debugLog.innerText = frag;
+// document.body.appendChild(debugLog);
 tinykeys(window, {
     'Alt+Space': (event) => {
         hydra.loop.toggle();
