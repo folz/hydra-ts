@@ -34,8 +34,8 @@ to showcase hydra-synth. I've also found that it generally assumes a single runn
 environment.
 
 These things have caused unexpected behavior for me when I used hydra-synth outside of hydra-the-editor, or in multiple
-places on the same page where I wanted each place to be self-contained from the others. While the hydra community has
-shared workarounds to many of these behaviors, I wanted to create a fork which directly fixed root causes so that
+places on the same page where I wanted each place to be self-contained from the others. Although the hydra community
+has found workarounds to many of these behaviors, I wanted to create a fork which directly fixes root causes so that
 workarounds are no longer needed.
 
 To address these, hydra-ts has rewritten internals to avoid globals and mutable state, removed non-shader-compilation
