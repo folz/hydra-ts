@@ -65,7 +65,7 @@
       ".ts"
     ],
     "setupFilesAfterEnv": [
-      "./test/jest.setup.js"
+      "./jest.setup.js"
     ],
     "testEnvironment": "jest-environment-jsdom-global"
   }
