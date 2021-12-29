@@ -1,7 +1,7 @@
 import { Precision } from '../HydraRenderer';
 import { TypedArg } from './formatArguments';
 import { utilityFunctions } from '../glsl/utilityFunctions';
-import { TransformApplication } from '../Glsl';
+import { TransformApplication } from '../glsl/Glsl';
 import { DynamicVariable, DynamicVariableFn, Texture2D, Uniform } from 'regl';
 import { generateGlsl } from './generateGlsl';
 

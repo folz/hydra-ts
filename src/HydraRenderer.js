@@ -1,7 +1,7 @@
 import { Output } from './Output';
 import { Loop } from './Loop';
 import { Source } from './Source';
-import { createGenerators } from './createGenerators';
+import { createGenerators } from './glsl/createGenerators';
 import { generatorTransforms, modifierTransforms, } from './glsl/transformDefinitions';
 // to do: add ability to pass in certain uniforms and transforms
 export class HydraRenderer {

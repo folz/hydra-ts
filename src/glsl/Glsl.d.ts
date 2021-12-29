@@ -1,5 +1,5 @@
-import { ProcessedTransformDefinition } from './glsl/transformDefinitions';
-import { Output } from './Output';
+import { ProcessedTransformDefinition } from './transformDefinitions';
+import { Output } from '../Output';
 export interface TransformApplication {
     transform: ProcessedTransformDefinition;
     userArgs: unknown[];

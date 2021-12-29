@@ -1,6 +1,6 @@
 import { Attributes, DrawCommand, DynamicVariable, DynamicVariableFn, Framebuffer2D, Regl } from 'regl';
 import { Precision } from './HydraRenderer';
-import { TransformApplication } from './Glsl';
+import { TransformApplication } from './glsl/Glsl';
 interface OutputOptions {
     defaultUniforms: Output['defaultUniforms'];
     height: number;

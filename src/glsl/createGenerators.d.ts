@@ -1,5 +1,4 @@
-import type { TransformDefinition } from './glsl/transformDefinitions.js';
-import { ProcessedTransformDefinition } from './glsl/transformDefinitions.js';
+import { ProcessedTransformDefinition, TransformDefinition } from './transformDefinitions.js';
 import { Glsl } from './Glsl';
 declare type GeneratorMap = Record<string, () => Glsl>;
 export declare function createGenerators({ generatorTransforms, modifierTransforms, }: {

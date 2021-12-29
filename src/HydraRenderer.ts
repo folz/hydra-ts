@@ -2,13 +2,12 @@ import { Output } from './Output';
 import { Loop } from './Loop';
 import { Source } from './Source';
 import { DrawCommand, Regl } from 'regl';
-
-import { createGenerators } from './createGenerators';
+import { createGenerators } from './glsl/createGenerators';
 import {
   generatorTransforms,
   modifierTransforms,
 } from './glsl/transformDefinitions';
-import { Glsl } from './Glsl';
+import { Glsl } from './glsl/Glsl';
 
 export type Precision = 'lowp' | 'mediump' | 'highp';
 

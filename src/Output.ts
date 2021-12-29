@@ -7,7 +7,7 @@ import {
   Regl,
 } from 'regl';
 import { Precision } from './HydraRenderer';
-import { TransformApplication } from './Glsl';
+import { TransformApplication } from './glsl/Glsl';
 import { compileWithContext } from './compiler/compileWithContext';
 
 interface OutputOptions {

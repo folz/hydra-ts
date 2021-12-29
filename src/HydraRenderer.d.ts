@@ -2,7 +2,7 @@ import { Output } from './Output';
 import { Loop } from './Loop';
 import { Source } from './Source';
 import { DrawCommand, Regl } from 'regl';
-import { Glsl } from './Glsl';
+import { Glsl } from './glsl/Glsl';
 export declare type Precision = 'lowp' | 'mediump' | 'highp';
 export interface Synth {
     time: number;

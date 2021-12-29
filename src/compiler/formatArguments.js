@@ -1,4 +1,4 @@
-import { Glsl } from '../Glsl';
+import { Glsl } from '../glsl/Glsl';
 import arrayUtils from '../lib/array-utils';
 import { Source } from '../Source';
 import { Output } from '../Output';

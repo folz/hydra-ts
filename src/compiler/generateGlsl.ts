@@ -1,5 +1,5 @@
 import { Texture2D } from 'regl';
-import { TransformApplication } from '../Glsl';
+import { TransformApplication } from '../glsl/Glsl';
 import { formatArguments, TypedArg } from './formatArguments';
 import { ShaderParams } from './compileWithContext';
 

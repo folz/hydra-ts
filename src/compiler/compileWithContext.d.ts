@@ -1,6 +1,6 @@
 import { Precision } from '../HydraRenderer';
 import { TypedArg } from './formatArguments';
-import { TransformApplication } from '../Glsl';
+import { TransformApplication } from '../glsl/Glsl';
 import { DynamicVariable, DynamicVariableFn, Texture2D, Uniform } from 'regl';
 export interface TransformApplicationContext {
     defaultUniforms?: {
