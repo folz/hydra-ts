@@ -1,0 +1,1 @@
+export declare const gradient: () => import("./Glsl").Glsl, noise: () => import("./Glsl").Glsl, osc: () => import("./Glsl").Glsl, shape: () => import("./Glsl").Glsl, solid: () => import("./Glsl").Glsl, src: () => import("./Glsl").Glsl, voronoi: () => import("./Glsl").Glsl;
