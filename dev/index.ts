@@ -32,16 +32,14 @@ const [s0, s1, s2, s3] = sources;
 const [o0, o1, o2, o3] = outputs;
 const { src, osc, gradient, shape, voronoi, noise } = generators;
 
-window.hydra = hydra;
-window.src = src;
-
-const shader = osc(() => 10 * Math.PI)
+osc(() => 4 * Math.PI)
   .add(o0, 0.5)
-  .mult(src(o0).rotate(Math.PI / 2), 0.5);
+  .mult(src(o0).rotate(Math.PI / 2), 0.6)
+  .out(o0);
 
-shader.out(o0);
+src(o0).scrollX(0.1, -0.1).scrollY(0.1, -0.1).out(o1);
 
-render(o0);
+render(o1);
 
 // const debugLog = document.createElement('pre');
 // const frag = shader.glsl()[0].frag;
