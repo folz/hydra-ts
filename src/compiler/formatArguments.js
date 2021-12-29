@@ -2,6 +2,7 @@ import { Glsl } from '../glsl/Glsl';
 import arrayUtils from '../lib/array-utils';
 import { Source } from '../Source';
 import { Output } from '../Output';
+import { src } from '../glsl/index';
 export function formatArguments(transformApplication, startIndex) {
     const { transform, userArgs } = transformApplication;
     const { inputs } = transform;
@@ -69,8 +70,7 @@ export function formatArguments(transformApplication, startIndex) {
         }
         else if (value instanceof Source || value instanceof Output) {
             const ref = value;
-            // @ts-ignore
-            value = window.src(ref);
+            value = src(ref);
             isUniform = false;
         }
         // add tp uniform array if is a function that will pass in a different value on each render frame,

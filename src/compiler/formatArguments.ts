@@ -3,6 +3,7 @@ import arrayUtils from '../lib/array-utils';
 import { TransformDefinitionInput } from '../glsl/transformDefinitions';
 import { Source } from '../Source';
 import { Output } from '../Output';
+import { src } from '../glsl/index';
 
 export interface TypedArg {
   value: TransformDefinitionInput['default'];
@@ -87,8 +88,7 @@ export function formatArguments(
     } else if (value instanceof Source || value instanceof Output) {
       const ref = value;
 
-      // @ts-ignore
-      value = window.src(ref);
+      value = src(ref);
       isUniform = false;
     }
 
