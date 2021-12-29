@@ -573,52 +573,6 @@ export const modifierTransforms = [
    return fract(st);`,
   },
   {
-    name: 'koch',
-    type: 'coord',
-    inputs: [
-      {
-        type: 'float',
-        name: 'scale',
-        default: 1,
-      },
-      {
-        type: 'float',
-        name: 'iters',
-        default: 5,
-      },
-    ],
-    glsl: `vec2 uv = _st - 0.5;
-    
-    uv *= 1.5 * scale;
-    
-    uv.y += tan((5.0 / 6.0) * 3.14159) * 0.5;
-    uv.x = abs(uv.x);
-    
-    uv = _rotate(uv, vec2(0.5, 0.0), 5.0 / 6.0, true);
-    
-    float rescaled = 1.0;
-    uv.x += 0.5;
-    for (int i = 0; i < 12; i++) {
-        if (i >= int(iters)) {
-          break;
-        }
-        
-        uv *= 3.0;
-        rescaled *= 3.0;
-        uv.x -= 1.5;
-        
-        uv.x = abs(uv.x);
-        
-        uv.x -= 0.5;
-        uv = _rotate(uv, vec2(0.0, 0.0), 2.0 / 3.0, false);
-    }
-    
-    uv /= rescaled;
-    
-    return uv;
-`,
-  },
-  {
     name: 'kaleid',
     type: 'coord',
     inputs: [

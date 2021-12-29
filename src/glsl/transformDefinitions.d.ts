@@ -322,19 +322,6 @@ export declare const modifierTransforms: readonly [{
     }];
     readonly glsl: "   vec2 st = _st * vec2(reps, 1.0);\n   //  float f =  mod(_st.y,2.0);\n   st.x += step(1., mod(st.y,2.0)) + color.r * offset;\n   return fract(st);";
 }, {
-    readonly name: "koch";
-    readonly type: "coord";
-    readonly inputs: readonly [{
-        readonly type: "float";
-        readonly name: "scale";
-        readonly default: 1;
-    }, {
-        readonly type: "float";
-        readonly name: "iters";
-        readonly default: 5;
-    }];
-    readonly glsl: "vec2 uv = _st - 0.5;\n    \n    uv *= 1.5 * scale;\n    \n    uv.y += tan((5.0 / 6.0) * 3.14159) * 0.5;\n    uv.x = abs(uv.x);\n    \n    uv = _rotate(uv, vec2(0.5, 0.0), 5.0 / 6.0, true);\n    \n    float rescaled = 1.0;\n    uv.x += 0.5;\n    for (int i = 0; i < 12; i++) {\n        if (i >= int(iters)) {\n          break;\n        }\n        \n        uv *= 3.0;\n        rescaled *= 3.0;\n        uv.x -= 1.5;\n        \n        uv.x = abs(uv.x);\n        \n        uv.x -= 0.5;\n        uv = _rotate(uv, vec2(0.0, 0.0), 2.0 / 3.0, false);\n    }\n    \n    uv /= rescaled;\n    \n    return uv;\n";
-}, {
     readonly name: "kaleid";
     readonly type: "coord";
     readonly inputs: readonly [{
