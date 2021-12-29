@@ -12,11 +12,7 @@ export declare type TransformDefinitionInputTypeVec4 = {
     type: 'vec4';
     default?: string | number;
 };
-export declare type TransformDefinitionInputTypeTexture = {
-    type: 'texture';
-    default?: Texture2D;
-};
-export declare type TransformDefinitionInputUnion = TransformDefinitionInputTypeFloat | TransformDefinitionInputTypeSampler2D | TransformDefinitionInputTypeVec4 | TransformDefinitionInputTypeTexture;
+export declare type TransformDefinitionInputUnion = TransformDefinitionInputTypeFloat | TransformDefinitionInputTypeSampler2D | TransformDefinitionInputTypeVec4;
 export declare type TransformDefinitionInput = TransformDefinitionInputUnion & {
     name: string;
     vecLen?: number;

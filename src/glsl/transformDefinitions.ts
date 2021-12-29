@@ -95,16 +95,10 @@ export type TransformDefinitionInputTypeVec4 = {
   default?: string | number;
 };
 
-export type TransformDefinitionInputTypeTexture = {
-  type: 'texture';
-  default?: Texture2D;
-};
-
 export type TransformDefinitionInputUnion =
   | TransformDefinitionInputTypeFloat
   | TransformDefinitionInputTypeSampler2D
-  | TransformDefinitionInputTypeVec4
-  | TransformDefinitionInputTypeTexture;
+  | TransformDefinitionInputTypeVec4;
 
 export type TransformDefinitionInput = TransformDefinitionInputUnion & {
   name: string;

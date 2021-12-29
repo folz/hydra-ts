@@ -10,14 +10,8 @@ export function compileWithContext(transformApplications, context) {
   precision ${context.precision} float;
   ${Object.values(shaderParams.uniforms)
         .map((uniform) => {
-        let type = uniform.type;
-        switch (uniform.type) {
-            case 'texture':
-                type = 'sampler2D';
-                break;
-        }
         return `
-      uniform ${type} ${uniform.name};`;
+      uniform ${uniform.type} ${uniform.name};`;
     })
         .join('')}
   uniform float time;
