@@ -28,13 +28,13 @@ const hydra = new Hydra({
 
 hydra.loop.start();
 
-const { sources, outputs, render } = hydra.synth;
+const { sources, outputs, render } = hydra;
 const [s0, s1, s2, s3] = sources;
 const [o0, o1, o2, o3] = outputs;
 const { src, osc, gradient, shape, voronoi, noise } = generators;
 
 osc(() => 4 * Math.PI)
-  .add(o0, 0.5)
+  .add(o0, [0, 0.5].smooth())
   .mult(src(o0).rotate(Math.PI / 2), 0.6)
   .out(o0);
 

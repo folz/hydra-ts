@@ -5,8 +5,10 @@ import { solid } from './glsl';
 // to do: add ability to pass in certain uniforms and transforms
 export class HydraRenderer {
     constructor({ width = 1280, height = 720, numSources = 4, numOutputs = 4, precision = 'mediump', regl, }) {
+        this.sources = [];
+        this.outputs = [];
         this.hush = () => {
-            this.synth.outputs.forEach((output) => {
+            this.outputs.forEach((output) => {
                 solid(1, 1, 1, 0).out(output);
             });
         };
@@ -15,13 +17,13 @@ export class HydraRenderer {
             this.regl._gl.canvas.height = height;
             this.width = width;
             this.height = height;
-            this.synth.outputs.forEach((output) => {
+            this.outputs.forEach((output) => {
                 output.resize(width, height);
             });
             this.regl._refresh();
         };
         this.render = (output) => {
-            this.output = output !== null && output !== void 0 ? output : this.synth.outputs[0];
+            this.output = output !== null && output !== void 0 ? output : this.outputs[0];
         };
         // dt in ms
         this.tick = (dt) => {
@@ -29,10 +31,10 @@ export class HydraRenderer {
             this.timeSinceLastUpdate += dt;
             if (!this.synth.fps || this.timeSinceLastUpdate >= 1000 / this.synth.fps) {
                 this.synth.stats.fps = Math.ceil(1000 / this.timeSinceLastUpdate);
-                this.synth.sources.forEach((source) => {
+                this.sources.forEach((source) => {
                     source.tick(this.synth.time);
                 });
-                this.synth.outputs.forEach((output) => {
+                this.outputs.forEach((output) => {
                     output.tick({
                         time: this.synth.time,
                         bpm: this.synth.bpm,
@@ -60,11 +62,6 @@ export class HydraRenderer {
                 fps: 0,
             },
             speed: 1,
-            render: this.render,
-            setResolution: this.setResolution,
-            hush: this.hush,
-            sources: [],
-            outputs: [],
         };
         this.timeSinceLastUpdate = 0;
         const defaultUniforms = {
@@ -114,7 +111,7 @@ export class HydraRenderer {
             let s = new Source({
                 regl: this.regl,
             });
-            this.synth.sources.push(s);
+            this.sources.push(s);
         }
         for (let i = 0; i < numOutputs; i++) {
             const o = new Output({
@@ -124,9 +121,9 @@ export class HydraRenderer {
                 precision: this.precision,
                 defaultUniforms,
             });
-            this.synth.outputs.push(o);
+            this.outputs.push(o);
         }
-        this.output = this.synth.outputs[0];
+        this.output = this.outputs[0];
         this.loop = new Loop(this.tick);
     }
 }

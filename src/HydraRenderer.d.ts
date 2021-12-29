@@ -22,11 +22,6 @@ export interface Synth {
         fps: number;
     };
     speed: number;
-    render: (output?: Output) => void;
-    setResolution: (width: number, height: number) => void;
-    hush: () => void;
-    sources: Source[];
-    outputs: Output[];
 }
 interface HydraRendererOptions {
     width?: number;
@@ -46,6 +41,8 @@ export declare class HydraRenderer {
     renderFbo: DrawCommand<DefaultContext, HydraFboUniforms>;
     output: Output;
     loop: Loop;
+    sources: Source[];
+    outputs: Output[];
     constructor({ width, height, numSources, numOutputs, precision, regl, }: HydraRendererOptions);
     hush: () => void;
     setResolution: (width: number, height: number) => void;
