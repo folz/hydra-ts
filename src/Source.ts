@@ -4,26 +4,19 @@ import { Regl, Texture2D, TextureImageData } from 'regl';
 
 interface HydraSourceOptions {
   regl: Source['regl'];
-  width: Source['width'];
-  height: Source['height'];
 }
 
 export class Source {
   regl: Regl;
-  width: number;
-  height: number;
   src?: TextureImageData;
   dynamic: boolean;
   tex: Texture2D;
 
-  constructor({ regl, width, height }: HydraSourceOptions) {
+  constructor({ regl }: HydraSourceOptions) {
     this.regl = regl;
     this.src = undefined;
     this.dynamic = true;
-    this.width = width;
-    this.height = height;
     this.tex = this.regl.texture({
-      //  shape: [width, height]
       shape: [1, 1],
     });
   }
@@ -84,11 +77,6 @@ export class Source {
         this.dynamic = true;
       })
       .catch((err) => console.log('could not get screen', err));
-  };
-
-  resize = (width: number, height: number) => {
-    this.width = width;
-    this.height = height;
   };
 
   clear = () => {

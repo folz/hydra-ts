@@ -15,9 +15,6 @@ export class HydraRenderer {
             this.regl._gl.canvas.height = height;
             this.width = width;
             this.height = height;
-            this.synth.sources.forEach((source) => {
-                source.resize(width, height);
-            });
             this.synth.outputs.forEach((output) => {
                 output.resize(width, height);
             });
@@ -120,8 +117,6 @@ export class HydraRenderer {
         for (let i = 0; i < numSources; i++) {
             let s = new Source({
                 regl: this.regl,
-                width: this.width,
-                height: this.height,
             });
             this.synth.sources.push(s);
         }

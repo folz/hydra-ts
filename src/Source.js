@@ -1,7 +1,7 @@
 import { Webcam } from './lib/Webcam';
 import { Screen } from './lib/Screen';
 export class Source {
-    constructor({ regl, width, height }) {
+    constructor({ regl }) {
         this.init = (opts) => {
             if (opts.src) {
                 this.src = opts.src;
@@ -54,10 +54,6 @@ export class Source {
             })
                 .catch((err) => console.log('could not get screen', err));
         };
-        this.resize = (width, height) => {
-            this.width = width;
-            this.height = height;
-        };
         this.clear = () => {
             if (this.src && 'srcObject' in this.src && this.src.srcObject) {
                 if ('getTracks' in this.src.srcObject && this.src.srcObject.getTracks) {
@@ -91,10 +87,7 @@ export class Source {
         this.regl = regl;
         this.src = undefined;
         this.dynamic = true;
-        this.width = width;
-        this.height = height;
         this.tex = this.regl.texture({
-            //  shape: [width, height]
             shape: [1, 1],
         });
     }
