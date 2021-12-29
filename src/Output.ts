@@ -11,10 +11,12 @@ import { TransformApplication } from './glsl/Glsl';
 import { compileWithContext } from './compiler/compileWithContext';
 
 interface OutputOptions {
-  defaultUniforms: Output['defaultUniforms'];
+  defaultUniforms: {
+    [name: string]: DynamicVariable<any> | DynamicVariableFn<any, any, any>;
+  };
   height: number;
-  precision: Output['precision'];
-  regl: Output['regl'];
+  precision: Precision;
+  regl: Regl;
   width: number;
 }
 
@@ -25,10 +27,10 @@ export class Output {
   };
   draw: DrawCommand;
   fbos: Framebuffer2D[];
-  pingPongIndex: number = 0;
   precision: Precision;
   regl: Regl;
   vert: string;
+  pingPongIndex: number = 0;
 
   constructor({
     defaultUniforms,
