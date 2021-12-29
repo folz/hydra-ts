@@ -4,9 +4,6 @@
 seeks to be fully compatible with the original's end-user syntax (`osc().out()`) while rewriting much of the internal
 implementation to make it easier to use as a library.
 
-This is still a work in progress, so you will need to read the source for this to be of much use right now. Star the
-repo for updates, new releases, and expanded documentation as these come out.
-
 ## Installation
 
 ```shell
@@ -115,6 +112,8 @@ This is not presently supported.
 
 Presently, you must pass an output instance to `.out(o#)` - it does not infer the "default" output if none is passed.
 PRs to address this are welcome.
+
+You must also call ArrayUtils.init() once before any instance of hydra is used.
 
 ## Contributing
 
