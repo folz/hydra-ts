@@ -2,8 +2,7 @@ import { Output } from './Output';
 import { Loop } from './Loop';
 import { Source } from './Source';
 import { DrawCommand, Regl } from 'regl';
-import * as generators from './glsl';
-import { Glsl } from './glsl/Glsl';
+import { solid } from './glsl';
 
 export type Precision = 'lowp' | 'mediump' | 'highp';
 
@@ -22,7 +21,6 @@ export interface Synth {
   hush: () => void;
   sources: Source[];
   outputs: Output[];
-  generators: Record<string, (...args: unknown[]) => Glsl>;
 }
 
 interface HydraRendererOptions {
@@ -75,7 +73,6 @@ export class HydraRenderer {
       hush: this.hush,
       sources: [],
       outputs: [],
-      generators: {},
     };
 
     this.timeSinceLastUpdate = 0;
@@ -153,15 +150,12 @@ export class HydraRenderer {
 
     this.output = this.synth.outputs[0];
 
-    this.synth.generators = generators;
-
     this.loop = new Loop(this.tick);
   }
 
   hush = () => {
     this.synth.outputs.forEach((output) => {
-      // TODO - should reset output directly without relying on synth
-      this.synth.generators.solid(1, 1, 1, 0).out(output);
+      solid(1, 1, 1, 0).out(output);
     });
   };
 

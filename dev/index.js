@@ -1,6 +1,7 @@
 import REGL from 'regl';
 import tinykeys from 'tinykeys';
 import Hydra from '../index';
+import * as generators from '../src/glsl';
 import ArrayUtils from '../src/lib/array-utils';
 import './style.css';
 const WIDTH = 1080;
@@ -19,7 +20,7 @@ const hydra = new Hydra({
     regl,
 });
 hydra.loop.start();
-const { generators, sources, outputs, render } = hydra.synth;
+const { sources, outputs, render } = hydra.synth;
 const [s0, s1, s2, s3] = sources;
 const [o0, o1, o2, o3] = outputs;
 const { src, osc, gradient, shape, voronoi, noise } = generators;

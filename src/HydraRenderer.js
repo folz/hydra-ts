@@ -1,14 +1,13 @@
 import { Output } from './Output';
 import { Loop } from './Loop';
 import { Source } from './Source';
-import * as generators from './glsl';
+import { solid } from './glsl';
 // to do: add ability to pass in certain uniforms and transforms
 export class HydraRenderer {
     constructor({ width = 1280, height = 720, numSources = 4, numOutputs = 4, precision = 'mediump', regl, }) {
         this.hush = () => {
             this.synth.outputs.forEach((output) => {
-                // TODO - should reset output directly without relying on synth
-                this.synth.generators.solid(1, 1, 1, 0).out(output);
+                solid(1, 1, 1, 0).out(output);
             });
         };
         this.setResolution = (width, height) => {
@@ -69,7 +68,6 @@ export class HydraRenderer {
             hush: this.hush,
             sources: [],
             outputs: [],
-            generators: {},
         };
         this.timeSinceLastUpdate = 0;
         const defaultUniforms = {
@@ -138,7 +136,6 @@ export class HydraRenderer {
             this.synth.outputs.push(o);
         }
         this.output = this.synth.outputs[0];
-        this.synth.generators = generators;
         this.loop = new Loop(this.tick);
     }
 }
