@@ -23,12 +23,12 @@ export interface Synth {
     time: number;
 }
 interface HydraRendererOptions {
-    height?: number;
+    height: number;
     numOutputs?: number;
     numSources?: number;
     precision?: Precision;
     regl: Regl;
-    width?: number;
+    width: number;
 }
 export declare class HydraRenderer {
     loop: Loop;

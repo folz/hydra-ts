@@ -4,7 +4,7 @@ import { Source } from './Source';
 import { solid } from './glsl';
 // to do: add ability to pass in certain uniforms and transforms
 export class HydraRenderer {
-    constructor({ height = 720, numOutputs = 4, numSources = 4, precision = 'mediump', regl, width = 1280, }) {
+    constructor({ height, numOutputs = 4, numSources = 4, precision = 'mediump', regl, width, }) {
         this.outputs = [];
         this.sources = [];
         this.hush = () => {

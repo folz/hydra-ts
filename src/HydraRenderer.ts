@@ -30,12 +30,12 @@ export interface Synth {
 }
 
 interface HydraRendererOptions {
-  height?: number;
+  height: number;
   numOutputs?: number;
   numSources?: number;
   precision?: Precision;
   regl: Regl;
-  width?: number;
+  width: number;
 }
 
 // to do: add ability to pass in certain uniforms and transforms
@@ -51,12 +51,12 @@ export class HydraRenderer {
   sources: Source[] = [];
 
   constructor({
-    height = 720,
+    height,
     numOutputs = 4,
     numSources = 4,
     precision = 'mediump',
     regl,
-    width = 1280,
+    width,
   }: HydraRendererOptions) {
     this.regl = regl;
 
