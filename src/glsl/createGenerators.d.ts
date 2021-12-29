@@ -1,6 +1,6 @@
 import { ProcessedTransformDefinition, TransformDefinition } from './transformDefinitions.js';
 import { Glsl } from './Glsl';
-declare type GeneratorMap = Record<string, () => Glsl>;
+declare type GeneratorMap = Record<string, (...args: unknown[]) => Glsl>;
 export declare function createGenerators({ generatorTransforms, modifierTransforms, }: {
     generatorTransforms: readonly TransformDefinition[];
     modifierTransforms: readonly TransformDefinition[];

@@ -5,7 +5,7 @@ import {
 } from './transformDefinitions.js';
 import { Glsl } from './Glsl';
 
-type GeneratorMap = Record<string, () => Glsl>;
+type GeneratorMap = Record<string, (...args: unknown[]) => Glsl>;
 
 export function createGenerators({
   generatorTransforms,
