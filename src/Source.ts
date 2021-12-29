@@ -1,6 +1,7 @@
 import { Webcam } from './lib/Webcam';
 import { Screen } from './lib/Screen';
 import { Regl, Texture2D, TextureImageData } from 'regl';
+import { Synth } from './HydraRenderer';
 
 interface HydraSourceOptions {
   regl: Source['regl'];
@@ -91,7 +92,7 @@ export class Source {
     this.tex = this.regl.texture({ shape: [1, 1] });
   };
 
-  tick = (_dt: number) => {
+  tick = (_props: Synth) => {
     if (this.src && this.dynamic) {
       if (
         'videoWidth' in this.src &&

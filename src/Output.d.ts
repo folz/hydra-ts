@@ -1,5 +1,5 @@
 import { Attributes, DrawCommand, DynamicVariable, DynamicVariableFn, Framebuffer2D, Regl } from 'regl';
-import { Precision } from './HydraRenderer';
+import { Precision, Synth } from './HydraRenderer';
 import { TransformApplication } from './glsl/Glsl';
 interface OutputOptions {
     defaultUniforms: {
@@ -26,6 +26,6 @@ export declare class Output {
     getCurrent(): Framebuffer2D;
     getTexture(): Framebuffer2D;
     render(transformApplications: TransformApplication[]): void;
-    tick(props: {}): void;
+    tick(props: Synth): void;
 }
 export {};

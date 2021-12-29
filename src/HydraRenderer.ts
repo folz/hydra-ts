@@ -21,13 +21,12 @@ export interface HydraDrawUniforms {
 export interface Synth {
   bpm: number;
   fps?: number;
-  height: number;
+  resolution: Resolution;
   speed: number;
   stats: {
     fps: number;
   };
   time: number;
-  width: number;
 }
 
 interface HydraRendererOptions {
@@ -63,15 +62,14 @@ export class HydraRenderer {
 
     // object that contains all properties that will be made available on the global context and during local evaluation
     this.synth = {
-      time: 0,
       bpm: 30,
-      width,
-      height,
       fps: undefined,
+      resolution: [width, height],
+      speed: 1,
       stats: {
         fps: 0,
       },
-      speed: 1,
+      time: 0,
     };
 
     this.timeSinceLastUpdate = 0;
@@ -157,8 +155,7 @@ export class HydraRenderer {
   };
 
   setResolution = (width: number, height: number) => {
-    this.synth.width = width;
-    this.synth.height = height;
+    this.synth.resolution = [width, height];
 
     this.outputs.forEach((output) => {
       output.resize(width, height);
@@ -179,20 +176,16 @@ export class HydraRenderer {
       this.synth.stats.fps = Math.ceil(1000 / this.timeSinceLastUpdate);
 
       this.sources.forEach((source) => {
-        source.tick(this.synth.time);
+        source.tick(this.synth);
       });
 
       this.outputs.forEach((output) => {
-        output.tick({
-          time: this.synth.time,
-          bpm: this.synth.bpm,
-          resolution: [this.synth.width, this.synth.height],
-        });
+        output.tick(this.synth);
       });
 
       this.renderFbo({
         tex0: this.output.getCurrent(),
-        resolution: [this.synth.width, this.synth.height],
+        resolution: this.synth.resolution,
       });
 
       this.timeSinceLastUpdate = 0;

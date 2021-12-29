@@ -6,7 +6,7 @@ import {
   Framebuffer2D,
   Regl,
 } from 'regl';
-import { Precision } from './HydraRenderer';
+import { Precision, Synth } from './HydraRenderer';
 import { TransformApplication } from './glsl/Glsl';
 import { compileWithContext } from './compiler/compileWithContext';
 
@@ -120,7 +120,7 @@ export class Output {
     });
   }
 
-  tick(props: {}) {
+  tick(props: Synth) {
     this.draw(props);
   }
 }

@@ -15,13 +15,12 @@ export interface HydraDrawUniforms {
 export interface Synth {
     bpm: number;
     fps?: number;
-    height: number;
+    resolution: Resolution;
     speed: number;
     stats: {
         fps: number;
     };
     time: number;
-    width: number;
 }
 interface HydraRendererOptions {
     height?: number;
