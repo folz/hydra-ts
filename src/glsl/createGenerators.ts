@@ -11,8 +11,8 @@ export function createGenerators({
   generatorTransforms,
   modifierTransforms,
 }: {
-  generatorTransforms: TransformDefinition[];
-  modifierTransforms: TransformDefinition[];
+  generatorTransforms: readonly TransformDefinition[];
+  modifierTransforms: readonly TransformDefinition[];
 }): GeneratorMap {
   const sourceClass = class extends Glsl {};
   const generatorMap: GeneratorMap = {};

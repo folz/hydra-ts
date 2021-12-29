@@ -122,7 +122,7 @@ export interface ProcessedTransformDefinition extends TransformDefinition {
   processed: true;
 }
 
-export const generatorTransforms: TransformDefinition[] = [
+export const generatorTransforms = [
   {
     name: 'noise',
     type: 'src',
@@ -291,9 +291,9 @@ export const generatorTransforms: TransformDefinition[] = [
     ],
     glsl: `   return vec4(r, g, b, a);`,
   },
-];
+] as const;
 
-export const modifierTransforms: TransformDefinition[] = [
+export const modifierTransforms = [
   {
     name: 'rotate',
     type: 'coord',
@@ -1225,4 +1225,4 @@ export const modifierTransforms: TransformDefinition[] = [
     ],
     glsl: `   return vec4(_c0.a * scale + offset);`,
   },
-];
+] as const;
