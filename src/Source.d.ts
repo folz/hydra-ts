@@ -17,7 +17,7 @@ export declare class Source {
     initImage: (url?: string) => void;
     initScreen: () => void;
     clear: () => void;
-    tick: (dt: number) => void;
+    tick: (_dt: number) => void;
     getTexture: () => Texture2D;
 }
 export {};

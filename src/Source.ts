@@ -91,7 +91,7 @@ export class Source {
     this.tex = this.regl.texture({ shape: [1, 1] });
   };
 
-  tick = (dt: number) => {
+  tick = (_dt: number) => {
     if (this.src && this.dynamic) {
       if (
         'videoWidth' in this.src &&
