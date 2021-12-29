@@ -1,5 +1,4 @@
 import REGL from 'regl';
-import tinykeys from 'tinykeys';
 import Hydra from '../index';
 import * as generators from '../src/glsl';
 import ArrayUtils from '../src/lib/array-utils';
@@ -8,8 +7,7 @@ import './style.css';
 
 const WIDTH = 1080;
 const HEIGHT = 1080;
-
-ArrayUtils.init();
+const DENSITY = 2;
 
 const canvas = document.createElement('canvas');
 canvas.style.backgroundColor = '#000000';
@@ -17,9 +15,10 @@ canvas.width = WIDTH;
 canvas.height = HEIGHT;
 document.body.appendChild(canvas);
 
+ArrayUtils.init();
+
 const regl = REGL(canvas);
 
-const DENSITY = 2;
 const hydra = new Hydra({
   width: WIDTH * DENSITY,
   height: HEIGHT * DENSITY,
@@ -42,14 +41,3 @@ osc(() => 4 * Math.PI)
 src(o0).scrollX(0.1, -0.1).scrollY(0.1, -0.1).out(o1);
 
 render(o1);
-
-// const debugLog = document.createElement('pre');
-// const frag = shader.glsl()[0].frag;
-// debugLog.innerText = frag;
-// document.body.appendChild(debugLog);
-
-tinykeys(window, {
-  'Alt+Space': (event) => {
-    hydra.loop.toggle();
-  },
-});
