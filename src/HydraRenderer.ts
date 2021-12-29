@@ -41,7 +41,6 @@ interface HydraRendererOptions {
 
 // to do: add ability to pass in certain uniforms and transforms
 export class HydraRenderer {
-  height: number;
   loop: Loop;
   output: Output;
   precision: Precision;
@@ -49,7 +48,6 @@ export class HydraRenderer {
   renderFbo: DrawCommand<DefaultContext, HydraFboUniforms>;
   synth: Synth;
   timeSinceLastUpdate: number;
-  width: number;
   outputs: Output[] = [];
   sources: Source[] = [];
 
@@ -61,17 +59,14 @@ export class HydraRenderer {
     regl,
     width = 1280,
   }: HydraRendererOptions) {
-    this.width = width;
-    this.height = height;
-
     this.regl = regl;
 
     // object that contains all properties that will be made available on the global context and during local evaluation
     this.synth = {
       time: 0,
       bpm: 30,
-      width: this.width,
-      height: this.height,
+      width,
+      height,
       fps: undefined,
       stats: {
         fps: 0,
@@ -142,8 +137,8 @@ export class HydraRenderer {
     for (let i = 0; i < numOutputs; i++) {
       const o = new Output({
         regl: this.regl,
-        width: this.width,
-        height: this.height,
+        width,
+        height,
         precision: this.precision,
         defaultUniforms,
       });
@@ -162,17 +157,12 @@ export class HydraRenderer {
   };
 
   setResolution = (width: number, height: number) => {
-    this.regl._gl.canvas.width = width;
-    this.regl._gl.canvas.height = height;
-
-    this.width = width;
-    this.height = height;
+    this.synth.width = width;
+    this.synth.height = height;
 
     this.outputs.forEach((output) => {
       output.resize(width, height);
     });
-
-    this.regl._refresh();
   };
 
   render = (output?: Output) => {
@@ -196,13 +186,13 @@ export class HydraRenderer {
         output.tick({
           time: this.synth.time,
           bpm: this.synth.bpm,
-          resolution: [this.regl._gl.canvas.width, this.regl._gl.canvas.height],
+          resolution: [this.synth.width, this.synth.height],
         });
       });
 
       this.renderFbo({
         tex0: this.output.getCurrent(),
-        resolution: [this.regl._gl.canvas.width, this.regl._gl.canvas.height],
+        resolution: [this.synth.width, this.synth.height],
       });
 
       this.timeSinceLastUpdate = 0;

@@ -32,7 +32,6 @@ interface HydraRendererOptions {
     width?: number;
 }
 export declare class HydraRenderer {
-    height: number;
     loop: Loop;
     output: Output;
     precision: Precision;
@@ -40,7 +39,6 @@ export declare class HydraRenderer {
     renderFbo: DrawCommand<DefaultContext, HydraFboUniforms>;
     synth: Synth;
     timeSinceLastUpdate: number;
-    width: number;
     outputs: Output[];
     sources: Source[];
     constructor({ height, numOutputs, numSources, precision, regl, width, }: HydraRendererOptions);

@@ -19,9 +19,10 @@ document.body.appendChild(canvas);
 
 const regl = REGL(canvas);
 
+const DENSITY = 2;
 const hydra = new Hydra({
-  width: WIDTH,
-  height: HEIGHT,
+  width: WIDTH * DENSITY,
+  height: HEIGHT * DENSITY,
   precision: 'mediump',
   regl,
 });

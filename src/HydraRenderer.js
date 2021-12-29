@@ -13,14 +13,11 @@ export class HydraRenderer {
             });
         };
         this.setResolution = (width, height) => {
-            this.regl._gl.canvas.width = width;
-            this.regl._gl.canvas.height = height;
-            this.width = width;
-            this.height = height;
+            this.synth.width = width;
+            this.synth.height = height;
             this.outputs.forEach((output) => {
                 output.resize(width, height);
             });
-            this.regl._refresh();
         };
         this.render = (output) => {
             this.output = output !== null && output !== void 0 ? output : this.outputs[0];
@@ -38,25 +35,23 @@ export class HydraRenderer {
                     output.tick({
                         time: this.synth.time,
                         bpm: this.synth.bpm,
-                        resolution: [this.regl._gl.canvas.width, this.regl._gl.canvas.height],
+                        resolution: [this.synth.width, this.synth.height],
                     });
                 });
                 this.renderFbo({
                     tex0: this.output.getCurrent(),
-                    resolution: [this.regl._gl.canvas.width, this.regl._gl.canvas.height],
+                    resolution: [this.synth.width, this.synth.height],
                 });
                 this.timeSinceLastUpdate = 0;
             }
         };
-        this.width = width;
-        this.height = height;
         this.regl = regl;
         // object that contains all properties that will be made available on the global context and during local evaluation
         this.synth = {
             time: 0,
             bpm: 30,
-            width: this.width,
-            height: this.height,
+            width,
+            height,
             fps: undefined,
             stats: {
                 fps: 0,
@@ -116,8 +111,8 @@ export class HydraRenderer {
         for (let i = 0; i < numOutputs; i++) {
             const o = new Output({
                 regl: this.regl,
-                width: this.width,
-                height: this.height,
+                width,
+                height,
                 precision: this.precision,
                 defaultUniforms,
             });
