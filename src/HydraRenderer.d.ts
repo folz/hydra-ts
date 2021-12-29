@@ -5,45 +5,45 @@ import { Source } from './Source';
 export declare type Precision = 'lowp' | 'mediump' | 'highp';
 export declare type Resolution = [number, number];
 export interface HydraFboUniforms {
-    tex0: Resource;
     resolution: Resolution;
+    tex0: Resource;
 }
 export interface HydraDrawUniforms {
-    time: number;
     resolution: Resolution;
+    time: number;
 }
 export interface Synth {
-    time: number;
     bpm: number;
-    width: number;
-    height: number;
     fps?: number;
+    height: number;
+    speed: number;
     stats: {
         fps: number;
     };
-    speed: number;
+    time: number;
+    width: number;
 }
 interface HydraRendererOptions {
-    width?: number;
     height?: number;
-    numSources?: number;
     numOutputs?: number;
-    regl: Regl;
+    numSources?: number;
     precision?: Precision;
+    regl: Regl;
+    width?: number;
 }
 export declare class HydraRenderer {
-    width: number;
     height: number;
-    synth: Synth;
-    timeSinceLastUpdate: number;
+    loop: Loop;
+    output: Output;
     precision: Precision;
     regl: Regl;
     renderFbo: DrawCommand<DefaultContext, HydraFboUniforms>;
-    output: Output;
-    loop: Loop;
-    sources: Source[];
+    synth: Synth;
+    timeSinceLastUpdate: number;
+    width: number;
     outputs: Output[];
-    constructor({ width, height, numSources, numOutputs, precision, regl, }: HydraRendererOptions);
+    sources: Source[];
+    constructor({ height, numOutputs, numSources, precision, regl, width, }: HydraRendererOptions);
     hush: () => void;
     setResolution: (width: number, height: number) => void;
     render: (output?: Output | undefined) => void;

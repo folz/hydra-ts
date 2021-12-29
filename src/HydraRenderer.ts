@@ -9,57 +9,57 @@ export type Precision = 'lowp' | 'mediump' | 'highp';
 export type Resolution = [number, number];
 
 export interface HydraFboUniforms {
-  tex0: Resource;
   resolution: Resolution;
+  tex0: Resource;
 }
 
 export interface HydraDrawUniforms {
-  time: number;
   resolution: Resolution;
+  time: number;
 }
 
 export interface Synth {
-  time: number;
   bpm: number;
-  width: number;
-  height: number;
   fps?: number;
+  height: number;
+  speed: number;
   stats: {
     fps: number;
   };
-  speed: number;
+  time: number;
+  width: number;
 }
 
 interface HydraRendererOptions {
-  width?: number;
   height?: number;
-  numSources?: number;
   numOutputs?: number;
-  regl: Regl;
+  numSources?: number;
   precision?: Precision;
+  regl: Regl;
+  width?: number;
 }
 
 // to do: add ability to pass in certain uniforms and transforms
 export class HydraRenderer {
-  width: number;
   height: number;
-  synth: Synth;
-  timeSinceLastUpdate: number;
+  loop: Loop;
+  output: Output;
   precision: Precision;
   regl: Regl;
   renderFbo: DrawCommand<DefaultContext, HydraFboUniforms>;
-  output: Output;
-  loop: Loop;
-  sources: Source[] = [];
+  synth: Synth;
+  timeSinceLastUpdate: number;
+  width: number;
   outputs: Output[] = [];
+  sources: Source[] = [];
 
   constructor({
-    width = 1280,
     height = 720,
-    numSources = 4,
     numOutputs = 4,
+    numSources = 4,
     precision = 'mediump',
     regl,
+    width = 1280,
   }: HydraRendererOptions) {
     this.width = width;
     this.height = height;
