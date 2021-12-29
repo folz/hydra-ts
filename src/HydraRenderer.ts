@@ -2,11 +2,7 @@ import { Output } from './Output';
 import { Loop } from './Loop';
 import { Source } from './Source';
 import { DrawCommand, Regl } from 'regl';
-import { createGenerators } from './glsl/createGenerators';
-import {
-  generatorTransforms,
-  modifierTransforms,
-} from './glsl/transformDefinitions';
+import * as generators from './glsl';
 import { Glsl } from './glsl/Glsl';
 
 export type Precision = 'lowp' | 'mediump' | 'highp';
@@ -157,10 +153,7 @@ export class HydraRenderer {
 
     this.output = this.synth.outputs[0];
 
-    this.synth.generators = createGenerators({
-      generatorTransforms,
-      modifierTransforms,
-    });
+    this.synth.generators = generators;
 
     this.loop = new Loop(this.tick);
   }

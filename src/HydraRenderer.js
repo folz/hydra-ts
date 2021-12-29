@@ -1,8 +1,7 @@
 import { Output } from './Output';
 import { Loop } from './Loop';
 import { Source } from './Source';
-import { createGenerators } from './glsl/createGenerators';
-import { generatorTransforms, modifierTransforms, } from './glsl/transformDefinitions';
+import * as generators from './glsl';
 // to do: add ability to pass in certain uniforms and transforms
 export class HydraRenderer {
     constructor({ width = 1280, height = 720, numSources = 4, numOutputs = 4, precision = 'mediump', regl, }) {
@@ -139,10 +138,7 @@ export class HydraRenderer {
             this.synth.outputs.push(o);
         }
         this.output = this.synth.outputs[0];
-        this.synth.generators = createGenerators({
-            generatorTransforms,
-            modifierTransforms,
-        });
+        this.synth.generators = generators;
         this.loop = new Loop(this.tick);
     }
 }
