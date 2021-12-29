@@ -1,4 +1,4 @@
-import { Precision } from '../HydraRenderer';
+import { Precision } from '../Hydra';
 import { TypedArg } from './formatArguments';
 import { TransformApplication } from '../glsl/Glsl';
 import { DynamicVariable, DynamicVariableFn, Texture2D, Uniform } from 'regl';

@@ -1,6 +1,5 @@
 import REGL from 'regl';
-import Hydra from '../index';
-import * as generators from '../src/glsl';
+import { Hydra, generators } from '../index';
 import ArrayUtils from '../src/lib/array-utils';
 import './style.css';
 const WIDTH = 1080;

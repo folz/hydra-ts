@@ -1,5 +1,5 @@
 import { Regl, Texture2D, TextureImageData } from 'regl';
-import { Synth } from './HydraRenderer';
+import { Synth } from './Hydra';
 interface HydraSourceOptions {
     regl: Source['regl'];
 }

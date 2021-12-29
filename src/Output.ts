@@ -6,7 +6,7 @@ import {
   Framebuffer2D,
   Regl,
 } from 'regl';
-import { Precision, Synth } from './HydraRenderer';
+import { Precision, Synth } from './Hydra';
 import { TransformApplication } from './glsl/Glsl';
 import { compileWithContext } from './compiler/compileWithContext';
 

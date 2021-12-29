@@ -39,7 +39,7 @@ interface HydraRendererOptions {
 }
 
 // to do: add ability to pass in certain uniforms and transforms
-export class HydraRenderer {
+export class Hydra {
   loop: Loop;
   output: Output;
   precision: Precision;

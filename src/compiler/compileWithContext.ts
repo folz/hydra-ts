@@ -1,4 +1,4 @@
-import { Precision } from '../HydraRenderer';
+import { Precision } from '../Hydra';
 import { TypedArg } from './formatArguments';
 import { utilityFunctions } from '../glsl/utilityFunctions';
 import { TransformApplication } from '../glsl/Glsl';

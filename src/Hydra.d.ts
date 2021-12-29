@@ -30,7 +30,7 @@ interface HydraRendererOptions {
     regl: Regl;
     width: number;
 }
-export declare class HydraRenderer {
+export declare class Hydra {
     loop: Loop;
     output: Output;
     precision: Precision;
