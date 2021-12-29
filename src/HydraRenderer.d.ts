@@ -1,8 +1,17 @@
+import { DefaultContext, DrawCommand, Regl, Resource } from 'regl';
 import { Output } from './Output';
 import { Loop } from './Loop';
 import { Source } from './Source';
-import { DrawCommand, Regl } from 'regl';
 export declare type Precision = 'lowp' | 'mediump' | 'highp';
+export declare type Resolution = [number, number];
+export interface HydraFboUniforms {
+    tex0: Resource;
+    resolution: Resolution;
+}
+export interface HydraDrawUniforms {
+    time: number;
+    resolution: Resolution;
+}
 export interface Synth {
     time: number;
     bpm: number;
@@ -20,12 +29,12 @@ export interface Synth {
     outputs: Output[];
 }
 interface HydraRendererOptions {
-    width?: HydraRenderer['width'];
-    height?: HydraRenderer['height'];
+    width?: number;
+    height?: number;
     numSources?: number;
     numOutputs?: number;
-    regl: HydraRenderer['regl'];
-    precision?: HydraRenderer['precision'];
+    regl: Regl;
+    precision?: Precision;
 }
 export declare class HydraRenderer {
     width: number;
@@ -34,7 +43,7 @@ export declare class HydraRenderer {
     timeSinceLastUpdate: number;
     precision: Precision;
     regl: Regl;
-    renderFbo: DrawCommand;
+    renderFbo: DrawCommand<DefaultContext, HydraFboUniforms>;
     output: Output;
     loop: Loop;
     constructor({ width, height, numSources, numOutputs, precision, regl, }: HydraRendererOptions);

@@ -1,10 +1,22 @@
+import { DefaultContext, DrawCommand, Regl, Resource } from 'regl';
 import { Output } from './Output';
 import { Loop } from './Loop';
 import { Source } from './Source';
-import { DrawCommand, Regl } from 'regl';
 import { solid } from './glsl';
 
 export type Precision = 'lowp' | 'mediump' | 'highp';
+
+export type Resolution = [number, number];
+
+export interface HydraFboUniforms {
+  tex0: Resource;
+  resolution: Resolution;
+}
+
+export interface HydraDrawUniforms {
+  time: number;
+  resolution: Resolution;
+}
 
 export interface Synth {
   time: number;
@@ -24,12 +36,12 @@ export interface Synth {
 }
 
 interface HydraRendererOptions {
-  width?: HydraRenderer['width'];
-  height?: HydraRenderer['height'];
+  width?: number;
+  height?: number;
   numSources?: number;
   numOutputs?: number;
-  regl: HydraRenderer['regl'];
-  precision?: HydraRenderer['precision'];
+  regl: Regl;
+  precision?: Precision;
 }
 
 // to do: add ability to pass in certain uniforms and transforms
@@ -37,10 +49,10 @@ export class HydraRenderer {
   width: number;
   height: number;
   synth: Synth;
-  timeSinceLastUpdate;
+  timeSinceLastUpdate: number;
   precision: Precision;
   regl: Regl;
-  renderFbo: DrawCommand;
+  renderFbo: DrawCommand<DefaultContext, HydraFboUniforms>;
   output: Output;
   loop: Loop;
 
@@ -78,10 +90,10 @@ export class HydraRenderer {
     this.timeSinceLastUpdate = 0;
 
     const defaultUniforms = {
-      // @ts-ignore
-      time: this.regl.prop('time'),
-      // @ts-ignore
-      resolution: this.regl.prop('resolution'),
+      time: this.regl.prop<HydraDrawUniforms, keyof HydraDrawUniforms>('time'),
+      resolution: this.regl.prop<HydraDrawUniforms, keyof HydraDrawUniforms>(
+        'resolution',
+      ),
     };
 
     this.precision = precision;
@@ -119,10 +131,10 @@ export class HydraRenderer {
         ],
       },
       uniforms: {
-        // @ts-ignore
-        tex0: this.regl.prop('tex0'),
-        // @ts-ignore
-        resolution: this.regl.prop('resolution'),
+        tex0: this.regl.prop<HydraFboUniforms, keyof HydraFboUniforms>('tex0'),
+        resolution: this.regl.prop<HydraFboUniforms, keyof HydraFboUniforms>(
+          'resolution',
+        ),
       },
       count: 3,
       depth: { enable: false },
