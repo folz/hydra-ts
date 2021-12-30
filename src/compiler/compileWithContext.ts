@@ -98,7 +98,7 @@ export function compileGlsl(
   )('st');
 
   // remove uniforms with duplicate names
-  let uniforms: Record<string, TypedArg> = {};
+  const uniforms: Record<string, TypedArg> = {};
   shaderParams.uniforms.forEach(
     (uniform) => (uniforms[uniform.name] = uniform),
   );
