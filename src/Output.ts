@@ -30,7 +30,7 @@ export class Output {
   precision: Precision;
   regl: Regl;
   vert: string;
-  pingPongIndex: number = 0;
+  pingPongIndex = 0;
 
   constructor({
     defaultUniforms,
@@ -44,7 +44,6 @@ export class Output {
     this.defaultUniforms = defaultUniforms;
     this.precision = precision;
 
-    // @ts-ignore
     this.draw = () => {};
 
     this.vert = `
@@ -102,7 +101,7 @@ export class Output {
       return;
     }
 
-    let pass = compileWithContext(transformApplications, {
+    const pass = compileWithContext(transformApplications, {
       defaultUniforms: this.defaultUniforms,
       precision: this.precision,
     });

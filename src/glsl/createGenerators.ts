@@ -52,7 +52,6 @@ export function createTransformOnPrototype(
     return this;
   }
 
-  // @ts-ignore
   cls.prototype[processedTransformDefinition.name] =
     addTransformApplicationToInternalChain;
 }
@@ -93,7 +92,7 @@ export function processGlsl(
     ...transformDefinition.inputs.map((input) => `${input.type} ${input.name}`),
   ].join(', ');
 
-  let glslFunction = `
+  const glslFunction = `
   ${returnType} ${transformDefinition.name}(${signature}) {
       ${transformDefinition.glsl}
   }

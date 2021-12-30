@@ -17,6 +17,7 @@ const map = (
 type Easing = keyof typeof easing;
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Array<T> {
     _speed: number;
     _smooth: number;
@@ -60,8 +61,8 @@ export default {
     };
 
     Array.prototype.fit = function (low = 0, high = 1) {
-      let lowest = Math.min(...this);
-      let highest = Math.max(...this);
+      const lowest = Math.min(...this);
+      const highest = Math.max(...this);
       const newArr = this.map((num) => map(num, lowest, highest, low, high));
       newArr._speed = this._speed;
       newArr._smooth = this._smooth;
@@ -73,16 +74,16 @@ export default {
   getValue:
     (arr: any[] = []) =>
     ({ time, bpm }: any) => {
-      let speed = arr._speed ? arr._speed : 1;
-      let smooth = arr._smooth ? arr._smooth : 0;
-      let index = time * speed * (bpm / 60) + (arr._offset || 0);
+      const speed = arr._speed ? arr._speed : 1;
+      const smooth = arr._smooth ? arr._smooth : 0;
+      const index = time * speed * (bpm / 60) + (arr._offset || 0);
 
       if (smooth !== 0) {
-        let ease = arr._ease ? arr._ease : easing['linear'];
-        let _index = index - smooth / 2;
-        let currValue = arr[Math.floor(_index % arr.length)];
-        let nextValue = arr[Math.floor((_index + 1) % arr.length)];
-        let t = Math.min((_index % 1) / smooth, 1);
+        const ease = arr._ease ? arr._ease : easing['linear'];
+        const _index = index - smooth / 2;
+        const currValue = arr[Math.floor(_index % arr.length)];
+        const nextValue = arr[Math.floor((_index + 1) % arr.length)];
+        const t = Math.min((_index % 1) / smooth, 1);
         return ease(t) * (nextValue - currValue) + currValue;
       } else {
         return arr[Math.floor(index % arr.length)];

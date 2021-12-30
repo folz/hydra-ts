@@ -126,7 +126,7 @@ export class Hydra {
     });
 
     for (let i = 0; i < numSources; i++) {
-      let s = new Source({
+      const s = new Source({
         regl: this.regl,
       });
       this.sources.push(s);

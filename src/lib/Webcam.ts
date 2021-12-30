@@ -5,7 +5,7 @@ export function Webcam(deviceId: number): Promise<HTMLVideoElement> {
       devices.filter((devices) => devices.kind === 'videoinput'),
     )
     .then((cameras) => {
-      let constraints: MediaStreamConstraints = {
+      const constraints: MediaStreamConstraints = {
         audio: false,
         video: true,
       };
