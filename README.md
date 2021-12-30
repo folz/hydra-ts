@@ -74,7 +74,9 @@ const { sources, outputs } = hydra;
 
 const [s0, s1, s2, s3] = sources;
 const [o0, o1, o2, o3] = outputs;
-const { hush, render } = hydra;
+const { hush, loop, render } = hydra;
+
+loop.start();
 ```
 
 Generators are no longer dependent on the Hydra environment, so you can import them directly from `'hydra-ts'`;
