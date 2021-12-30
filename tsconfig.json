@@ -4,6 +4,7 @@
   "compilerOptions": {
     "declaration": true,
     "module": "ES2020",
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "outDir": "dist/"
   }
 }

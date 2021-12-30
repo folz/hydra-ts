@@ -3,13 +3,14 @@
   "license": "AGPL",
   "version": "1.0.0",
   "description": "A fork of ojack/hydra-synth in typescript, focusing on interoperability.",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "module",
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/.bin/jest",
     "dev": "vite",
-    "coverage": "nyc npm run test"
+    "coverage": "nyc npm run test",
+    "prepack": "tsc || true"
   },
   "repository": {
     "type": "git",
