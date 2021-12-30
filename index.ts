@@ -7,5 +7,3 @@ export {
   modifierTransforms as defaultModifiers,
 } from './src/glsl/transformDefinitions';
 export { createGenerators } from './src/glsl/createGenerators';
-
-export { TransformDefinition } from './src/glsl/transformDefinitions';
