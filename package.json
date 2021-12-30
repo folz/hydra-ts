@@ -36,6 +36,8 @@
     "@types/gl": "^4.1.0",
     "@types/jest": "^27.0.3",
     "@types/node": "^17.0.5",
+    "@typescript-eslint/eslint-plugin": "^5.8.1",
+    "@typescript-eslint/parser": "^5.8.1",
     "eslint": "^8.5.0",
     "gl": "^4.9.2",
     "jest": "^27.4.5",
