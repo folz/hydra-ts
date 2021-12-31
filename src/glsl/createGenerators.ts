@@ -4,6 +4,7 @@ import {
   TransformDefinitionType,
 } from './transformDefinitions.js';
 import { Glsl } from './Glsl';
+import ImmutableList from './ImmutableList.js';
 
 type GeneratorMap = Record<string, (...args: unknown[]) => Glsl>;
 
@@ -21,10 +22,10 @@ export function createGenerators({
     const processed = processGlsl(transform);
 
     generatorMap[processed.name] = (...args: unknown[]) =>
-      new sourceClass({
+      new sourceClass(new ImmutableList({
         transform: processed,
         userArgs: args,
-      });
+      }));
   }
 
   for (const transform of modifierTransforms) {
@@ -44,12 +45,12 @@ export function createTransformOnPrototype(
     this: Glsl,
     ...args: unknown[]
   ): Glsl {
-    this.transforms.push({
+    const transform = {
       transform: processedTransformDefinition,
       userArgs: args,
-    });
+    };
 
-    return this;
+    return new cls(this.transforms.append(transform));
   }
 
   cls.prototype[processedTransformDefinition.name] =
