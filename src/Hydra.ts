@@ -3,10 +3,12 @@ import { Output } from './Output';
 import { Loop } from './Loop';
 import { Source } from './Source';
 import { solid } from './glsl';
+import produce from 'immer';
+import { store } from './store';
 
 export type Precision = 'lowp' | 'mediump' | 'highp';
 
-export type Resolution = [number, number];
+export type Resolution = readonly [number, number];
 
 export interface HydraFboUniforms {
   resolution: Resolution;
@@ -39,7 +41,7 @@ interface HydraRendererOptions {
 }
 
 // to do: add ability to pass in certain uniforms and transforms
-export class Hydra {
+interface Environment {
   loop: Loop;
   output: Output;
   precision: Precision;
@@ -47,50 +49,77 @@ export class Hydra {
   renderFbo: DrawCommand<DefaultContext, HydraFboUniforms>;
   synth: Synth;
   timeSinceLastUpdate: number;
-  outputs: Output[] = [];
-  sources: Source[] = [];
+  outputs: Output[];
+  sources: Source[];
+}
 
-  constructor({
+// dt in ms
+function tick(
+  dt: number,
+  synth: Synth,
+  sources: Source[],
+  outputs: Output[],
+  environment: Environment,
+) {
+  synth.time += dt * 0.001 * synth.speed;
+
+  environment.timeSinceLastUpdate += dt;
+
+  if (!synth.fps || environment.timeSinceLastUpdate >= 1000 / synth.fps) {
+    synth.stats.fps = Math.ceil(1000 / environment.timeSinceLastUpdate);
+
+    sources.forEach((source) => {
+      source.draw(synth);
+    });
+
+    outputs.forEach((output) => {
+      output.draw(synth);
+    });
+
+    environment.renderFbo({
+      tex0: environment.output.getCurrent(),
+      resolution: synth.resolution,
+    });
+
+    environment.timeSinceLastUpdate = 0;
+  }
+}
+
+// function update(synth: Synth, environment: Environment, dt: number) {
+//   synth.time += dt * 0.001 * synth.speed;
+//
+//   environment.timeSinceLastUpdate += dt;
+// }
+
+export function createHydra(options: HydraRendererOptions): Environment {
+  const {
     height,
     numOutputs = 4,
     numSources = 4,
     precision = 'mediump',
     regl,
     width,
-  }: HydraRendererOptions) {
-    this.regl = regl;
+  } = options;
 
-    // object that contains all properties that will be made available on the global context and during local evaluation
-    this.synth = {
-      bpm: 30,
-      fps: undefined,
-      resolution: [width, height],
-      speed: 1,
-      stats: {
-        fps: 0,
-      },
-      time: 0,
-    };
+  const state = store.getState();
 
-    this.timeSinceLastUpdate = 0;
+  const outputs: Output[] = [];
+  const sources: Source[] = [];
 
-    const defaultUniforms = {
-      time: this.regl.prop<HydraDrawUniforms, keyof HydraDrawUniforms>('time'),
-      resolution: this.regl.prop<HydraDrawUniforms, keyof HydraDrawUniforms>(
-        'resolution',
-      ),
-    };
+  const defaultUniforms = {
+    time: regl.prop<HydraDrawUniforms, keyof HydraDrawUniforms>('time'),
+    resolution: regl.prop<HydraDrawUniforms, keyof HydraDrawUniforms>(
+      'resolution',
+    ),
+  };
 
-    this.precision = precision;
+  regl.clear({
+    color: [0, 0, 0, 1],
+  });
 
-    // This clears the color buffer to black and the depth buffer to 1
-    this.regl.clear({
-      color: [0, 0, 0, 1],
-    });
-
-    this.renderFbo = this.regl({
-      frag: `
-      precision ${this.precision} float;
+  const renderFbo = regl({
+    frag: `
+      precision ${precision} float;
       varying vec2 uv;
       uniform vec2 resolution;
       uniform sampler2D tex0;
@@ -99,8 +128,8 @@ export class Hydra {
         gl_FragColor = texture2D(tex0, vec2(1.0 - uv.x, uv.y));
       }
       `,
-      vert: `
-      precision ${this.precision} float;
+    vert: `
+      precision ${precision} float;
       attribute vec2 position;
       varying vec2 uv;
 
@@ -108,87 +137,73 @@ export class Hydra {
         uv = position;
         gl_Position = vec4(1.0 - 2.0 * position, 0, 1);
       }`,
-      attributes: {
-        position: [
-          [-2, 0],
-          [0, -2],
-          [2, 2],
-        ],
-      },
-      uniforms: {
-        tex0: this.regl.prop<HydraFboUniforms, keyof HydraFboUniforms>('tex0'),
-        resolution: this.regl.prop<HydraFboUniforms, keyof HydraFboUniforms>(
-          'resolution',
-        ),
-      },
-      count: 3,
-      depth: { enable: false },
+    attributes: {
+      position: [
+        [-2, 0],
+        [0, -2],
+        [2, 2],
+      ],
+    },
+    uniforms: {
+      tex0: regl.prop<HydraFboUniforms, keyof HydraFboUniforms>('tex0'),
+      resolution: regl.prop<HydraFboUniforms, keyof HydraFboUniforms>(
+        'resolution',
+      ),
+    },
+    count: 3,
+    depth: { enable: false },
+  });
+
+  for (let i = 0; i < numSources; i++) {
+    const s = new Source({
+      regl: regl,
     });
-
-    for (let i = 0; i < numSources; i++) {
-      const s = new Source({
-        regl: this.regl,
-      });
-      this.sources.push(s);
-    }
-
-    for (let i = 0; i < numOutputs; i++) {
-      const o = new Output({
-        regl: this.regl,
-        width,
-        height,
-        precision: this.precision,
-        defaultUniforms,
-      });
-      this.outputs.push(o);
-    }
-
-    this.output = this.outputs[0];
-
-    this.loop = new Loop(this.tick);
+    sources.push(s);
   }
 
-  hush = () => {
-    this.outputs.forEach((output) => {
-      solid(1, 1, 1, 0).out(output);
+  for (let i = 0; i < numOutputs; i++) {
+    const o = new Output({
+      regl: regl,
+      width,
+      height,
+      precision: precision,
+      defaultUniforms,
     });
-  };
+    outputs.push(o);
+  }
 
-  setResolution = (width: number, height: number) => {
-    this.synth.resolution = [width, height];
+  const output = outputs[0];
 
-    this.outputs.forEach((output) => {
-      output.resize(width, height);
-    });
-  };
+  const environment = state;
+  const { synth } = environment;
 
-  render = (output?: Output) => {
-    this.output = output ?? this.outputs[0];
-  };
-
-  // dt in ms
-  tick = (dt: number) => {
-    this.synth.time += dt * 0.001 * this.synth.speed;
-
-    this.timeSinceLastUpdate += dt;
-
-    if (!this.synth.fps || this.timeSinceLastUpdate >= 1000 / this.synth.fps) {
-      this.synth.stats.fps = Math.ceil(1000 / this.timeSinceLastUpdate);
-
-      this.sources.forEach((source) => {
-        source.tick(this.synth);
+  const commands = {
+    hush(outputs: Output[]) {
+      outputs.forEach((output) => {
+        solid(1, 1, 1, 0).out(output);
       });
-
-      this.outputs.forEach((output) => {
-        output.tick(this.synth);
+    },
+    render(environment: Environment, output: Output): Environment {
+      return produce<Environment>(environment, (draft) => {
+        draft.output = output ?? draft.outputs[0];
       });
+    },
+    setResolution(
+      width: number,
+      height: number,
+      synth: Synth,
+      outputs: Output[],
+    ) {
+      synth.resolution = [width, height];
 
-      this.renderFbo({
-        tex0: this.output.getCurrent(),
-        resolution: this.synth.resolution,
+      outputs.forEach((output) => {
+        output.resize(width, height);
       });
-
-      this.timeSinceLastUpdate = 0;
-    }
+    },
+    tick(dt: number) {
+      return tick(dt, synth, sources, outputs, environment);
+    },
   };
+
+  return environment;
 }

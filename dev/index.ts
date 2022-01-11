@@ -1,6 +1,7 @@
 import REGL from 'regl';
-import { Hydra, generators } from '../index';
+import { createHydra, generators } from '../index';
 import ArrayUtils from '../src/lib/array-utils';
+import { Loop } from '../src/Loop';
 
 import './style.css';
 
@@ -18,14 +19,14 @@ ArrayUtils.init();
 
 const regl = REGL(canvas);
 
-const hydra = new Hydra({
+const hydra = createHydra({
   width: WIDTH * DENSITY,
   height: HEIGHT * DENSITY,
   precision: 'mediump',
   regl,
 });
 
-hydra.loop.start();
+new Loop(hydra.tick).start();
 
 const { sources, outputs, render } = hydra;
 const [s0, s1, s2, s3] = sources;
