@@ -6,38 +6,51 @@ import {
 import { Glsl } from './Glsl';
 import ImmutableList from './ImmutableList.js';
 
-type GeneratorMap = Record<string, (...args: unknown[]) => Glsl>;
+type Generator = (...args: unknown[]) => Glsl;
 
-export function createGenerators({
-  generatorTransforms,
-  modifierTransforms,
-}: {
-  generatorTransforms: readonly TransformDefinition[];
-  modifierTransforms: readonly TransformDefinition[];
-}): GeneratorMap {
+export function createTransformChainClass<
+  T extends readonly TransformDefinition[],
+>(modifierTransforms: T): typeof Glsl {
   const sourceClass = class extends Glsl {};
-  const generatorMap: GeneratorMap = {};
-
-  for (const transform of generatorTransforms) {
-    const processed = processGlsl(transform);
-
-    generatorMap[processed.name] = (...args: unknown[]) =>
-      new sourceClass(new ImmutableList({
-        transform: processed,
-        userArgs: args,
-      }));
-  }
 
   for (const transform of modifierTransforms) {
     const processed = processGlsl(transform);
 
-    createTransformOnPrototype(sourceClass, processed);
+    addTransformChainMethod(sourceClass, processed);
+  }
+
+  return sourceClass;
+}
+
+export function createGenerator(
+  generatorTransform: TransformDefinition,
+  TransformChainClass: typeof Glsl,
+): Generator {
+  const processed = processGlsl(generatorTransform);
+
+  return (...args: unknown[]) =>
+    new TransformChainClass(
+      new ImmutableList({
+        transform: processed,
+        userArgs: args,
+      }),
+    );
+}
+
+export function createGenerators(
+  generatorTransforms: readonly TransformDefinition[],
+  sourceClass: typeof Glsl,
+): Record<string, Generator> {
+  const generatorMap: Record<string, Generator> = {};
+
+  for (const transform of generatorTransforms) {
+    generatorMap[transform.name] = createGenerator(transform, sourceClass);
   }
 
   return generatorMap;
 }
 
-export function createTransformOnPrototype(
+export function addTransformChainMethod(
   cls: typeof Glsl,
   processedTransformDefinition: ProcessedTransformDefinition,
 ) {

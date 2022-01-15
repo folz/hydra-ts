@@ -6,4 +6,7 @@ export {
   generatorTransforms as defaultGenerators,
   modifierTransforms as defaultModifiers,
 } from './src/glsl/transformDefinitions';
-export { createGenerators } from './src/glsl/createGenerators';
+export {
+  createGenerators,
+  createTransformChainClass,
+} from './src/glsl/createGenerators';

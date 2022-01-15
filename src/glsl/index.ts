@@ -1,11 +1,13 @@
-import { createGenerators } from './createGenerators';
+import {
+  createGenerators,
+  createTransformChainClass,
+} from './createGenerators';
 import {
   generatorTransforms,
   modifierTransforms,
 } from './transformDefinitions';
 
-export const { gradient, noise, osc, shape, solid, src, voronoi } =
-  createGenerators({
-    generatorTransforms,
-    modifierTransforms,
-  });
+const TransformChainClass = createTransformChainClass(modifierTransforms);
+const generators = createGenerators(generatorTransforms, TransformChainClass);
+
+export const { gradient, noise, osc, shape, solid, src, voronoi } = generators;

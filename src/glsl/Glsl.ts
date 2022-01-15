@@ -18,4 +18,3 @@ export class Glsl {
     output.render(this.transforms.toArray());
   }
 }
-
