@@ -92,7 +92,7 @@ export class Source {
     this.tex = this.regl.texture({ shape: [1, 1] });
   };
 
-  tick = (_props: Synth) => {
+  draw = (_props: Synth) => {
     if (this.src && this.dynamic) {
       if (
         'videoWidth' in this.src &&

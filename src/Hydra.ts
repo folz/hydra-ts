@@ -176,11 +176,11 @@ export class Hydra {
       this.synth.stats.fps = Math.ceil(1000 / this.timeSinceLastUpdate);
 
       this.sources.forEach((source) => {
-        source.tick(this.synth);
+        source.draw(this.synth);
       });
 
       this.outputs.forEach((output) => {
-        output.tick(this.synth);
+        output.draw(this.synth);
       });
 
       this.renderFbo({

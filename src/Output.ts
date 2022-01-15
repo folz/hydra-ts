@@ -118,8 +118,4 @@ export class Output {
       },
     });
   }
-
-  tick(props: Synth) {
-    this.draw(props);
-  }
 }
