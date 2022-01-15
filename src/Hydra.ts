@@ -1,4 +1,11 @@
-import { DefaultContext, DrawCommand, Regl, Resource } from 'regl';
+import {
+  DefaultContext,
+  DrawCommand,
+  DynamicVariable,
+  DynamicVariableFn,
+  Regl,
+  Resource,
+} from 'regl';
 import { Output } from './Output';
 import { Loop } from './Loop';
 import { Source } from './Source';
@@ -29,6 +36,16 @@ export interface Synth {
   time: number;
 }
 
+export interface GlEnvironment {
+  defaultUniforms: {
+    [name: string]: DynamicVariable<any> | DynamicVariableFn<any, any, any>;
+  };
+  height: number;
+  precision: Precision;
+  regl: Regl;
+  width: number;
+}
+
 interface HydraRendererOptions {
   height: number;
   numOutputs?: number;
@@ -42,7 +59,6 @@ interface HydraRendererOptions {
 export class Hydra {
   loop: Loop;
   output: Output;
-  precision: Precision;
   regl: Regl;
   renderFbo: DrawCommand<DefaultContext, HydraFboUniforms>;
   synth: Synth;
@@ -81,7 +97,13 @@ export class Hydra {
       ),
     };
 
-    this.precision = precision;
+    const glEnvironment = {
+      regl: this.regl,
+      width,
+      height,
+      precision,
+      defaultUniforms,
+    };
 
     // This clears the color buffer to black and the depth buffer to 1
     this.regl.clear({
@@ -90,7 +112,7 @@ export class Hydra {
 
     this.renderFbo = this.regl({
       frag: `
-      precision ${this.precision} float;
+      precision ${glEnvironment.precision} float;
       varying vec2 uv;
       uniform vec2 resolution;
       uniform sampler2D tex0;
@@ -100,7 +122,7 @@ export class Hydra {
       }
       `,
       vert: `
-      precision ${this.precision} float;
+      precision ${glEnvironment.precision} float;
       attribute vec2 position;
       varying vec2 uv;
 
@@ -126,20 +148,12 @@ export class Hydra {
     });
 
     for (let i = 0; i < numSources; i++) {
-      const s = new Source({
-        regl: this.regl,
-      });
+      const s = new Source(glEnvironment);
       this.sources.push(s);
     }
 
     for (let i = 0; i < numOutputs; i++) {
-      const o = new Output({
-        regl: this.regl,
-        width,
-        height,
-        precision: this.precision,
-        defaultUniforms,
-      });
+      const o = new Output(glEnvironment);
       this.outputs.push(o);
     }
 

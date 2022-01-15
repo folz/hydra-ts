@@ -1,53 +1,26 @@
-import {
-  Attributes,
-  DrawCommand,
-  DynamicVariable,
-  DynamicVariableFn,
-  Framebuffer2D,
-  Regl,
-} from 'regl';
-import { Precision, Synth } from './Hydra';
+import { Attributes, DrawCommand, Framebuffer2D } from 'regl';
+import { GlEnvironment } from './Hydra';
 import { TransformApplication } from './glsl/Glsl';
 import { compileWithContext } from './compiler/compileWithContext';
 
-interface OutputOptions {
-  defaultUniforms: {
-    [name: string]: DynamicVariable<any> | DynamicVariableFn<any, any, any>;
-  };
-  height: number;
-  precision: Precision;
-  regl: Regl;
-  width: number;
-}
-
 export class Output {
   attributes: Attributes;
-  defaultUniforms?: {
-    [name: string]: DynamicVariable<any> | DynamicVariableFn<any, any, any>;
-  };
   draw: DrawCommand;
   fbos: Framebuffer2D[];
-  precision: Precision;
-  regl: Regl;
+  glEnvironment: GlEnvironment;
   vert: string;
   pingPongIndex = 0;
 
-  constructor({
-    defaultUniforms,
-    height,
-    precision,
-    regl,
-    width,
-  }: OutputOptions) {
-    this.regl = regl;
+  constructor(glEnvironment: GlEnvironment) {
+    const { regl } = glEnvironment;
+    this.glEnvironment = glEnvironment;
 
-    this.defaultUniforms = defaultUniforms;
-    this.precision = precision;
-
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     this.draw = () => {};
 
     this.vert = `
-  precision ${this.precision} float;
+  precision ${glEnvironment.precision} float;
   attribute vec2 position;
   varying vec2 uv;
 
@@ -57,7 +30,7 @@ export class Output {
   }`;
 
     this.attributes = {
-      position: this.regl.buffer([
+      position: regl.buffer([
         [-2, 0],
         [0, -2],
         [2, 2],
@@ -68,11 +41,11 @@ export class Output {
     this.fbos = Array(2)
       .fill(undefined)
       .map(() =>
-        this.regl.framebuffer({
-          color: this.regl.texture({
+        regl.framebuffer({
+          color: regl.texture({
             mag: 'nearest',
-            width: width,
-            height: height,
+            width: glEnvironment.width,
+            height: glEnvironment.height,
             format: 'rgba',
           }),
           depthStencil: false,
@@ -102,11 +75,11 @@ export class Output {
     }
 
     const pass = compileWithContext(transformApplications, {
-      defaultUniforms: this.defaultUniforms,
-      precision: this.precision,
+      defaultUniforms: this.glEnvironment.defaultUniforms,
+      precision: this.glEnvironment.precision,
     });
 
-    this.draw = this.regl({
+    this.draw = this.glEnvironment.regl({
       frag: pass.frag,
       vert: this.vert,
       attributes: this.attributes,
