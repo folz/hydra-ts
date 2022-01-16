@@ -154,11 +154,6 @@ export class Hydra {
     this.synth = synth;
     this.#output = outputs[0];
     this.#renderFbo = renderFbo;
-
-    // This clears the color buffer to black and the depth buffer to 1
-    regl.clear({
-      color: [0, 0, 0, 1],
-    });
   }
 
   hush = () => {
