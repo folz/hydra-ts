@@ -13,7 +13,7 @@ import { solid } from './glsl';
 
 export type Precision = 'lowp' | 'mediump' | 'highp';
 
-export type Resolution = [number, number];
+export type Resolution = readonly [number, number];
 
 export interface HydraFboUniforms {
   resolution: Resolution;
@@ -55,16 +55,14 @@ interface HydraRendererOptions {
   width: number;
 }
 
-// to do: add ability to pass in certain uniforms and transforms
 export class Hydra {
-  loop: Loop;
-  output: Output;
-  regl: Regl;
-  renderFbo: DrawCommand<DefaultContext, HydraFboUniforms>;
-  synth: Synth;
-  timeSinceLastUpdate: number;
-  outputs: Output[] = [];
-  sources: Source[] = [];
+  readonly loop: Loop;
+  readonly synth: Synth;
+  readonly outputs: Output[];
+  readonly sources: Source[];
+  #output: Output;
+  readonly #renderFbo: DrawCommand<DefaultContext>;
+  #timeSinceLastUpdate = 0;
 
   constructor({
     height,
@@ -74,10 +72,10 @@ export class Hydra {
     regl,
     width,
   }: HydraRendererOptions) {
-    this.regl = regl;
+    const outputs = [];
+    const sources = [];
 
-    // object that contains all properties that will be made available on the global context and during local evaluation
-    this.synth = {
+    const synth = {
       bpm: 30,
       fps: undefined,
       resolution: [width, height],
@@ -86,31 +84,24 @@ export class Hydra {
         fps: 0,
       },
       time: 0,
-    };
-
-    this.timeSinceLastUpdate = 0;
+    } as const;
 
     const defaultUniforms = {
-      time: this.regl.prop<HydraDrawUniforms, keyof HydraDrawUniforms>('time'),
-      resolution: this.regl.prop<HydraDrawUniforms, keyof HydraDrawUniforms>(
+      time: regl.prop<HydraDrawUniforms, keyof HydraDrawUniforms>('time'),
+      resolution: regl.prop<HydraDrawUniforms, keyof HydraDrawUniforms>(
         'resolution',
       ),
     };
 
     const glEnvironment = {
-      regl: this.regl,
+      regl,
       width,
       height,
       precision,
       defaultUniforms,
     };
 
-    // This clears the color buffer to black and the depth buffer to 1
-    this.regl.clear({
-      color: [0, 0, 0, 1],
-    });
-
-    this.renderFbo = this.regl({
+    const renderFbo = regl<HydraFboUniforms>({
       frag: `
       precision ${glEnvironment.precision} float;
       varying vec2 uv;
@@ -138,8 +129,8 @@ export class Hydra {
         ],
       },
       uniforms: {
-        tex0: this.regl.prop<HydraFboUniforms, keyof HydraFboUniforms>('tex0'),
-        resolution: this.regl.prop<HydraFboUniforms, keyof HydraFboUniforms>(
+        tex0: regl.prop<HydraFboUniforms, keyof HydraFboUniforms>('tex0'),
+        resolution: regl.prop<HydraFboUniforms, keyof HydraFboUniforms>(
           'resolution',
         ),
       },
@@ -149,17 +140,25 @@ export class Hydra {
 
     for (let i = 0; i < numSources; i++) {
       const s = new Source(glEnvironment);
-      this.sources.push(s);
+      sources.push(s);
     }
 
     for (let i = 0; i < numOutputs; i++) {
       const o = new Output(glEnvironment);
-      this.outputs.push(o);
+      outputs.push(o);
     }
 
-    this.output = this.outputs[0];
-
     this.loop = new Loop(this.tick);
+    this.outputs = outputs;
+    this.sources = sources;
+    this.synth = synth;
+    this.#output = outputs[0];
+    this.#renderFbo = renderFbo;
+
+    // This clears the color buffer to black and the depth buffer to 1
+    regl.clear({
+      color: [0, 0, 0, 1],
+    });
   }
 
   hush = () => {
@@ -177,17 +176,17 @@ export class Hydra {
   };
 
   render = (output?: Output) => {
-    this.output = output ?? this.outputs[0];
+    this.#output = output ?? this.outputs[0];
   };
 
   // dt in ms
   tick = (dt: number) => {
     this.synth.time += dt * 0.001 * this.synth.speed;
 
-    this.timeSinceLastUpdate += dt;
+    this.#timeSinceLastUpdate += dt;
 
-    if (!this.synth.fps || this.timeSinceLastUpdate >= 1000 / this.synth.fps) {
-      this.synth.stats.fps = Math.ceil(1000 / this.timeSinceLastUpdate);
+    if (!this.synth.fps || this.#timeSinceLastUpdate >= 1000 / this.synth.fps) {
+      this.synth.stats.fps = Math.ceil(1000 / this.#timeSinceLastUpdate);
 
       this.sources.forEach((source) => {
         source.draw(this.synth);
@@ -197,12 +196,12 @@ export class Hydra {
         output.draw(this.synth);
       });
 
-      this.renderFbo({
-        tex0: this.output.getCurrent(),
+      this.#renderFbo({
+        tex0: this.#output.getCurrent(),
         resolution: this.synth.resolution,
       });
 
-      this.timeSinceLastUpdate = 0;
+      this.#timeSinceLastUpdate = 0;
     }
   };
 }

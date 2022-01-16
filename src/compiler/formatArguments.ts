@@ -92,7 +92,7 @@ export function formatArguments(
       isUniform = false;
     }
 
-    // add tp uniform array if is a function that will pass in a different value on each render frame,
+    // Add to uniform array if is a function that will pass in a different value on each render frame,
     // or a texture/ external source
 
     let { name } = input;

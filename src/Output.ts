@@ -1,26 +1,25 @@
 import { Attributes, DrawCommand, Framebuffer2D } from 'regl';
 import { GlEnvironment } from './Hydra';
 import { TransformApplication } from './glsl/Glsl';
-import { compileWithContext } from './compiler/compileWithContext';
+import { compileWithEnvironment } from './compiler/compileWithEnvironment';
 
 export class Output {
   attributes: Attributes;
   draw: DrawCommand;
   fbos: Framebuffer2D[];
-  glEnvironment: GlEnvironment;
+  environment: GlEnvironment;
   vert: string;
   pingPongIndex = 0;
 
-  constructor(glEnvironment: GlEnvironment) {
-    const { regl } = glEnvironment;
-    this.glEnvironment = glEnvironment;
+  constructor(environment: GlEnvironment) {
+    this.environment = environment;
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     this.draw = () => {};
 
     this.vert = `
-  precision ${glEnvironment.precision} float;
+  precision ${environment.precision} float;
   attribute vec2 position;
   varying vec2 uv;
 
@@ -30,7 +29,7 @@ export class Output {
   }`;
 
     this.attributes = {
-      position: regl.buffer([
+      position: environment.regl.buffer([
         [-2, 0],
         [0, -2],
         [2, 2],
@@ -41,11 +40,11 @@ export class Output {
     this.fbos = Array(2)
       .fill(undefined)
       .map(() =>
-        regl.framebuffer({
-          color: regl.texture({
+        environment.regl.framebuffer({
+          color: environment.regl.texture({
             mag: 'nearest',
-            width: glEnvironment.width,
-            height: glEnvironment.height,
+            width: environment.width,
+            height: environment.height,
             format: 'rgba',
           }),
           depthStencil: false,
@@ -74,12 +73,12 @@ export class Output {
       return;
     }
 
-    const pass = compileWithContext(transformApplications, {
-      defaultUniforms: this.glEnvironment.defaultUniforms,
-      precision: this.glEnvironment.precision,
-    });
+    const pass = compileWithEnvironment(
+      transformApplications,
+      this.environment,
+    );
 
-    this.draw = this.glEnvironment.regl({
+    this.draw = this.environment.regl({
       frag: pass.frag,
       vert: this.vert,
       attributes: this.attributes,

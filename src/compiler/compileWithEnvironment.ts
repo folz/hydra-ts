@@ -1,16 +1,9 @@
-import { Precision } from '../Hydra';
+import { GlEnvironment } from '../Hydra';
 import { TypedArg } from './formatArguments';
 import { utilityFunctions } from '../glsl/utilityFunctions';
 import { TransformApplication } from '../glsl/Glsl';
 import { DynamicVariable, DynamicVariableFn, Texture2D, Uniform } from 'regl';
 import { generateGlsl } from './generateGlsl';
-
-export interface TransformApplicationContext {
-  defaultUniforms?: {
-    [name: string]: DynamicVariable<any> | DynamicVariableFn<any, any, any>;
-  };
-  precision: Precision;
-}
 
 export type CompiledTransform = {
   frag: string;
@@ -20,6 +13,8 @@ export type CompiledTransform = {
       | Uniform
       | ((context: any, props: any) => number | number[])
       | Texture2D
+      | DynamicVariable<any>
+      | DynamicVariableFn<any, any, any>
       | undefined;
   };
 };
@@ -30,9 +25,9 @@ export interface ShaderParams {
   fragColor: string;
 }
 
-export function compileWithContext(
+export function compileWithEnvironment(
   transformApplications: TransformApplication[],
-  context: TransformApplicationContext,
+  environment: GlEnvironment,
 ): CompiledTransform {
   const shaderParams = compileGlsl(transformApplications);
 
@@ -42,7 +37,7 @@ export function compileWithContext(
   });
 
   const frag = `
-  precision ${context.precision} float;
+  precision ${environment.precision} float;
   ${Object.values(shaderParams.uniforms)
     .map((uniform) => {
       return `
@@ -78,7 +73,7 @@ export function compileWithContext(
 
   return {
     frag: frag,
-    uniforms: { ...context.defaultUniforms, ...uniforms },
+    uniforms: { ...environment.defaultUniforms, ...uniforms },
   };
 }
 
