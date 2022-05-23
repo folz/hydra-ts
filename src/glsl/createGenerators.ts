@@ -66,6 +66,7 @@ export function addTransformChainMethod(
     return new cls(this.transforms.append(transform));
   }
 
+  // @ts-ignore
   cls.prototype[processedTransformDefinition.name] =
     addTransformApplicationToInternalChain;
 }
