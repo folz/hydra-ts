@@ -59,8 +59,10 @@ export function generateGlsl(
     } else if (transformApplication.transform.type === 'combine') {
       // combining two generated shader strings (i.e. for blend, mult, add funtions)
       f1 =
+        // @ts-ignore
         typedArgs[0].value && typedArgs[0].value.transforms
           ? (uv: string) =>
+              // @ts-ignore
               `${generateGlsl(typedArgs[0].value.transforms, shaderParams)(uv)}`
           : typedArgs[0].isUniform
           ? () => typedArgs[0].name
@@ -75,8 +77,10 @@ export function generateGlsl(
     } else if (transformApplication.transform.type === 'combineCoord') {
       // combining two generated shader strings (i.e. for modulate functions)
       f1 =
+        // @ts-ignore
         typedArgs[0].value && typedArgs[0].value.transforms
           ? (uv: string) =>
+              // @ts-ignore
               `${generateGlsl(typedArgs[0].value.transforms, shaderParams)(uv)}`
           : typedArgs[0].isUniform
           ? () => typedArgs[0].name
@@ -105,8 +109,10 @@ function shaderString(
     .map((input) => {
       if (input.isUniform) {
         return input.name;
+      // @ts-ignore
       } else if (input.value && input.value.transforms) {
         // this by definition needs to be a generator, hence we start with 'st' as the initial value for generating the glsl fragment
+        // @ts-ignore
         return `${generateGlsl(input.value.transforms, shaderParams)('st')}`;
       }
       return input.value;
