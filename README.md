@@ -39,7 +39,7 @@ _For general information about using Hydra, refer to [`hydra`'s documentation][2
 #### Creating a Hydra instance:
 
 ```ts
-import REGL from 'regl';
+const REGL = require('regl');
 import Hydra from 'hydra-ts';
 
 const regl = REGL(/*...*/);
