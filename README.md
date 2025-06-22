@@ -40,7 +40,7 @@ _For general information about using Hydra, refer to [`hydra`'s documentation][2
 
 ```ts
 import REGL from 'regl';
-import Hydra from 'hydra-ts';
+import { Hydra } from 'hydra-ts';
 
 const regl = REGL(/*...*/);
 
