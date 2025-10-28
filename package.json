@@ -1,7 +1,7 @@
 {
   "name": "hydra-ts",
   "license": "AGPL",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A fork of ojack/hydra-synth in typescript, focusing on interoperability.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
