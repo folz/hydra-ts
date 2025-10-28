@@ -7,7 +7,10 @@ import { Output } from '../Output';
 import { src } from '../glsl/index';
 
 export interface TypedArg {
-  value: TransformDefinitionInput['default'];
+  value:
+    | TransformDefinitionInput['default']
+    | Glsl
+    | ((context: any, props: any) => number | number[]);
   type: TransformDefinitionInput['type'];
   isUniform: boolean;
   name: TransformDefinitionInput['name'];
@@ -59,7 +62,7 @@ export function formatArguments(
         if (vecLen > 0) {
           // expected input is a vector, not a scalar
           isUniform = true;
-          value = fillArrayWithDefaults(value, vecLen);
+          value = fillArrayWithDefaults(arg, vecLen);
         } else {
           // is Array
           value = (context: any, props: any) => arrayUtils.getValue(arg)(props);
