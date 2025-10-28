@@ -1,5 +1,5 @@
 export function Screen(
-  options?: DisplayMediaStreamConstraints,
+  options?: DisplayMediaStreamOptions,
 ): Promise<HTMLVideoElement> {
   return new Promise(function (resolve, reject) {
     navigator.mediaDevices
