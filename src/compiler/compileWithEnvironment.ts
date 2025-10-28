@@ -10,11 +10,13 @@ export type CompiledTransform = {
   uniforms: {
     [name: string]:
       | string
+      | number
+      | number[]
       | Uniform
-      | ((context: any, props: any) => number | number[])
       | Texture2D
       | DynamicVariable<any>
       | DynamicVariableFn<any, any, any>
+      | ((context: any, props: any) => number | number[])
       | undefined;
   };
 };
