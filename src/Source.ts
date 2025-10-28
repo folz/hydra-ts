@@ -18,14 +18,13 @@ export class Source {
     });
   }
 
-  init = (opts: { src: Source['src']; dynamic: boolean }) => {
+  init = (opts: { src?: Source['src']; dynamic?: boolean }) => {
     if (opts.src) {
       this.src = opts.src;
       this.tex = this.environment.regl.texture(this.src);
     }
-
-    if (opts.dynamic) {
-      this.dynamic = opts.dynamic;
+    if ('dynamic' in opts) {
+      this.dynamic = !!opts.dynamic;
     }
   };
 
