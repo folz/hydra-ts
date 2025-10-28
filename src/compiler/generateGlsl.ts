@@ -1,7 +1,8 @@
-import { Texture2D } from 'regl';
-import { TransformApplication } from '../glsl/Glsl';
+import type { Texture2D } from 'regl';
+import type { TransformApplication } from '../glsl/Glsl';
 import { formatArguments, TypedArg } from './formatArguments';
-import { ShaderParams } from './compileWithEnvironment';
+import type { ShaderParams } from './compileWithEnvironment';
+import { Glsl } from '../glsl/Glsl';
 
 export type GlslGenerator = (uv: string) => string;
 

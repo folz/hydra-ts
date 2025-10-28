@@ -1,6 +1,6 @@
 import { Output } from '../Output';
 import ImmutableList from './ImmutableList';
-import { ProcessedTransformDefinition } from './transformDefinitions';
+import type { ProcessedTransformDefinition } from './transformDefinitions';
 
 export interface TransformApplication {
   transform: ProcessedTransformDefinition;

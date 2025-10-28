@@ -68,7 +68,7 @@ const types = {
 
 */
 
-import { Texture2D } from 'regl';
+import type { Texture2D } from 'regl';
 
 export type TransformDefinitionType =
   | 'src'

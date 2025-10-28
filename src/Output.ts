@@ -1,6 +1,6 @@
-import { Attributes, DrawCommand, Framebuffer2D } from 'regl';
-import { GlEnvironment } from './Hydra';
-import { TransformApplication } from './glsl/Glsl';
+import type { Attributes, DrawCommand, Framebuffer2D } from 'regl';
+import type { GlEnvironment } from './Hydra';
+import type { TransformApplication } from './glsl/Glsl';
 import { compileWithEnvironment } from './compiler/compileWithEnvironment';
 
 export class Output {

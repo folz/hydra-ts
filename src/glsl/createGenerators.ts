@@ -1,4 +1,4 @@
-import {
+import type {
   ProcessedTransformDefinition,
   TransformDefinition,
   TransformDefinitionType,

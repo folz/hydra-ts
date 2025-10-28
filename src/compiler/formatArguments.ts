@@ -1,6 +1,7 @@
-import { Glsl, TransformApplication } from '../glsl/Glsl';
+import { Glsl } from '../glsl/Glsl';
+import type { TransformApplication } from '../glsl/Glsl';
 import arrayUtils from '../lib/array-utils';
-import { TransformDefinitionInput } from '../glsl/transformDefinitions';
+import type { TransformDefinitionInput } from '../glsl/transformDefinitions';
 import { Source } from '../Source';
 import { Output } from '../Output';
 import { src } from '../glsl/index';
