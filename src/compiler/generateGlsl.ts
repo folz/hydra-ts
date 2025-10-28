@@ -59,15 +59,14 @@ export function generateGlsl(
         )}`;
     } else if (transformApplication.transform.type === 'combine') {
       // combining two generated shader strings (i.e. for blend, mult, add funtions)
+      const arg0 = typedArgs[0];
       f1 =
-        // @ts-ignore
-        typedArgs[0].value && typedArgs[0].value.transforms
+        arg0 && arg0.value instanceof Glsl
           ? (uv: string) =>
-              // @ts-ignore
-              `${generateGlsl(typedArgs[0].value.transforms, shaderParams)(uv)}`
-          : typedArgs[0].isUniform
-          ? () => typedArgs[0].name
-          : () => typedArgs[0].value;
+              `${generateGlsl(arg0.value.transforms, shaderParams)(uv)}`
+          : arg0?.isUniform
+          ? () => arg0.name
+          : () => (arg0 ? (arg0.value as any) : '');
       fragColor = (uv) =>
         `${shaderString(
           `${f0(uv)}, ${f1(uv)}`,
@@ -77,15 +76,14 @@ export function generateGlsl(
         )}`;
     } else if (transformApplication.transform.type === 'combineCoord') {
       // combining two generated shader strings (i.e. for modulate functions)
+      const arg0 = typedArgs[0];
       f1 =
-        // @ts-ignore
-        typedArgs[0].value && typedArgs[0].value.transforms
+        arg0 && arg0.value instanceof Glsl
           ? (uv: string) =>
-              // @ts-ignore
-              `${generateGlsl(typedArgs[0].value.transforms, shaderParams)(uv)}`
-          : typedArgs[0].isUniform
-          ? () => typedArgs[0].name
-          : () => typedArgs[0].value;
+              `${generateGlsl(arg0.value.transforms, shaderParams)(uv)}`
+          : arg0?.isUniform
+          ? () => arg0.name
+          : () => (arg0 ? (arg0.value as any) : '');
       fragColor = (uv) =>
         `${f0(
           `${shaderString(
@@ -111,9 +109,8 @@ function shaderString(
       if (input.isUniform) {
         return input.name;
       // @ts-ignore
-      } else if (input.value && input.value.transforms) {
+      } else if (input.value instanceof Glsl) {
         // this by definition needs to be a generator, hence we start with 'st' as the initial value for generating the glsl fragment
-        // @ts-ignore
         return `${generateGlsl(input.value.transforms, shaderParams)('st')}`;
       }
       return input.value;
