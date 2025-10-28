@@ -10,7 +10,7 @@
     "test": "node --experimental-vm-modules node_modules/.bin/jest",
     "dev": "vite",
     "coverage": "nyc npm run test",
-    "prepack": "tsc || true"
+    "prepack": "tsc -p tsconfig.json"
   },
   "repository": {
     "type": "git",
@@ -28,8 +28,9 @@
     "url": "https://github.com/folz/hydra-ts/issues"
   },
   "homepage": "https://github.com/folz/hydra-ts#readme",
-  "dependencies": {
-    "regl": "^1.3.9"
+  "dependencies": {},
+  "peerDependencies": {
+    "regl": "^1.3.0"
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.1",
@@ -47,13 +48,17 @@
     "jsdom-global": "^3.0.2",
     "nyc": "^15.1.0",
     "prettier": "^2.5.1",
+    "regl": "^1.3.9",
     "typescript": "^4.5.4",
     "vite": "^2.7.10"
   },
   "nyc": {
     "include": [
-      "src/**/*.js",
-      "index.js"
+      "src/**/*.ts",
+      "index.ts"
+    ],
+    "extension": [
+      ".ts"
     ],
     "reporter": [
       "text",
