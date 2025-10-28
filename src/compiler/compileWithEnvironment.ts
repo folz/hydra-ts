@@ -4,6 +4,7 @@ import { utilityFunctions } from '../glsl/utilityFunctions';
 import { TransformApplication } from '../glsl/Glsl';
 import { DynamicVariable, DynamicVariableFn, Texture2D, Uniform } from 'regl';
 import { generateGlsl } from './generateGlsl';
+import { Glsl } from '../glsl/Glsl';
 
 export type CompiledTransform = {
   frag: string;
@@ -14,6 +15,7 @@ export type CompiledTransform = {
       | number[]
       | Uniform
       | Texture2D
+      | Glsl
       | DynamicVariable<any>
       | DynamicVariableFn<any, any, any>
       | ((context: any, props: any) => number | number[])

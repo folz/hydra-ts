@@ -63,7 +63,7 @@ export function generateGlsl(
       f1 =
         arg0 && arg0.value instanceof Glsl
           ? (uv: string) =>
-              `${generateGlsl(arg0.value.transforms, shaderParams)(uv)}`
+              `${generateGlsl((arg0.value as Glsl).transforms.toArray(), shaderParams)(uv)}`
           : arg0?.isUniform
           ? () => arg0.name
           : () => (arg0 ? (arg0.value as any) : '');
@@ -80,7 +80,7 @@ export function generateGlsl(
       f1 =
         arg0 && arg0.value instanceof Glsl
           ? (uv: string) =>
-              `${generateGlsl(arg0.value.transforms, shaderParams)(uv)}`
+              `${generateGlsl((arg0.value as Glsl).transforms.toArray(), shaderParams)(uv)}`
           : arg0?.isUniform
           ? () => arg0.name
           : () => (arg0 ? (arg0.value as any) : '');
@@ -111,7 +111,7 @@ function shaderString(
       // @ts-ignore
       } else if (input.value instanceof Glsl) {
         // this by definition needs to be a generator, hence we start with 'st' as the initial value for generating the glsl fragment
-        return `${generateGlsl(input.value.transforms, shaderParams)('st')}`;
+        return `${generateGlsl((input.value as Glsl).transforms.toArray(), shaderParams)('st')}`;
       }
       return input.value;
     })
