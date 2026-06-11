@@ -66,6 +66,9 @@ interface HydraRendererOptions {
    * receive each frame, alongside time/bpm/resolution. hydra-synth passes
    * `mouse` this way; hydra-ts leaves such inputs to the caller:
    * `props: () => ({ mouse })` recreates upstream's behavior.
+   *
+   * Injected values never replace the synth's own per-frame values, and a
+   * throwing callback is logged and skipped for that frame.
    */
   props?: () => Record<string, unknown>;
   regl: Regl;
@@ -279,9 +282,17 @@ export class Hydra {
         }
       }
 
-      const drawProps = this.#props
-        ? { ...this.synth, ...this.#props() }
-        : this.synth;
+      // synth fields are spread last so injected values can never replace
+      // the core per-frame values (time, bpm, resolution, ...); a throwing
+      // props callback is logged and skipped rather than aborting the frame
+      let drawProps: Synth = this.synth;
+      if (this.#props) {
+        try {
+          drawProps = { ...this.#props(), ...this.synth };
+        } catch (e) {
+          console.log(e);
+        }
+      }
 
       this.sources.forEach((source) => {
         source.draw(drawProps);

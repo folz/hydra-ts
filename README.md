@@ -119,6 +119,10 @@ const hydra = new Hydra({
 osc(({ mouse }) => mouse.x / 100).out(o0);
 ```
 
+Injected values cannot override the synth's own per-frame values (`time`,
+`bpm`, `resolution`, ...), and a throwing `props` callback is logged and
+skipped for that frame rather than aborting it.
+
 #### Adding custom generator or modifier hydra functions (e.g. `setFunction`)
 
 ```ts

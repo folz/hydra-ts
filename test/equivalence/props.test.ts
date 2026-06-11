@@ -73,4 +73,44 @@ describe('Hydra props option', () => {
 
     expect(sourceDraw.mock.calls[0][0]).toBe(hydra.synth);
   });
+
+  test('injected values cannot override synth per-frame values', () => {
+    const hydra = new Hydra({
+      regl: makeStubRegl(),
+      width: 320,
+      height: 240,
+      props: () => ({ time: 99999, resolution: [1, 1], mouse: { x: 3 } }),
+    });
+
+    const sourceDraw = vi.fn();
+    hydra.sources[0].draw = sourceDraw;
+
+    hydra.tick(16);
+
+    const props = sourceDraw.mock.calls[0][0];
+    expect(props.time).toBe(hydra.synth.time);
+    expect(props.resolution).toEqual([320, 240]);
+    expect(props.mouse).toEqual({ x: 3 });
+  });
+
+  test('a throwing props callback is logged and skipped, not fatal', () => {
+    const log = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const hydra = new Hydra({
+      regl: makeStubRegl(),
+      width: 320,
+      height: 240,
+      props: () => {
+        throw new Error('pointer provider not ready');
+      },
+    });
+
+    const sourceDraw = vi.fn();
+    hydra.sources[0].draw = sourceDraw;
+
+    expect(() => hydra.tick(16)).not.toThrow();
+    expect(sourceDraw).toHaveBeenCalledTimes(1);
+    expect(sourceDraw.mock.calls[0][0]).toBe(hydra.synth);
+    expect(log).toHaveBeenCalled();
+    log.mockRestore();
+  });
 });
