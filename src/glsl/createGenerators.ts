@@ -5,9 +5,10 @@ import {
   TransformDefinitionType,
 } from './transformDefinitions.js';
 import { Glsl } from './Glsl.js';
+import { Output } from '../Output.js';
 import ImmutableList from './ImmutableList.js';
 
-type Generator = (...args: unknown[]) => Glsl;
+export type Generator = (...args: unknown[]) => Glsl;
 
 export function createTransformChainClass<
   T extends readonly TransformDefinition[],
@@ -26,6 +27,7 @@ export function createTransformChainClass<
 export function createGenerator(
   generatorTransform: TransformDefinition,
   TransformChainClass: typeof Glsl,
+  defaultOutput?: Output,
 ): Generator {
   const processed = processGlsl(generatorTransform);
 
@@ -35,17 +37,23 @@ export function createGenerator(
         transform: processed,
         userArgs: args,
       }),
+      defaultOutput,
     );
 }
 
 export function createGenerators(
   generatorTransforms: readonly TransformDefinition[],
   sourceClass: typeof Glsl,
+  defaultOutput?: Output,
 ): Record<string, Generator> {
   const generatorMap: Record<string, Generator> = {};
 
   for (const transform of generatorTransforms) {
-    generatorMap[transform.name] = createGenerator(transform, sourceClass);
+    generatorMap[transform.name] = createGenerator(
+      transform,
+      sourceClass,
+      defaultOutput,
+    );
   }
 
   return generatorMap;
@@ -64,7 +72,7 @@ export function addTransformChainMethod(
       userArgs: args,
     };
 
-    return new cls(this.transforms.append(transform));
+    return new cls(this.transforms.append(transform), this.defaultOutput);
   }
 
   // @ts-ignore

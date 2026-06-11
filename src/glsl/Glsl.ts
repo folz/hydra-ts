@@ -14,13 +14,29 @@ export interface TransformApplication {
 
 export class Glsl {
   transforms: ImmutableList<TransformApplication>;
+  readonly defaultOutput?: Output;
 
-  constructor(transforms: ImmutableList<TransformApplication>) {
+  constructor(
+    transforms: ImmutableList<TransformApplication>,
+    defaultOutput?: Output,
+  ) {
     this.transforms = transforms;
+    this.defaultOutput = defaultOutput;
   }
 
-  out(output: Output) {
-    output.render(this.transforms.toArray());
+  out(output?: Output) {
+    const target = output ?? this.defaultOutput;
+
+    if (target === undefined) {
+      throw new Error(
+        '.out() was called without an output, and this chain has no default ' +
+          'output. Pass an output (e.g. .out(o0)), or build the chain with ' +
+          "a Hydra instance's bound generators (hydra.generators), which " +
+          "default to that instance's first output.",
+      );
+    }
+
+    target.render(this.transforms.toArray());
   }
 
   /**
