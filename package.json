@@ -37,6 +37,7 @@
     "@types/node": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^5.8.1",
     "@typescript-eslint/parser": "^5.8.1",
+    "@vitest/coverage-v8": "^1.6.1",
     "eslint": "^8.5.0",
     "hydra-synth": "1.4.0",
     "prettier": "^2.5.1",

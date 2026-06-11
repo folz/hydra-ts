@@ -96,7 +96,9 @@ export class Source {
     }
 
     const canvas = ctx.canvas;
-    if (canvas.width !== width && canvas.height !== height) {
+    // resize when either dimension changes (upstream requires both to
+    // change, which leaves the canvas at the old size if only one differs)
+    if (canvas.width !== width || canvas.height !== height) {
       canvas.width = width;
       canvas.height = height;
     } else {
