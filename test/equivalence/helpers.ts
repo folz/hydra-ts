@@ -21,6 +21,15 @@ import {
 } from '../../src/compiler/compileWithEnvironment';
 import { Glsl } from '../../src/glsl/Glsl';
 import * as tsGenerators from '../../src/glsl/index';
+import {
+  createGenerators,
+  createTransformChainClass,
+} from '../../src/glsl/createGenerators';
+import {
+  generatorTransforms,
+  modifierTransforms,
+  TransformDefinition,
+} from '../../src/glsl/transformDefinitions';
 import { expect } from 'vitest';
 
 export const PRECISION: Precision = 'mediump';
@@ -61,13 +70,21 @@ export interface CompilerSide {
   compile(chain: any): { frag: string; uniforms: Record<string, unknown> };
 }
 
-export function buildUpstream(): CompilerSide {
+export function buildUpstream(
+  customTransforms: readonly TransformDefinition[] = [],
+): CompilerSide {
   const factory = new UpstreamGeneratorFactory({
     defaultUniforms: { ...DEFAULT_UNIFORMS },
     // GlslSource.compile() only reads `precision` from the default output
     defaultOutput: { precision: PRECISION },
     changeListener: () => {},
   });
+
+  for (const transform of customTransforms) {
+    // upstream's processGlsl mutates the definition it is given; clone so
+    // the shared test fixture stays pristine for the hydra-ts side
+    factory.setFunction(structuredClone(transform));
+  }
 
   return {
     generators: factory.generators,
@@ -79,14 +96,32 @@ export function buildUpstream(): CompilerSide {
   };
 }
 
-export function buildHydraTs(): CompilerSide {
+export function buildHydraTs(
+  customTransforms: readonly TransformDefinition[] = [],
+): CompilerSide {
   const environment = {
     precision: PRECISION,
     defaultUniforms: { ...DEFAULT_UNIFORMS },
   } as unknown as GlEnvironment;
 
+  let generators = tsGenerators as unknown as CompilerSide['generators'];
+  if (customTransforms.length > 0) {
+    // same path a library consumer uses to add custom transforms
+    const chainClass = createTransformChainClass([
+      ...modifierTransforms,
+      ...customTransforms.filter((t) => t.type !== 'src'),
+    ]);
+    generators = createGenerators(
+      [
+        ...generatorTransforms,
+        ...customTransforms.filter((t) => t.type === 'src'),
+      ],
+      chainClass,
+    ) as CompilerSide['generators'];
+  }
+
   return {
-    generators: tsGenerators as unknown as CompilerSide['generators'],
+    generators,
     compile(chain: Glsl): CompiledTransform {
       return compileWithEnvironment(chain.transforms.toArray(), environment);
     },

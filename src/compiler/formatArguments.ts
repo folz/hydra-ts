@@ -115,6 +115,18 @@ export function formatArguments(
       typedArg.value = () => ref.getTexture();
       typedArg.isUniform = true;
     } else {
+      if (typedArg.value === undefined || typedArg.value === null) {
+        // upstream crashes here too (a TypeError reading `.getTexture` of
+        // undefined); fail with a clearer message. This is hit when a
+        // combine/combineCoord is called without its source argument, or by
+        // custom definitions that declare the source input explicitly (it is
+        // implicit — see the custom-transforms section of the README).
+        throw new Error(
+          `No value for input '${input.name}' of '${transform.name}'. ` +
+            'Combine/combineCoord transforms receive their source input ' +
+            'implicitly; it must not be declared in the definition.',
+        );
+      }
       // if passing in a texture reference, when function asks for vec4, convert to vec4
       if (hasGetTexture(typedArg.value) && input.type === 'vec4') {
         typedArg.value = src(typedArg.value);

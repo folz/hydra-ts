@@ -10,6 +10,7 @@ import { describe, expect, test, vi, beforeAll } from 'vitest';
 import upstreamGlslFunctions from 'hydra-synth/src/glsl/glsl-functions.js';
 
 import arrayUtils from '../../src/lib/array-utils';
+import { TransformDefinition } from '../../src/glsl/transformDefinitions';
 import {
   buildHydraTs,
   buildUpstream,
@@ -246,5 +247,108 @@ describe('error behavior parity', () => {
     expect(() =>
       hydraTs.compile(hydraTs.generators.osc(10).mult([1, 0, 0, 1])),
     ).toThrow('Arguments must be a texture or GlslSource');
+  });
+
+  test('array literal for a declared vec4 input throws on both sides (upstream PR #177)', () => {
+    // `sum` declares a vec4 `scale` input. Since hydra-synth 1.4.0, every
+    // user-supplied vec4 argument must be a texture or source — vector
+    // literals like sum([1, 1, 1, 1]) throw upstream too, so hydra-ts
+    // matches rather than restoring its pre-1.4 vec4-literal support.
+    const upstream = buildUpstream();
+    const hydraTs = buildHydraTs();
+
+    expect(() =>
+      upstream.compile(upstream.generators.osc(10).sum([1, 1, 1, 1])),
+    ).toThrow('Arguments must be a texture or GlslSource');
+    expect(() =>
+      hydraTs.compile(hydraTs.generators.osc(10).sum([1, 1, 1, 1])),
+    ).toThrow('Arguments must be a texture or GlslSource');
+  });
+
+  test('combine without its source argument throws on both sides', () => {
+    // upstream fails with a TypeError reading `.getTexture` of undefined;
+    // hydra-ts fails at the same point with a descriptive error
+    const upstream = buildUpstream();
+    const hydraTs = buildHydraTs();
+
+    expect(() =>
+      upstream.compile(upstream.generators.osc(10).blend()),
+    ).toThrow();
+    expect(() => hydraTs.compile(hydraTs.generators.osc(10).blend())).toThrow(
+      "No value for input '_c1' of 'blend'",
+    );
+  });
+});
+
+describe('custom transform definitions', () => {
+  // the setFunction definition shape shared by hydra-synth and hydra-ts:
+  // combine/combineCoord receive their source input implicitly and reference
+  // it as `_c1`/`_c0` in the glsl body
+  const myBlend: TransformDefinition = {
+    name: 'myBlend',
+    type: 'combine',
+    inputs: [{ name: 'amount', type: 'float', default: 0.5 }],
+    glsl: `return _c0*(1.0-amount)+_c1*amount;`,
+  };
+
+  const myModulate: TransformDefinition = {
+    name: 'myModulate',
+    type: 'combineCoord',
+    inputs: [{ name: 'amount', type: 'float', default: 0.1 }],
+    glsl: `return _st + _c0.xy*amount;`,
+  };
+
+  test('custom combine compiles byte-identical to upstream setFunction', () => {
+    const upstream = buildUpstream([myBlend]);
+    const hydraTs = buildHydraTs([myBlend]);
+    const build = (g: Generators) => g.osc(10).myBlend(g.shape(3), 0.8);
+
+    const upstreamPass = upstream.compile(build(upstream.generators));
+    const hydraTsPass = hydraTs.compile(build(hydraTs.generators));
+
+    expect(hydraTsPass.frag).toBe(upstreamPass.frag);
+    expectEquivalentUniforms(hydraTsPass.uniforms, upstreamPass.uniforms);
+  });
+
+  test('custom combineCoord compiles byte-identical to upstream setFunction', () => {
+    const upstream = buildUpstream([myModulate]);
+    const hydraTs = buildHydraTs([myModulate]);
+    const build = (g: Generators) => g.voronoi(5).myModulate(g.noise(3), 0.4);
+
+    const upstreamPass = upstream.compile(build(upstream.generators));
+    const hydraTsPass = hydraTs.compile(build(hydraTs.generators));
+
+    expect(hydraTsPass.frag).toBe(upstreamPass.frag);
+    expectEquivalentUniforms(hydraTsPass.uniforms, upstreamPass.uniforms);
+  });
+
+  test('pre-1.x hydra-ts-style combine definitions (explicit source input) fail on both sides', () => {
+    // older hydra-ts baked the source input into combine definitions as an
+    // explicit `color` input. That shape was never compatible with
+    // hydra-synth's setFunction, and now fails identically on both sides
+    // (upstream with a TypeError, hydra-ts with a descriptive error).
+    const oldStyleBlend: TransformDefinition = {
+      name: 'oldBlend',
+      type: 'combine',
+      inputs: [
+        { name: 'color', type: 'vec4' },
+        { name: 'amount', type: 'float', default: 0.5 },
+      ],
+      glsl: `return _c0*(1.0-amount)+color*amount;`,
+    };
+
+    const upstream = buildUpstream([oldStyleBlend]);
+    const hydraTs = buildHydraTs([oldStyleBlend]);
+
+    expect(() =>
+      upstream.compile(
+        upstream.generators.osc(10).oldBlend(upstream.generators.shape(3)),
+      ),
+    ).toThrow();
+    expect(() =>
+      hydraTs.compile(
+        hydraTs.generators.osc(10).oldBlend(hydraTs.generators.shape(3)),
+      ),
+    ).toThrow("No value for input 'color' of 'oldBlend'");
   });
 });

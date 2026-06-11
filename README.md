@@ -130,6 +130,30 @@ Where `myGeneratorDefinition` and `myModifierDefinition` match the object you wo
 
 A "generator" is a definition with `{type: 'src'}`, and a "modifier" is a definition of any other type.
 
+Definitions use hydra-synth's `setFunction` format: the implicit arguments
+for each type are injected automatically and must not be declared in
+`inputs`. In particular, `combine`/`combineCoord` definitions receive the
+other source implicitly — reference it as `_c1` (combine) or `_c0`
+(combineCoord) in the glsl body:
+
+```ts
+const myModifierDefinition = {
+  name: 'myBlend',
+  type: 'combine',
+  inputs: [{ name: 'amount', type: 'float', default: 0.5 }],
+  glsl: `return _c0*(1.0-amount)+_c1*amount;`,
+};
+```
+
+(Versions of hydra-ts before this sync instead declared the source as an
+explicit `color` input on combine definitions. That shape was never
+compatible with hydra-synth's `setFunction` and is no longer supported —
+remove the input and rename `color` to `_c1`/`_c0` in the body.)
+
+Also note that since hydra-synth 1.4.0, arguments for `vec4` inputs must be
+a source or texture; vector literals like `sum([1, 1, 1, 1])` throw, in
+hydra-synth and hydra-ts alike.
+
 #### Recreating bidirectional global changes (e.g. assigning `bpm`/`speed` globals)
 
 This is not presently supported.
