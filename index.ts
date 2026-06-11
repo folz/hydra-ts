@@ -10,3 +10,4 @@ export {
   createGenerators,
   createTransformChainClass,
 } from './src/glsl/createGenerators';
+export { detectPrecision } from './src/lib/detectPrecision';
