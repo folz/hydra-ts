@@ -8,9 +8,12 @@ export class Source {
   src?: TextureImageData;
   dynamic: boolean;
   tex: Texture2D;
+  // identity for debugging/inspection ('s0', 's1', ...), like hydra-synth's
+  readonly label: string;
 
-  constructor(environment: GlEnvironment) {
+  constructor(environment: GlEnvironment, label = '') {
     this.environment = environment;
+    this.label = label;
     this.src = undefined;
     this.dynamic = true;
     this.tex = environment.regl.texture({

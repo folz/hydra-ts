@@ -202,12 +202,12 @@ export class Hydra {
         : undefined;
 
     for (let i = 0; i < numSources; i++) {
-      const s = new Source(glEnvironment);
+      const s = new Source(glEnvironment, `s${i}`);
       sources.push(s);
     }
 
     for (let i = 0; i < numOutputs; i++) {
-      const o = new Output(glEnvironment);
+      const o = new Output(glEnvironment, `o${i}`);
       outputs.push(o);
     }
 
