@@ -1,7 +1,7 @@
 import { Attributes, DrawCommand, Framebuffer2D } from 'regl';
-import { GlEnvironment } from './Hydra';
-import { TransformApplication } from './glsl/Glsl';
-import { compileWithEnvironment } from './compiler/compileWithEnvironment';
+import { GlEnvironment } from './Hydra.js';
+import { TransformApplication } from './glsl/Glsl.js';
+import { compileWithEnvironment } from './compiler/compileWithEnvironment.js';
 
 export class Output {
   attributes: Attributes;
@@ -10,9 +10,12 @@ export class Output {
   environment: GlEnvironment;
   vert: string;
   pingPongIndex = 0;
+  // identity for debugging/inspection ('o0', 'o1', ...), like hydra-synth's
+  readonly label: string;
 
-  constructor(environment: GlEnvironment) {
+  constructor(environment: GlEnvironment, label = '') {
     this.environment = environment;
+    this.label = label;
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore

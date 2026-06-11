@@ -1,16 +1,19 @@
-import { Webcam } from './lib/Webcam';
-import { Screen } from './lib/Screen';
+import { Webcam } from './lib/Webcam.js';
+import { Screen } from './lib/Screen.js';
 import { Texture2D, TextureImageData } from 'regl';
-import { GlEnvironment, Synth } from './Hydra';
+import { GlEnvironment, Synth } from './Hydra.js';
 
 export class Source {
   environment: GlEnvironment;
   src?: TextureImageData;
   dynamic: boolean;
   tex: Texture2D;
+  // identity for debugging/inspection ('s0', 's1', ...), like hydra-synth's
+  readonly label: string;
 
-  constructor(environment: GlEnvironment) {
+  constructor(environment: GlEnvironment, label = '') {
     this.environment = environment;
+    this.label = label;
     this.src = undefined;
     this.dynamic = true;
     this.tex = environment.regl.texture({

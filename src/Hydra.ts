@@ -6,10 +6,10 @@ import {
   Regl,
   Resource,
 } from 'regl';
-import { Output } from './Output';
-import { Loop } from './Loop';
-import { Source } from './Source';
-import { solid } from './glsl';
+import { Output } from './Output.js';
+import { Loop } from './Loop.js';
+import { Source } from './Source.js';
+import { solid } from './glsl/index.js';
 
 export type Precision = 'lowp' | 'mediump' | 'highp';
 
@@ -214,12 +214,12 @@ export class Hydra {
         : undefined;
 
     for (let i = 0; i < numSources; i++) {
-      const s = new Source(glEnvironment);
+      const s = new Source(glEnvironment, `s${i}`);
       sources.push(s);
     }
 
     for (let i = 0; i < numOutputs; i++) {
-      const o = new Output(glEnvironment);
+      const o = new Output(glEnvironment, `o${i}`);
       outputs.push(o);
     }
 
@@ -267,64 +267,73 @@ export class Hydra {
 
   // dt in ms
   tick = (dt: number) => {
-    this.synth.time += dt * 0.001 * this.synth.speed;
+    // like hydra-synth, a failing frame is logged rather than thrown, so an
+    // error (e.g. from a dynamic uniform) doesn't break the render loop
+    try {
+      this.synth.time += dt * 0.001 * this.synth.speed;
 
-    this.#timeSinceLastUpdate += dt;
+      this.#timeSinceLastUpdate += dt;
 
-    if (!this.synth.fps || this.#timeSinceLastUpdate >= 1000 / this.synth.fps) {
-      this.synth.stats.fps = Math.ceil(1000 / this.#timeSinceLastUpdate);
+      if (
+        !this.synth.fps ||
+        this.#timeSinceLastUpdate >= 1000 / this.synth.fps
+      ) {
+        this.synth.stats.fps = Math.ceil(1000 / this.#timeSinceLastUpdate);
 
-      if (this.synth.update) {
-        try {
-          this.synth.update(this.#timeSinceLastUpdate);
-        } catch (e) {
-          console.log(e);
+        if (this.synth.update) {
+          try {
+            this.synth.update(this.#timeSinceLastUpdate);
+          } catch (e) {
+            console.log(e);
+          }
         }
-      }
 
-      // synth fields are spread last so injected values can never replace
-      // the core per-frame values (time, bpm, resolution, ...); a throwing
-      // props callback is logged and skipped rather than aborting the frame
-      let drawProps: Synth = this.synth;
-      if (this.#props) {
-        try {
-          drawProps = { ...this.#props(), ...this.synth };
-        } catch (e) {
-          console.log(e);
+        // synth fields are spread last so injected values can never replace
+        // the core per-frame values (time, bpm, resolution, ...); a throwing
+        // props callback is logged and skipped rather than aborting the frame
+        let drawProps: Synth = this.synth;
+        if (this.#props) {
+          try {
+            drawProps = { ...this.#props(), ...this.synth };
+          } catch (e) {
+            console.log(e);
+          }
         }
-      }
 
-      this.sources.forEach((source) => {
-        source.draw(drawProps);
-      });
-
-      this.outputs.forEach((output) => {
-        output.draw(drawProps);
-      });
-
-      if (this.#isRenderingAll && this.#renderAll) {
-        this.#renderAll({
-          tex0: this.outputs[0].getCurrent(),
-          tex1: this.outputs[1].getCurrent(),
-          tex2: this.outputs[2].getCurrent(),
-          tex3: this.outputs[3].getCurrent(),
+        this.sources.forEach((source) => {
+          source.draw(drawProps);
         });
-      } else {
-        this.#renderFbo({
-          tex0: this.#output.getCurrent(),
-          resolution: this.synth.resolution,
+
+        this.outputs.forEach((output) => {
+          output.draw(drawProps);
         });
-      }
 
-      if (this.synth.afterUpdate) {
-        try {
-          this.synth.afterUpdate(this.#timeSinceLastUpdate);
-        } catch (e) {
-          console.log(e);
+        if (this.#isRenderingAll && this.#renderAll) {
+          this.#renderAll({
+            tex0: this.outputs[0].getCurrent(),
+            tex1: this.outputs[1].getCurrent(),
+            tex2: this.outputs[2].getCurrent(),
+            tex3: this.outputs[3].getCurrent(),
+          });
+        } else {
+          this.#renderFbo({
+            tex0: this.#output.getCurrent(),
+            resolution: this.synth.resolution,
+          });
         }
-      }
 
-      this.#timeSinceLastUpdate = 0;
+        if (this.synth.afterUpdate) {
+          try {
+            this.synth.afterUpdate(this.#timeSinceLastUpdate);
+          } catch (e) {
+            console.log(e);
+          }
+        }
+
+        this.#timeSinceLastUpdate = 0;
+      }
+    } catch (e) {
+      console.warn('Error during tick():', e);
     }
   };
 }

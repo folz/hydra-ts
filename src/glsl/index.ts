@@ -1,11 +1,11 @@
 import {
   createGenerators,
   createTransformChainClass,
-} from './createGenerators';
+} from './createGenerators.js';
 import {
   generatorTransforms,
   modifierTransforms,
-} from './transformDefinitions';
+} from './transformDefinitions.js';
 
 const TransformChainClass = createTransformChainClass(modifierTransforms);
 const generators = createGenerators(generatorTransforms, TransformChainClass);
