@@ -1,7 +1,7 @@
 import { Attributes, DrawCommand, Framebuffer2D } from 'regl';
-import { GlEnvironment } from './Hydra';
-import { TransformApplication } from './glsl/Glsl';
-import { compileWithEnvironment } from './compiler/compileWithEnvironment';
+import { GlEnvironment } from './Hydra.js';
+import { TransformApplication } from './glsl/Glsl.js';
+import { compileWithEnvironment } from './compiler/compileWithEnvironment.js';
 
 export class Output {
   attributes: Attributes;

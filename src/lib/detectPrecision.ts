@@ -1,4 +1,4 @@
-import { Precision } from '../Hydra';
+import { Precision } from '../Hydra.js';
 
 type NavigatorLike = Pick<Navigator, 'platform' | 'maxTouchPoints'>;
 

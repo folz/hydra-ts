@@ -1,7 +1,7 @@
-import { Webcam } from './lib/Webcam';
-import { Screen } from './lib/Screen';
+import { Webcam } from './lib/Webcam.js';
+import { Screen } from './lib/Screen.js';
 import { Texture2D, TextureImageData } from 'regl';
-import { GlEnvironment, Synth } from './Hydra';
+import { GlEnvironment, Synth } from './Hydra.js';
 
 export class Source {
   environment: GlEnvironment;

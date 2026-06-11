@@ -1,6 +1,6 @@
-import { Output } from '../Output';
-import ImmutableList from './ImmutableList';
-import { ProcessedTransformDefinition } from './transformDefinitions';
+import { Output } from '../Output.js';
+import ImmutableList from './ImmutableList.js';
+import { ProcessedTransformDefinition } from './transformDefinitions.js';
 
 export interface TransformApplication {
   transform: ProcessedTransformDefinition;

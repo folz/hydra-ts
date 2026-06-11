@@ -4,7 +4,7 @@ import {
   TransformDefinitionInput,
   TransformDefinitionType,
 } from './transformDefinitions.js';
-import { Glsl } from './Glsl';
+import { Glsl } from './Glsl.js';
 import ImmutableList from './ImmutableList.js';
 
 type Generator = (...args: unknown[]) => Glsl;

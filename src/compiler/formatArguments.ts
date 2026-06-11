@@ -1,7 +1,7 @@
-import { Glsl, TransformApplication } from '../glsl/Glsl';
-import arrayUtils from '../lib/array-utils';
-import { TransformDefinitionInput } from '../glsl/transformDefinitions';
-import { src } from '../glsl/index';
+import { Glsl, TransformApplication } from '../glsl/Glsl.js';
+import arrayUtils from '../lib/array-utils.js';
+import { TransformDefinitionInput } from '../glsl/transformDefinitions.js';
+import { src } from '../glsl/index.js';
 
 export interface TypedArg {
   value: unknown;
