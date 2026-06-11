@@ -10,6 +10,15 @@ import { Output } from './Output.js';
 import { Loop } from './Loop.js';
 import { Source } from './Source.js';
 import { solid } from './glsl/index.js';
+import {
+  createGenerators,
+  createTransformChainClass,
+  Generator,
+} from './glsl/createGenerators.js';
+import {
+  generatorTransforms,
+  modifierTransforms,
+} from './glsl/transformDefinitions.js';
 
 export type Precision = 'lowp' | 'mediump' | 'highp';
 
@@ -80,6 +89,13 @@ export class Hydra {
   readonly synth: Synth;
   readonly outputs: Output[];
   readonly sources: Source[];
+  /**
+   * Generators bound to this instance: chains built from them default to
+   * this Hydra's first output, so `hydra.generators.osc().out()` works like
+   * the hydra editor. The module-level generators exported from 'hydra-ts'
+   * remain environment-free and require an explicit output.
+   */
+  readonly generators: Record<string, Generator>;
   #output: Output;
   #isRenderingAll = false;
   readonly #renderFbo: DrawCommand<DefaultContext>;
@@ -231,6 +247,11 @@ export class Hydra {
     this.#renderFbo = renderFbo;
     this.#renderAll = renderAll;
     this.#props = props;
+    this.generators = createGenerators(
+      generatorTransforms,
+      createTransformChainClass(modifierTransforms),
+      outputs[0],
+    );
   }
 
   hush = () => {

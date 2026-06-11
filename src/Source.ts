@@ -1,6 +1,6 @@
 import { Webcam } from './lib/Webcam.js';
 import { Screen } from './lib/Screen.js';
-import { Texture2D, TextureImageData } from 'regl';
+import { Texture2D, Texture2DOptions, TextureImageData } from 'regl';
 import { GlEnvironment, Synth } from './Hydra.js';
 
 export class Source {
@@ -21,28 +21,40 @@ export class Source {
     });
   }
 
-  init = (opts: { src: Source['src']; dynamic: boolean }) => {
-    if (opts.src) {
+  // `params` is forwarded to regl.texture() on every init* method, matching
+  // hydra-synth — e.g. s0.initCam(0, { min: 'linear', mag: 'linear' })
+  // enables smooth texture filtering.
+  init = (
+    opts: { src?: Source['src']; dynamic?: boolean },
+    params?: Texture2DOptions,
+  ) => {
+    if ('src' in opts) {
       this.src = opts.src;
-      this.tex = this.environment.regl.texture(this.src);
+      this.tex = this.environment.regl.texture({
+        data: this.src,
+        ...params,
+      } as Texture2DOptions);
     }
 
-    if (opts.dynamic) {
+    if ('dynamic' in opts && opts.dynamic !== undefined) {
       this.dynamic = opts.dynamic;
     }
   };
 
-  initCam = (index: number) => {
+  initCam = (index: number, params?: Texture2DOptions) => {
     Webcam(index)
       .then((video) => {
         this.src = video;
         this.dynamic = true;
-        this.tex = this.environment.regl.texture(video);
+        this.tex = this.environment.regl.texture({
+          data: video,
+          ...params,
+        } as Texture2DOptions);
       })
       .catch((err) => console.log('could not get camera', err));
   };
 
-  initVideo = (url = '') => {
+  initVideo = (url = '', params?: Texture2DOptions) => {
     const vid = document.createElement('video');
     vid.crossOrigin = 'anonymous';
     vid.autoplay = true;
@@ -52,28 +64,39 @@ export class Source {
     vid.addEventListener('loadeddata', () => {
       this.src = vid;
       vid.play();
-      this.tex = this.environment.regl.texture(this.src);
+      this.tex = this.environment.regl.texture({
+        data: this.src,
+        ...params,
+      } as Texture2DOptions);
       this.dynamic = true;
     });
     vid.src = url;
   };
 
-  initImage = (url = '') => {
+  initImage = (url = '', params?: Texture2DOptions) => {
     const img = document.createElement('img');
     img.crossOrigin = 'anonymous';
     img.src = url;
     img.onload = () => {
       this.src = img;
       this.dynamic = false;
-      this.tex = this.environment.regl.texture(this.src);
+      this.tex = this.environment.regl.texture({
+        data: this.src,
+        ...params,
+      } as Texture2DOptions);
     };
   };
 
-  initScreen = () => {
+  // index is only relevant in atom-hydra + desktop apps; accepted for
+  // signature parity with hydra-synth
+  initScreen = (_index = 0, params?: Texture2DOptions) => {
     Screen()
       .then((video) => {
         this.src = video;
-        this.tex = this.environment.regl.texture(this.src);
+        this.tex = this.environment.regl.texture({
+          data: this.src,
+          ...params,
+        } as Texture2DOptions);
         this.dynamic = true;
       })
       .catch((err) => console.log('could not get screen', err));

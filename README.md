@@ -76,11 +76,12 @@ const hydra = new Hydra({ regl, width, height, precision: detectPrecision() });
 #### Recreating the hydra-editor global environment
 
 ```ts
-import { Hydra, generators } from 'hydra-ts';
+import { Hydra } from 'hydra-ts';
 
 const hydra = new Hydra(/* ... */);
 
-const { src, osc, gradient, shape, voronoi, noise, solid, prev } = generators;
+const { src, osc, gradient, shape, voronoi, noise, solid, prev } =
+  hydra.generators;
 const { sources, outputs } = hydra;
 
 const [s0, s1, s2, s3] = sources;
@@ -88,9 +89,16 @@ const [o0, o1, o2, o3] = outputs;
 const { hush, loop, render } = hydra;
 
 loop.start();
+
+osc(60).out(); // chains from hydra.generators default to o0, like the editor
 ```
 
-Generators are no longer dependent on the Hydra environment, so you can import them directly from `'hydra-ts'`;
+`hydra.generators` are bound to their instance: `.out()` with no argument
+renders to that instance's first output, matching the editor.
+
+Generators that do not depend on any Hydra environment can also be imported
+directly from `'hydra-ts'` (`import { generators } from 'hydra-ts'`); chains
+built from those require an explicit output: `osc(60).out(o0)`.
 
 Sources and outputs may be named when destructuring from their respective properties on the hydra instance.
 
@@ -184,6 +192,26 @@ Also note that since hydra-synth 1.4.0, arguments for `vec4` inputs must be
 a source or texture; vector literals like `sum([1, 1, 1, 1])` throw, in
 hydra-synth and hydra-ts alike.
 
+#### Mouse input
+
+hydra-synth installs a global `mouse` listener on `window` at import time.
+hydra-ts ships the same tracker as an explicit factory instead — nothing is
+attached until you ask for it:
+
+```ts
+import { createMouse } from 'hydra-ts';
+
+const mouse = createMouse(); // listens on window, like hydra-synth
+// const mouse = createMouse(canvas); // or scope it to an element
+
+osc(() => mouse.x / 100).out(o0);
+
+mouse.enabled = false; // detach listeners when done
+```
+
+`mouse` exposes the same properties as upstream's: `x`, `y`, `buttons`,
+`mods`, and `enabled`.
+
 #### Recreating bidirectional global changes (e.g. assigning `bpm`/`speed` globals)
 
 In the hydra editor, `speed`, `bpm`, and `fps` are assignable globals. In
@@ -223,8 +251,10 @@ compiler.
 
 ## Differences from the original hydra-synth
 
-Presently, you must pass an output instance to `.out(o#)` - it does not infer the "default" output if none is passed.
-PRs to address this are welcome.
+Chains built from the environment-free generators (`import { generators } from 'hydra-ts'`)
+require an explicit output: `.out(o0)`. Chains built from an instance's bound
+generators (`hydra.generators`) default to that instance's first output, like
+the original.
 
 You must also call ArrayUtils.init() once before any instance of hydra is used.
 
