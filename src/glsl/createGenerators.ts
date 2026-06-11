@@ -1,6 +1,7 @@
 import {
   ProcessedTransformDefinition,
   TransformDefinition,
+  TransformDefinitionInput,
   TransformDefinitionType,
 } from './transformDefinitions.js';
 import { Glsl } from './Glsl';
@@ -71,41 +72,53 @@ export function addTransformChainMethod(
     addTransformApplicationToInternalChain;
 }
 
+interface ImplicitArg {
+  type: string;
+  name: string;
+}
+
 const typeLookup: Record<
   TransformDefinitionType,
-  { returnType: string; implicitFirstArg: string }
+  { returnType: string; args: readonly ImplicitArg[] }
 > = {
   src: {
     returnType: 'vec4',
-    implicitFirstArg: 'vec2 _st',
+    args: [{ type: 'vec2', name: '_st' }],
   },
   coord: {
     returnType: 'vec2',
-    implicitFirstArg: 'vec2 _st',
+    args: [{ type: 'vec2', name: '_st' }],
   },
   color: {
     returnType: 'vec4',
-    implicitFirstArg: 'vec4 _c0',
+    args: [{ type: 'vec4', name: '_c0' }],
   },
   combine: {
     returnType: 'vec4',
-    implicitFirstArg: 'vec4 _c0',
+    args: [
+      { type: 'vec4', name: '_c0' },
+      { type: 'vec4', name: '_c1' },
+    ],
   },
   combineCoord: {
     returnType: 'vec2',
-    implicitFirstArg: 'vec2 _st',
+    args: [
+      { type: 'vec2', name: '_st' },
+      { type: 'vec4', name: '_c0' },
+    ],
   },
 };
 
 export function processGlsl(
   transformDefinition: TransformDefinition,
 ): ProcessedTransformDefinition {
-  const { implicitFirstArg, returnType } = typeLookup[transformDefinition.type];
+  const { args, returnType } = typeLookup[transformDefinition.type];
 
-  const signature = [
-    implicitFirstArg,
-    ...transformDefinition.inputs.map((input) => `${input.type} ${input.name}`),
-  ].join(', ');
+  const allInputs = [...args, ...transformDefinition.inputs];
+
+  const signature = allInputs
+    .map((input) => `${input.type} ${input.name}`)
+    .join(', ');
 
   const glslFunction = `
   ${returnType} ${transformDefinition.name}(${signature}) {
@@ -115,6 +128,11 @@ export function processGlsl(
 
   return {
     ...transformDefinition,
+    // The first implicit argument is supplied by the compiler (the current
+    // uv coordinate or color), so it is not part of the runtime inputs. For
+    // combine/combineCoord the second implicit argument (`_c1`/`_c0`)
+    // remains, and receives the user's first argument (the other source).
+    inputs: allInputs.slice(1) as TransformDefinitionInput[],
     glsl: glslFunction,
     processed: true,
   };

@@ -25,15 +25,19 @@ export interface ShaderParams {
   fragColor: string;
 }
 
+// The fragment shader emitted here is kept byte-identical to the one
+// hydra-synth's GlslSource.compile() produces (given the same precision), so
+// outputs can be compared 1:1 against upstream. See test/equivalence.
 export function compileWithEnvironment(
   transformApplications: TransformApplication[],
   environment: GlEnvironment,
 ): CompiledTransform {
   const shaderParams = compileGlsl(transformApplications);
 
-  const uniforms: Record<TypedArg['name'], TypedArg['value']> = {};
+  const uniforms: CompiledTransform['uniforms'] = {};
   shaderParams.uniforms.forEach((uniform) => {
-    uniforms[uniform.name] = uniform.value;
+    uniforms[uniform.name] =
+      uniform.value as CompiledTransform['uniforms'][string];
   });
 
   const frag = `
@@ -47,6 +51,7 @@ export function compileWithEnvironment(
   uniform float time;
   uniform vec2 resolution;
   varying vec2 uv;
+  uniform sampler2D prevBuffer;
 
   ${Object.values(utilityFunctions)
     .map((transform) => {
@@ -65,9 +70,10 @@ export function compileWithEnvironment(
     .join('')}
 
   void main () {
-    vec4 c = vec4(1, 0, 0, 1);
     vec2 st = gl_FragCoord.xy/resolution.xy;
-    gl_FragColor = ${shaderParams.fragColor};
+
+    ${shaderParams.fragColor}
+    gl_FragColor = c;
   }
   `;
 
@@ -86,11 +92,12 @@ export function compileGlsl(
     fragColor: '',
   };
 
-  // Note: generateGlsl() also mutates shaderParams.transformApplications
-  shaderParams.fragColor = generateGlsl(
-    transformApplications,
-    shaderParams,
-  )('st');
+  // Note: generateGlsl() also mutates shaderParams.uniforms and
+  // shaderParams.transformApplications as it walks the transform tree.
+  shaderParams.fragColor = generateGlsl(transformApplications, shaderParams)(
+    'c',
+    'st',
+  );
 
   // remove uniforms with duplicate names
   const uniforms: Record<string, TypedArg> = {};

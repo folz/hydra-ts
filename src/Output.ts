@@ -82,7 +82,11 @@ export class Output {
       frag: pass.frag,
       vert: this.vert,
       attributes: this.attributes,
-      uniforms: pass.uniforms,
+      uniforms: {
+        ...pass.uniforms,
+        // the buffer most recently rendered to, sampled by `prev()`
+        prevBuffer: () => this.fbos[this.pingPongIndex],
+      },
       count: 3,
       framebuffer: () => {
         this.pingPongIndex = this.pingPongIndex ? 0 : 1;

@@ -14,6 +14,14 @@ const map = (
   return ((num - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
 };
 
+// The '%' operator is a remainder operator, and Javascript lacks a dedicated
+// modulo operator. This function is an implementation of the operation
+// copied-n-pasted from
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder#description
+const modulo = (n: number, d: number) => {
+  return ((n % d) + d) % d;
+};
+
 type Easing = keyof typeof easing;
 
 declare global {
@@ -81,9 +89,14 @@ export default {
       if (smooth !== 0) {
         const ease = arr._ease ? arr._ease : easing['linear'];
         const _index = index - smooth / 2;
-        const currValue = arr[Math.floor(_index % arr.length)];
-        const nextValue = arr[Math.floor((_index + 1) % arr.length)];
-        const t = Math.min((_index % 1) / smooth, 1);
+        // While time * speed * (bpm / 60) is small (during the first seconds
+        // after startup), _index can be negative, and the remainder operator
+        // would produce a negative array index (yielding undefined) and a
+        // negative interpolation parameter. Wrap with a true modulo instead,
+        // matching hydra-synth (PR #157).
+        const currValue = arr[Math.floor(modulo(_index, arr.length))];
+        const nextValue = arr[Math.floor(modulo(_index + 1, arr.length))];
+        const t = Math.min(modulo(_index, 1) / smooth, 1);
         return ease(t) * (nextValue - currValue) + currValue;
       } else {
         return arr[Math.floor(index % arr.length)];

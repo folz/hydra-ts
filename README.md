@@ -69,7 +69,7 @@ import { Hydra, generators } from 'hydra-ts';
 
 const hydra = new Hydra(/* ... */);
 
-const { src, osc, gradient, shape, voronoi, noise } = generators;
+const { src, osc, gradient, shape, voronoi, noise, solid, prev } = generators;
 const { sources, outputs } = hydra;
 
 const [s0, s1, s2, s3] = sources;
@@ -85,19 +85,43 @@ Sources and outputs may be named when destructuring from their respective proper
 
 Helper methods may also be destructured from the hydra instance.
 
+Calling `render()` with no argument tiles the first four outputs in a 2x2
+grid, like the original hydra editor (requires at least four outputs);
+`render(o1)` renders a single output.
+
+#### Per-frame callbacks (`update`/`afterUpdate`)
+
+Like upstream hydra-synth, `update` runs before each rendered frame, and
+`afterUpdate` runs after it:
+
+```ts
+hydra.synth.update = (dt) => {
+  /* dt in milliseconds since the previous rendered frame */
+};
+hydra.synth.afterUpdate = (dt) => {};
+```
+
+`hush()` resets both, clears all sources, and renders transparent black to
+every output, matching upstream behavior.
+
 #### Adding custom generator or modifier hydra functions (e.g. `setFunction`)
 
 ```ts
 import {
   createGenerators,
+  createTransformChainClass,
   defaultGenerators,
   defaultModifiers,
 } from 'hydra-ts';
 
-const generators = createGenerators({
-  generators: [...defaultGenerators, myGeneratorDefinition],
-  modifiers: [...defaultModifiers, myModifierDefinition],
-});
+const chainClass = createTransformChainClass([
+  ...defaultModifiers,
+  myModifierDefinition,
+]);
+const generators = createGenerators(
+  [...defaultGenerators, myGeneratorDefinition],
+  chainClass,
+);
 
 const { src, osc, /* ... , */ myGen } = generators;
 ```
@@ -110,12 +134,39 @@ A "generator" is a definition with `{type: 'src'}`, and a "modifier" is a defini
 
 This is not presently supported.
 
+## Equivalence with upstream
+
+hydra-ts tracks [hydra-synth][1] and aims to produce **identical output** for
+the same sketch. This is enforced by the test suite (`npm test`), which runs
+the real hydra-synth compiler (pinned as a devDependency, currently `1.4.0`)
+side-by-side with hydra-ts and asserts:
+
+- every transform definition (inputs, defaults, and glsl) is byte-identical
+  to upstream's `glsl-functions.js`,
+- the compiled fragment shader for a corpus covering every transform — plus
+  nesting, feedback (`src(o0)`, `prev()`), arrays, and function arguments —
+  is **byte-identical** to the one hydra-synth compiles,
+- compiled uniforms resolve to the same values,
+- the regl draw commands (vertex shader, fullscreen triangle, ping-pong
+  framebuffers, `prevBuffer`, final canvas blit and 2x2 `render()` view) are
+  wired identically.
+
+`src/glsl/transformDefinitions.ts` is generated from the hydra-synth
+devDependency by `scripts/generate-transform-definitions.mjs`. To sync with a
+new upstream release: bump the `hydra-synth` devDependency, re-run the
+script, review the diff, and fix any equivalence-test failures in the
+compiler.
+
 ## Differences from the original hydra-synth
 
 Presently, you must pass an output instance to `.out(o#)` - it does not infer the "default" output if none is passed.
 PRs to address this are welcome.
 
 You must also call ArrayUtils.init() once before any instance of hydra is used.
+
+Errors thrown while compiling a chain (for example, passing a number where a
+texture is expected) propagate to the caller of `.out()`, rather than being
+caught and logged as a warning like upstream does.
 
 ## Contributing
 
