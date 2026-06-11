@@ -175,4 +175,17 @@ describe('createMouse', () => {
     element.dispatch('mousemove', { pageX: 11, pageY: 12, buttons: 0 });
     expect([mouse.x, mouse.y]).toEqual([11, 12]);
   });
+
+  test('callback-only form listens on window, like upstream', () => {
+    const fakeWindow = makeFakeElement();
+    vi.stubGlobal('window', fakeWindow);
+
+    const calls: unknown[][] = [];
+    const mouse = createMouse((...args) => calls.push(structuredClone(args)));
+
+    expect(mouse.element).toBe(fakeWindow);
+    fakeWindow.dispatch('mousemove', { pageX: 4, pageY: 9, buttons: 0 });
+    expect([mouse.x, mouse.y]).toEqual([4, 9]);
+    expect(calls).toHaveLength(1);
+  });
 });

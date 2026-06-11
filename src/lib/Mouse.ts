@@ -90,10 +90,22 @@ function eventY(ev: MouseEventLike): number {
   return 0;
 }
 
+export function createMouse(callback?: MouseCallback): Mouse;
 export function createMouse(
   element?: MouseEventTarget,
   callback?: MouseCallback,
+): Mouse;
+export function createMouse(
+  element?: MouseEventTarget | MouseCallback,
+  callback?: MouseCallback,
 ): Mouse {
+  // single-function-argument form: createMouse(callback) listens on window,
+  // like upstream's mouseListen(callback)
+  if (typeof element === 'function') {
+    callback = element;
+    element = undefined;
+  }
+
   const target: MouseEventTarget =
     element ?? (window as unknown as MouseEventTarget);
   // upstream also listens on window for blur/key events when given another
