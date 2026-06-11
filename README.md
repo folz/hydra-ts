@@ -123,6 +123,25 @@ hydra.synth.afterUpdate = (dt) => {};
 `hush()` resets both, clears all sources, and renders transparent black to
 every output, matching upstream behavior.
 
+#### Supplying extra per-frame values (e.g. `mouse`)
+
+Dynamic (function) arguments receive `{ time, bpm, resolution, ... }` each
+frame. hydra-synth additionally passes a global `mouse`; hydra-ts instead
+lets you inject any values you like:
+
+```ts
+const hydra = new Hydra({
+  // ...
+  props: () => ({ mouse: { x: pointerX, y: pointerY } }),
+});
+
+osc(({ mouse }) => mouse.x / 100).out(o0);
+```
+
+Injected values cannot override the synth's own per-frame values (`time`,
+`bpm`, `resolution`, ...), and a throwing `props` callback is logged and
+skipped for that frame rather than aborting it.
+
 #### Adding custom generator or modifier hydra functions (e.g. `setFunction`)
 
 ```ts

@@ -70,6 +70,16 @@ interface HydraRendererOptions {
   numOutputs?: number;
   numSources?: number;
   precision?: Precision;
+  /**
+   * Extra values merged into the props that dynamic (function) arguments
+   * receive each frame, alongside time/bpm/resolution. hydra-synth passes
+   * `mouse` this way; hydra-ts leaves such inputs to the caller:
+   * `props: () => ({ mouse })` recreates upstream's behavior.
+   *
+   * Injected values never replace the synth's own per-frame values, and a
+   * throwing callback is logged and skipped for that frame.
+   */
+  props?: () => Record<string, unknown>;
   regl: Regl;
   width: number;
 }
@@ -90,6 +100,7 @@ export class Hydra {
   #isRenderingAll = false;
   readonly #renderFbo: DrawCommand<DefaultContext>;
   readonly #renderAll?: DrawCommand<DefaultContext>;
+  readonly #props?: () => Record<string, unknown>;
   #timeSinceLastUpdate = 0;
 
   constructor({
@@ -97,6 +108,7 @@ export class Hydra {
     numOutputs = 4,
     numSources = 4,
     precision = 'mediump',
+    props,
     regl,
     width,
   }: HydraRendererOptions) {
@@ -234,6 +246,7 @@ export class Hydra {
     this.#output = outputs[0];
     this.#renderFbo = renderFbo;
     this.#renderAll = renderAll;
+    this.#props = props;
     this.generators = createGenerators(
       generatorTransforms,
       createTransformChainClass(modifierTransforms),
@@ -296,12 +309,24 @@ export class Hydra {
           }
         }
 
+        // synth fields are spread last so injected values can never replace
+        // the core per-frame values (time, bpm, resolution, ...); a throwing
+        // props callback is logged and skipped rather than aborting the frame
+        let drawProps: Synth = this.synth;
+        if (this.#props) {
+          try {
+            drawProps = { ...this.#props(), ...this.synth };
+          } catch (e) {
+            console.log(e);
+          }
+        }
+
         this.sources.forEach((source) => {
-          source.draw(this.synth);
+          source.draw(drawProps);
         });
 
         this.outputs.forEach((output) => {
-          output.draw(this.synth);
+          output.draw(drawProps);
         });
 
         if (this.#isRenderingAll && this.#renderAll) {
