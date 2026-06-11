@@ -61,6 +61,13 @@ interface HydraRendererOptions {
   numOutputs?: number;
   numSources?: number;
   precision?: Precision;
+  /**
+   * Extra values merged into the props that dynamic (function) arguments
+   * receive each frame, alongside time/bpm/resolution. hydra-synth passes
+   * `mouse` this way; hydra-ts leaves such inputs to the caller:
+   * `props: () => ({ mouse })` recreates upstream's behavior.
+   */
+  props?: () => Record<string, unknown>;
   regl: Regl;
   width: number;
 }
@@ -74,6 +81,7 @@ export class Hydra {
   #isRenderingAll = false;
   readonly #renderFbo: DrawCommand<DefaultContext>;
   readonly #renderAll?: DrawCommand<DefaultContext>;
+  readonly #props?: () => Record<string, unknown>;
   #timeSinceLastUpdate = 0;
 
   constructor({
@@ -81,6 +89,7 @@ export class Hydra {
     numOutputs = 4,
     numSources = 4,
     precision = 'mediump',
+    props,
     regl,
     width,
   }: HydraRendererOptions) {
@@ -218,6 +227,7 @@ export class Hydra {
     this.#output = outputs[0];
     this.#renderFbo = renderFbo;
     this.#renderAll = renderAll;
+    this.#props = props;
   }
 
   hush = () => {
@@ -269,12 +279,16 @@ export class Hydra {
         }
       }
 
+      const drawProps = this.#props
+        ? { ...this.synth, ...this.#props() }
+        : this.synth;
+
       this.sources.forEach((source) => {
-        source.draw(this.synth);
+        source.draw(drawProps);
       });
 
       this.outputs.forEach((output) => {
-        output.draw(this.synth);
+        output.draw(drawProps);
       });
 
       if (this.#isRenderingAll && this.#renderAll) {
