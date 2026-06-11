@@ -1,18 +1,32 @@
 import { Glsl, TransformApplication } from '../glsl/Glsl';
 import arrayUtils from '../lib/array-utils';
 import { TransformDefinitionInput } from '../glsl/transformDefinitions';
-import { Source } from '../Source';
-import { Output } from '../Output';
 import { src } from '../glsl/index';
 
 export interface TypedArg {
-  value: TransformDefinitionInput['default'];
+  value: unknown;
   type: TransformDefinitionInput['type'];
   isUniform: boolean;
   name: TransformDefinitionInput['name'];
   vecLen: number;
 }
 
+interface HasGetTexture {
+  getTexture: () => unknown;
+}
+
+function hasGetTexture(value: unknown): value is HasGetTexture {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof (value as HasGetTexture).getTexture === 'function'
+  );
+}
+
+// This is a port of hydra-synth's src/format-arguments.js, with one
+// deliberate difference: upstream resolves `src` through the transform's
+// back-reference to the synth (`transform.synth.generators.src`), whereas
+// hydra-ts imports it directly to avoid the global-environment coupling.
 export function formatArguments(
   transformApplication: TransformApplication,
   startIndex: number,
@@ -21,104 +35,125 @@ export function formatArguments(
   const { inputs } = transform;
 
   return inputs.map((input, index) => {
-    const vecLen = input.vecLen ?? 0;
+    const typedArg: TypedArg = {
+      value: input.default,
+      type: input.type,
+      isUniform: false,
+      name: input.name,
+      vecLen: 0,
+    };
 
-    let value: any = input.default;
-    let isUniform = false;
+    if (typedArg.type === 'float') {
+      typedArg.value = ensureDecimalDot(input.default);
+    }
 
-    if (input.type === 'float') {
-      value = ensureDecimalDot(value);
+    if (input.type.startsWith('vec')) {
+      typedArg.vecLen = Number.parseInt(input.type.slice(3), 10);
     }
 
     // if user has input something for this argument
     if (userArgs.length > index) {
       const arg = userArgs[index];
 
-      value = arg;
+      typedArg.value = arg;
+
+      if (typedArg.type === 'vec4') {
+        if (!(arg instanceof Glsl || hasGetTexture(arg))) {
+          throw new Error('Arguments must be a texture or GlslSource');
+        }
+      }
       // do something if a composite or transformApplication
 
       if (typeof arg === 'function') {
-        if (vecLen > 0) {
-          // expected input is a vector, not a scalar
-          value = (context: any, props: any) =>
-            fillArrayWithDefaults(arg(props), vecLen);
-        } else {
-          value = (context: any, props: any) => {
-            try {
-              return arg(props);
-            } catch (e) {
-              console.log('ERROR', e);
-              return input.default;
+        typedArg.value = (context: unknown, props: unknown) => {
+          try {
+            const val = arg(props);
+            if (typeof val === 'number') {
+              return val;
+            } else {
+              console.warn('function does not return a number', arg);
             }
-          };
-        }
+            return input.default;
+          } catch (e) {
+            console.warn('ERROR', e);
+            return input.default;
+          }
+        };
 
-        isUniform = true;
+        typedArg.isUniform = true;
       } else if (Array.isArray(arg)) {
-        if (vecLen > 0) {
-          // expected input is a vector, not a scalar
-          isUniform = true;
-          value = fillArrayWithDefaults(value, vecLen);
-        } else {
-          // is Array
-          value = (context: any, props: any) => arrayUtils.getValue(arg)(props);
-          isUniform = true;
-        }
+        typedArg.value = (context: unknown, props: unknown) =>
+          arrayUtils.getValue(arg)(props);
+        typedArg.isUniform = true;
       }
     }
 
-    if (value instanceof Glsl) {
-      // GLSLSource
+    if (typedArg.value instanceof Glsl) {
+      // GlslSource: gets inlined into the shader by generateGlsl
 
-      isUniform = false;
-    } else if (input.type === 'float' && typeof value === 'number') {
+      typedArg.isUniform = false;
+    } else if (
+      typedArg.type === 'float' &&
+      typeof typedArg.value === 'number'
+    ) {
       // Number
 
-      value = ensureDecimalDot(value);
-    } else if (input.type.startsWith('vec') && Array.isArray(value)) {
+      typedArg.value = ensureDecimalDot(typedArg.value);
+    } else if (
+      typedArg.type.startsWith('vec') &&
+      Array.isArray(typedArg.value)
+    ) {
       // Vector literal (as array)
 
-      isUniform = false;
-      value = `${input.type}(${value.map(ensureDecimalDot).join(', ')})`;
+      typedArg.isUniform = false;
+      typedArg.value = `${typedArg.type}(${typedArg.value
+        .map(ensureDecimalDot)
+        .join(', ')})`;
     } else if (input.type === 'sampler2D') {
-      const ref = value;
+      const ref = typedArg.value as HasGetTexture;
 
-      value = () => ref.getTexture();
-      isUniform = true;
-    } else if (value instanceof Source || value instanceof Output) {
-      const ref = value;
-
-      value = src(ref);
-      isUniform = false;
+      typedArg.value = () => ref.getTexture();
+      typedArg.isUniform = true;
+    } else {
+      if (typedArg.value === undefined || typedArg.value === null) {
+        // upstream crashes here too (a TypeError reading `.getTexture` of
+        // undefined); fail with a clearer message. This is hit when a
+        // combine/combineCoord is called without its source argument, or by
+        // custom definitions that declare the source input explicitly (it is
+        // implicit — see the custom-transforms section of the README).
+        throw new Error(
+          `No value for input '${input.name}' of '${transform.name}'. ` +
+            'Combine/combineCoord transforms receive their source input ' +
+            'implicitly; it must not be declared in the definition.',
+        );
+      }
+      // if passing in a texture reference, when function asks for vec4, convert to vec4
+      if (hasGetTexture(typedArg.value) && input.type === 'vec4') {
+        typedArg.value = src(typedArg.value);
+        typedArg.isUniform = false;
+      }
     }
 
-    // Add to uniform array if is a function that will pass in a different value on each render frame,
-    // or a texture/ external source
+    // add to uniform array if is a function that will pass in a different
+    // value on each render frame, or a texture/external source
 
-    let { name } = input;
-    if (isUniform) {
-      name += startIndex;
+    if (typedArg.isUniform) {
+      typedArg.name += startIndex;
     }
 
-    return {
-      value,
-      type: input.type,
-      isUniform,
-      vecLen,
-      name,
-    };
+    return typedArg;
   });
 }
 
-export function ensureDecimalDot(val: any): string {
-  val = val.toString();
-  if (val.indexOf('.') < 0) {
-    val += '.';
+export function ensureDecimalDot(val: unknown): string {
+  const str = String(val);
+  if (str.indexOf('.') < 0) {
+    return str + '.';
   }
-  return val;
+  return str;
 }
 
-export function fillArrayWithDefaults(arr: any[], len: number) {
+export function fillArrayWithDefaults(arr: unknown[], len: number) {
   // fill the array with default values if it's too short
   while (arr.length < len) {
     if (arr.length === 3) {

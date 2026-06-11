@@ -1,125 +1,133 @@
-import { Texture2D } from 'regl';
-import { TransformApplication } from '../glsl/Glsl';
+import { Glsl, TransformApplication } from '../glsl/Glsl';
 import { formatArguments, TypedArg } from './formatArguments';
 import { ShaderParams } from './compileWithEnvironment';
 
-export type GlslGenerator = (uv: string) => string;
+// This is a port of hydra-synth's src/generate-glsl.js. The emitted shader
+// code (including whitespace) is kept byte-identical to upstream so that
+// compiled fragment shaders can be compared 1:1 against hydra-synth's. See
+// test/equivalence for the tests asserting this.
+
+export type GlslGenerator = (c: string, uv: string) => string;
 
 export function generateGlsl(
   transformApplications: TransformApplication[],
   shaderParams: ShaderParams,
 ): GlslGenerator {
-  let fragColor: GlslGenerator = () => '';
+  let generator: GlslGenerator = () => '';
 
-  transformApplications.forEach((transformApplication) => {
-    let f1: (
-      uv: string,
-    ) =>
-      | string
-      | number
-      | number[]
-      | ((context: any, props: any) => number | number[])
-      | Texture2D
-      | undefined;
-
-    const typedArgs = formatArguments(
+  transformApplications.forEach((transformApplication, i) => {
+    // Accumulate uniforms to lazily add them to the output shader
+    const inputs = formatArguments(
       transformApplication,
       shaderParams.uniforms.length,
     );
 
-    typedArgs.forEach((typedArg) => {
-      if (typedArg.isUniform) {
-        shaderParams.uniforms.push(typedArg);
+    inputs.forEach((input) => {
+      if (input.isUniform) {
+        shaderParams.uniforms.push(input);
       }
     });
 
-    // add new glsl function to running list of functions
+    // Lazily generate glsl function definition
     if (!contains(transformApplication, shaderParams.transformApplications)) {
       shaderParams.transformApplications.push(transformApplication);
     }
 
-    // current function for generating frag color shader code
-    const f0 = fragColor;
-    if (transformApplication.transform.type === 'src') {
-      fragColor = (uv) =>
-        `${shaderString(uv, transformApplication, typedArgs, shaderParams)}`;
-    } else if (transformApplication.transform.type === 'coord') {
-      fragColor = (uv) =>
-        `${f0(
-          `${shaderString(uv, transformApplication, typedArgs, shaderParams)}`,
-        )}`;
-    } else if (transformApplication.transform.type === 'color') {
-      fragColor = (uv) =>
-        `${shaderString(
-          `${f0(uv)}`,
-          transformApplication,
-          typedArgs,
-          shaderParams,
-        )}`;
-    } else if (transformApplication.transform.type === 'combine') {
+    const prev = generator;
+    const { name, type } = transformApplication.transform;
+
+    if (type === 'src') {
+      generator = (c, uv) =>
+        `${generateInputs(inputs, shaderParams)(`${c}${i}`, uv)}
+         vec4 ${c} = ${shaderString(`${c}${i}`, uv, name, inputs)};`;
+    } else if (type === 'color') {
+      generator = (c, uv) =>
+        `${generateInputs(inputs, shaderParams)(`${c}${i}`, uv)}
+         ${prev(c, uv)}
+         ${c} = ${shaderString(`${c}${i}`, `${c}`, name, inputs)};`;
+    } else if (type === 'coord') {
+      generator = (c, uv) =>
+        `${generateInputs(inputs, shaderParams)(`${c}${i}`, uv)}
+         ${uv} = ${shaderString(`${c}${i}`, `${uv}`, name, inputs)};
+         ${prev(c, uv)}`;
+    } else if (type === 'combine') {
       // combining two generated shader strings (i.e. for blend, mult, add funtions)
-      f1 =
-        // @ts-ignore
-        typedArgs[0].value && typedArgs[0].value.transforms
-          ? (uv: string) =>
-              // @ts-ignore
-              `${generateGlsl(typedArgs[0].value.transforms, shaderParams)(uv)}`
-          : typedArgs[0].isUniform
-          ? () => typedArgs[0].name
-          : () => typedArgs[0].value;
-      fragColor = (uv) =>
-        `${shaderString(
-          `${f0(uv)}, ${f1(uv)}`,
-          transformApplication,
-          typedArgs.slice(1),
-          shaderParams,
-        )}`;
-    } else if (transformApplication.transform.type === 'combineCoord') {
+      generator = (c, uv) =>
+        `${generateInputs(inputs, shaderParams)(`${c}${i}`, uv)}
+         ${prev(c, uv)}
+         ${c} = ${shaderString(`${c}${i}`, `${c}`, name, inputs)};`;
+    } else if (type === 'combineCoord') {
       // combining two generated shader strings (i.e. for modulate functions)
-      f1 =
-        // @ts-ignore
-        typedArgs[0].value && typedArgs[0].value.transforms
-          ? (uv: string) =>
-              // @ts-ignore
-              `${generateGlsl(typedArgs[0].value.transforms, shaderParams)(uv)}`
-          : typedArgs[0].isUniform
-          ? () => typedArgs[0].name
-          : () => typedArgs[0].value;
-      fragColor = (uv) =>
-        `${f0(
-          `${shaderString(
-            `${uv}, ${f1(uv)}`,
-            transformApplication,
-            typedArgs.slice(1),
-            shaderParams,
-          )}`,
-        )}`;
+      generator = (c, uv) =>
+        `${generateInputs(inputs, shaderParams)(`${c}${i}`, uv)}
+         ${uv} = ${shaderString(`${c}${i}`, `${uv}`, name, inputs)};
+         ${prev(c, uv)}`;
     }
   });
-  return fragColor;
+
+  return generator;
 }
 
-function shaderString(
-  uv: string,
-  transformApplication: TransformApplication,
+function generateInputName(v: string, index: number): string {
+  return `${v}_i${index}`;
+}
+
+// Emits the statements computing each input that is itself a transform chain
+// (e.g. the `osc()` in `solid().blend(osc())`). Each nested chain gets its
+// own copy of the current uv so coord transforms inside it stay local.
+function generateInputs(
   inputs: TypedArg[],
   shaderParams: ShaderParams,
+): GlslGenerator {
+  let generator: GlslGenerator = () => '';
+
+  inputs.forEach((input, i) => {
+    const nestedTransforms = nestedTransformsOf(input.value);
+
+    if (nestedTransforms) {
+      const prev = generator;
+      generator = (c, uv) => {
+        const ci = generateInputName(c, i);
+        const uvi = generateInputName(`${uv}_${c}`, i);
+        return `vec2 ${uvi} = ${uv};${prev(c, uv)}
+         ${generateGlsl(nestedTransforms, shaderParams)(ci, uvi)}`;
+      };
+    }
+  });
+
+  return generator;
+}
+
+// assembles a shader string containing the arguments and the function name, i.e. 'osc(uv, frequency)'
+function shaderString(
+  c: string,
+  uv: string,
+  method: string,
+  inputs: TypedArg[],
 ): string {
   const str = inputs
-    .map((input) => {
+    .map((input, i) => {
       if (input.isUniform) {
         return input.name;
-      // @ts-ignore
-      } else if (input.value && input.value.transforms) {
-        // this by definition needs to be a generator, hence we start with 'st' as the initial value for generating the glsl fragment
-        // @ts-ignore
-        return `${generateGlsl(input.value.transforms, shaderParams)('st')}`;
+      } else if (nestedTransformsOf(input.value)) {
+        // this by definition needs to be a generator
+        // use the variable created for generator inputs in `generateInputs`
+        return generateInputName(c, i);
       }
       return input.value;
     })
     .reduce((p, c) => `${p}, ${c}`, '');
 
-  return `${transformApplication.transform.name}(${uv}${str})`;
+  return `${method}(${uv}${str})`;
+}
+
+function nestedTransformsOf(
+  value: TypedArg['value'],
+): TransformApplication[] | undefined {
+  if (value instanceof Glsl) {
+    return value.transforms.toArray();
+  }
+  return undefined;
 }
 
 function contains(
@@ -128,7 +136,7 @@ function contains(
 ): boolean {
   for (let i = 0; i < transformApplications.length; i++) {
     if (
-      transformApplication.transform.name ==
+      transformApplication.transform.name ===
       transformApplications[i].transform.name
     ) {
       return true;

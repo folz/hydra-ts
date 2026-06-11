@@ -76,6 +76,39 @@ export class Source {
       .catch((err) => console.log('could not get screen', err));
   };
 
+  // cached canvas context, so we don't create a new canvas every time
+  #canvasCtx?: CanvasRenderingContext2D;
+
+  // Creates a canvas, registers it as this source's input, and returns its
+  // 2d context for drawing
+  initCanvas = (width = 1000, height = 1000) => {
+    if (this.#canvasCtx === undefined) {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (ctx != null) {
+        this.#canvasCtx = ctx;
+      }
+    }
+
+    const ctx = this.#canvasCtx;
+    if (ctx === undefined) {
+      return undefined;
+    }
+
+    const canvas = ctx.canvas;
+    // resize when either dimension changes (upstream requires both to
+    // change, which leaves the canvas at the old size if only one differs)
+    if (canvas.width !== width || canvas.height !== height) {
+      canvas.width = width;
+      canvas.height = height;
+    } else {
+      ctx.clearRect(0, 0, width, height);
+    }
+    this.init({ src: canvas, dynamic: true });
+
+    return ctx;
+  };
+
   clear = () => {
     if (this.src && 'srcObject' in this.src && this.src.srcObject) {
       if ('getTracks' in this.src.srcObject && this.src.srcObject.getTracks) {

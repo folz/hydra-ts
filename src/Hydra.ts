@@ -20,6 +20,13 @@ export interface HydraFboUniforms {
   tex0: Resource;
 }
 
+export interface HydraQuadUniforms {
+  tex0: Resource;
+  tex1: Resource;
+  tex2: Resource;
+  tex3: Resource;
+}
+
 export interface HydraDrawUniforms {
   resolution: Resolution;
   time: number;
@@ -34,6 +41,9 @@ export interface Synth {
     fps: number;
   };
   time: number;
+  // user-defined callbacks, run before and after each rendered frame
+  update?: (dt: number) => void;
+  afterUpdate?: (dt: number) => void;
 }
 
 export interface GlEnvironment {
@@ -61,7 +71,9 @@ export class Hydra {
   readonly outputs: Output[];
   readonly sources: Source[];
   #output: Output;
+  #isRenderingAll = false;
   readonly #renderFbo: DrawCommand<DefaultContext>;
+  readonly #renderAll?: DrawCommand<DefaultContext>;
   #timeSinceLastUpdate = 0;
 
   constructor({
@@ -75,7 +87,7 @@ export class Hydra {
     const outputs = [];
     const sources = [];
 
-    const synth = {
+    const synth: Synth = {
       bpm: 30,
       fps: undefined,
       resolution: [width, height],
@@ -84,7 +96,7 @@ export class Hydra {
         fps: 0,
       },
       time: 0,
-    } as const;
+    };
 
     const defaultUniforms = {
       time: regl.prop<HydraDrawUniforms, keyof HydraDrawUniforms>('time'),
@@ -101,6 +113,24 @@ export class Hydra {
       defaultUniforms,
     };
 
+    const vert = `
+      precision ${glEnvironment.precision} float;
+      attribute vec2 position;
+      varying vec2 uv;
+
+      void main () {
+        uv = position;
+        gl_Position = vec4(1.0 - 2.0 * position, 0, 1);
+      }`;
+
+    const attributes = {
+      position: [
+        [-2, 0],
+        [0, -2],
+        [2, 2],
+      ],
+    };
+
     const renderFbo = regl<HydraFboUniforms>({
       frag: `
       precision ${glEnvironment.precision} float;
@@ -112,22 +142,8 @@ export class Hydra {
         gl_FragColor = texture2D(tex0, vec2(1.0 - uv.x, uv.y));
       }
       `,
-      vert: `
-      precision ${glEnvironment.precision} float;
-      attribute vec2 position;
-      varying vec2 uv;
-
-      void main () {
-        uv = position;
-        gl_Position = vec4(1.0 - 2.0 * position, 0, 1);
-      }`,
-      attributes: {
-        position: [
-          [-2, 0],
-          [0, -2],
-          [2, 2],
-        ],
-      },
+      vert,
+      attributes,
       uniforms: {
         tex0: regl.prop<HydraFboUniforms, keyof HydraFboUniforms>('tex0'),
         resolution: regl.prop<HydraFboUniforms, keyof HydraFboUniforms>(
@@ -137,6 +153,53 @@ export class Hydra {
       count: 3,
       depth: { enable: false },
     });
+
+    // matches hydra-synth's render() with no arguments: tile the first four
+    // outputs in a 2x2 grid. Only available when there are at least four
+    // outputs.
+    const renderAll =
+      numOutputs >= 4
+        ? regl<HydraQuadUniforms>({
+            frag: `
+      precision ${glEnvironment.precision} float;
+      varying vec2 uv;
+      uniform sampler2D tex0;
+      uniform sampler2D tex1;
+      uniform sampler2D tex2;
+      uniform sampler2D tex3;
+
+      void main () {
+        vec2 st = vec2(1.0 - uv.x, uv.y);
+        st*= vec2(2);
+        vec2 q = floor(st).xy*(vec2(2.0, 1.0));
+        int quad = int(q.x) + int(q.y);
+        st.x += step(1., mod(st.y,2.0));
+        st.y += step(1., mod(st.x,2.0));
+        st = fract(st);
+        if(quad==0){
+          gl_FragColor = texture2D(tex0, st);
+        } else if(quad==1){
+          gl_FragColor = texture2D(tex1, st);
+        } else if (quad==2){
+          gl_FragColor = texture2D(tex2, st);
+        } else {
+          gl_FragColor = texture2D(tex3, st);
+        }
+
+      }
+      `,
+            vert,
+            attributes,
+            uniforms: {
+              tex0: regl.prop<HydraQuadUniforms, 'tex0'>('tex0'),
+              tex1: regl.prop<HydraQuadUniforms, 'tex1'>('tex1'),
+              tex2: regl.prop<HydraQuadUniforms, 'tex2'>('tex2'),
+              tex3: regl.prop<HydraQuadUniforms, 'tex3'>('tex3'),
+            },
+            count: 3,
+            depth: { enable: false },
+          })
+        : undefined;
 
     for (let i = 0; i < numSources; i++) {
       const s = new Source(glEnvironment);
@@ -154,12 +217,19 @@ export class Hydra {
     this.synth = synth;
     this.#output = outputs[0];
     this.#renderFbo = renderFbo;
+    this.#renderAll = renderAll;
   }
 
   hush = () => {
-    this.outputs.forEach((output) => {
-      solid(1, 1, 1, 0).out(output);
+    this.sources.forEach((source) => {
+      source.clear();
     });
+    this.outputs.forEach((output) => {
+      solid(0, 0, 0, 0).out(output);
+    });
+    this.render(this.outputs[0]);
+    this.synth.update = undefined;
+    this.synth.afterUpdate = undefined;
   };
 
   setResolution = (width: number, height: number) => {
@@ -171,7 +241,15 @@ export class Hydra {
   };
 
   render = (output?: Output) => {
-    this.#output = output ?? this.outputs[0];
+    if (output) {
+      this.#output = output;
+      this.#isRenderingAll = false;
+    } else if (this.#renderAll) {
+      this.#isRenderingAll = true;
+    } else {
+      this.#output = this.outputs[0];
+      this.#isRenderingAll = false;
+    }
   };
 
   // dt in ms
@@ -183,6 +261,14 @@ export class Hydra {
     if (!this.synth.fps || this.#timeSinceLastUpdate >= 1000 / this.synth.fps) {
       this.synth.stats.fps = Math.ceil(1000 / this.#timeSinceLastUpdate);
 
+      if (this.synth.update) {
+        try {
+          this.synth.update(this.#timeSinceLastUpdate);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+
       this.sources.forEach((source) => {
         source.draw(this.synth);
       });
@@ -191,10 +277,27 @@ export class Hydra {
         output.draw(this.synth);
       });
 
-      this.#renderFbo({
-        tex0: this.#output.getCurrent(),
-        resolution: this.synth.resolution,
-      });
+      if (this.#isRenderingAll && this.#renderAll) {
+        this.#renderAll({
+          tex0: this.outputs[0].getCurrent(),
+          tex1: this.outputs[1].getCurrent(),
+          tex2: this.outputs[2].getCurrent(),
+          tex3: this.outputs[3].getCurrent(),
+        });
+      } else {
+        this.#renderFbo({
+          tex0: this.#output.getCurrent(),
+          resolution: this.synth.resolution,
+        });
+      }
+
+      if (this.synth.afterUpdate) {
+        try {
+          this.synth.afterUpdate(this.#timeSinceLastUpdate);
+        } catch (e) {
+          console.log(e);
+        }
+      }
 
       this.#timeSinceLastUpdate = 0;
     }

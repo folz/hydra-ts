@@ -1,5 +1,5 @@
 {
-  "exclude": ["dev", "dist", "test"],
+  "exclude": ["dev", "dist", "test", "scripts", "vitest.config.ts"],
   "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
     "declaration": true,
