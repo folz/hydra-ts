@@ -62,6 +62,17 @@ dimensions to avoid sampling/pixelation of high-resolution sketches until finall
 
 You can optionally provide a non-negative number for numOutputs and numSources, as well as a Precision value.
 
+The precision default is `'mediump'`. hydra-synth instead auto-detects iOS
+and uses `'highp'` there (mediump fragment shaders are visibly
+low-precision on iOS); hydra-ts never sniffs the environment implicitly,
+but ships the same heuristic as an opt-in helper:
+
+```ts
+import { Hydra, detectPrecision } from 'hydra-ts';
+
+const hydra = new Hydra({ regl, width, height, precision: detectPrecision() });
+```
+
 #### Recreating the hydra-editor global environment
 
 ```ts
