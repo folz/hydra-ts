@@ -1,7 +1,10 @@
 import { Glsl, TransformApplication } from '../glsl/Glsl.js';
 import arrayUtils from '../lib/array-utils.js';
-import { TransformDefinitionInput } from '../glsl/transformDefinitions.js';
-import { src } from '../glsl/index.js';
+import {
+  generatorTransforms,
+  TransformDefinitionInput,
+} from '../glsl/transformDefinitions.js';
+import { createGenerator } from '../glsl/createGenerators.js';
 
 export interface TypedArg {
   value: unknown;
@@ -9,6 +12,26 @@ export interface TypedArg {
   isUniform: boolean;
   name: TransformDefinitionInput['name'];
   vecLen: number;
+}
+
+// The `src` generator used to wrap raw texture references passed to vec4
+// inputs (hydra-synth resolves this through the transform's back-reference
+// to the synth; hydra-ts builds it locally to avoid the global-environment
+// coupling). Built lazily so this module never evaluates other modules'
+// bodies at import time, keeping the compiler's import cycle inert.
+let srcGenerator: ((...args: unknown[]) => Glsl) | undefined;
+
+function src(...args: unknown[]): Glsl {
+  if (srcGenerator === undefined) {
+    const srcTransform = generatorTransforms.find(
+      (transform) => transform.name === 'src',
+    );
+    if (srcTransform === undefined) {
+      throw new Error("missing 'src' transform definition");
+    }
+    srcGenerator = createGenerator(srcTransform, Glsl);
+  }
+  return srcGenerator(...args);
 }
 
 interface HasGetTexture {
@@ -23,10 +46,8 @@ function hasGetTexture(value: unknown): value is HasGetTexture {
   );
 }
 
-// This is a port of hydra-synth's src/format-arguments.js, with one
-// deliberate difference: upstream resolves `src` through the transform's
-// back-reference to the synth (`transform.synth.generators.src`), whereas
-// hydra-ts imports it directly to avoid the global-environment coupling.
+// This is a port of hydra-synth's src/format-arguments.js; see the note on
+// `src` above for the one deliberate difference.
 export function formatArguments(
   transformApplication: TransformApplication,
   startIndex: number,
