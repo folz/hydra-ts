@@ -156,7 +156,17 @@ hydra-synth and hydra-ts alike.
 
 #### Recreating bidirectional global changes (e.g. assigning `bpm`/`speed` globals)
 
-This is not presently supported.
+In the hydra editor, `speed`, `bpm`, and `fps` are assignable globals. In
+hydra-ts they are plain mutable fields on `hydra.synth`:
+
+```ts
+hydra.synth.speed = 2; // time advances twice as fast
+hydra.synth.bpm = 120; // affects array sequencing ([1, 2].fast(...))
+hydra.synth.fps = 30; // cap the render rate (undefined = uncapped)
+```
+
+Reading them works the same way (`hydra.synth.time`, `hydra.synth.stats.fps`).
+There are no window-level globals to assign; each instance owns its state.
 
 ## Equivalence with upstream
 
