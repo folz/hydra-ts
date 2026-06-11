@@ -165,6 +165,26 @@ Also note that since hydra-synth 1.4.0, arguments for `vec4` inputs must be
 a source or texture; vector literals like `sum([1, 1, 1, 1])` throw, in
 hydra-synth and hydra-ts alike.
 
+#### Mouse input
+
+hydra-synth installs a global `mouse` listener on `window` at import time.
+hydra-ts ships the same tracker as an explicit factory instead — nothing is
+attached until you ask for it:
+
+```ts
+import { createMouse } from 'hydra-ts';
+
+const mouse = createMouse(); // listens on window, like hydra-synth
+// const mouse = createMouse(canvas); // or scope it to an element
+
+osc(() => mouse.x / 100).out(o0);
+
+mouse.enabled = false; // detach listeners when done
+```
+
+`mouse` exposes the same properties as upstream's: `x`, `y`, `buttons`,
+`mods`, and `enabled`.
+
 #### Recreating bidirectional global changes (e.g. assigning `bpm`/`speed` globals)
 
 In the hydra editor, `speed`, `bpm`, and `fps` are assignable globals. In
