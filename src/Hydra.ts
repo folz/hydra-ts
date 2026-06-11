@@ -254,52 +254,61 @@ export class Hydra {
 
   // dt in ms
   tick = (dt: number) => {
-    this.synth.time += dt * 0.001 * this.synth.speed;
+    // like hydra-synth, a failing frame is logged rather than thrown, so an
+    // error (e.g. from a dynamic uniform) doesn't break the render loop
+    try {
+      this.synth.time += dt * 0.001 * this.synth.speed;
 
-    this.#timeSinceLastUpdate += dt;
+      this.#timeSinceLastUpdate += dt;
 
-    if (!this.synth.fps || this.#timeSinceLastUpdate >= 1000 / this.synth.fps) {
-      this.synth.stats.fps = Math.ceil(1000 / this.#timeSinceLastUpdate);
+      if (
+        !this.synth.fps ||
+        this.#timeSinceLastUpdate >= 1000 / this.synth.fps
+      ) {
+        this.synth.stats.fps = Math.ceil(1000 / this.#timeSinceLastUpdate);
 
-      if (this.synth.update) {
-        try {
-          this.synth.update(this.#timeSinceLastUpdate);
-        } catch (e) {
-          console.log(e);
+        if (this.synth.update) {
+          try {
+            this.synth.update(this.#timeSinceLastUpdate);
+          } catch (e) {
+            console.log(e);
+          }
         }
-      }
 
-      this.sources.forEach((source) => {
-        source.draw(this.synth);
-      });
-
-      this.outputs.forEach((output) => {
-        output.draw(this.synth);
-      });
-
-      if (this.#isRenderingAll && this.#renderAll) {
-        this.#renderAll({
-          tex0: this.outputs[0].getCurrent(),
-          tex1: this.outputs[1].getCurrent(),
-          tex2: this.outputs[2].getCurrent(),
-          tex3: this.outputs[3].getCurrent(),
+        this.sources.forEach((source) => {
+          source.draw(this.synth);
         });
-      } else {
-        this.#renderFbo({
-          tex0: this.#output.getCurrent(),
-          resolution: this.synth.resolution,
-        });
-      }
 
-      if (this.synth.afterUpdate) {
-        try {
-          this.synth.afterUpdate(this.#timeSinceLastUpdate);
-        } catch (e) {
-          console.log(e);
+        this.outputs.forEach((output) => {
+          output.draw(this.synth);
+        });
+
+        if (this.#isRenderingAll && this.#renderAll) {
+          this.#renderAll({
+            tex0: this.outputs[0].getCurrent(),
+            tex1: this.outputs[1].getCurrent(),
+            tex2: this.outputs[2].getCurrent(),
+            tex3: this.outputs[3].getCurrent(),
+          });
+        } else {
+          this.#renderFbo({
+            tex0: this.#output.getCurrent(),
+            resolution: this.synth.resolution,
+          });
         }
-      }
 
-      this.#timeSinceLastUpdate = 0;
+        if (this.synth.afterUpdate) {
+          try {
+            this.synth.afterUpdate(this.#timeSinceLastUpdate);
+          } catch (e) {
+            console.log(e);
+          }
+        }
+
+        this.#timeSinceLastUpdate = 0;
+      }
+    } catch (e) {
+      console.warn('Error during tick():', e);
     }
   };
 }
