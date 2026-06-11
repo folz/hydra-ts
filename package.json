@@ -1,17 +1,30 @@
 {
   "name": "hydra-ts",
-  "license": "AGPL",
+  "license": "AGPL-3.0-or-later",
   "version": "1.0.0",
   "description": "A fork of ojack/hydra-synth in typescript, focusing on interoperability.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src",
+    "index.ts"
+  ],
+  "sideEffects": false,
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
     "dev": "vite",
     "coverage": "vitest run --coverage",
-    "prepack": "tsc || true"
+    "prepack": "tsc"
   },
   "repository": {
     "type": "git",

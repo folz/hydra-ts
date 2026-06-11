@@ -1,9 +1,9 @@
-import { GlEnvironment } from '../Hydra';
-import { TypedArg } from './formatArguments';
-import { utilityFunctions } from '../glsl/utilityFunctions';
-import { TransformApplication } from '../glsl/Glsl';
+import { GlEnvironment } from '../Hydra.js';
+import { TypedArg } from './formatArguments.js';
+import { utilityFunctions } from '../glsl/utilityFunctions.js';
+import { TransformApplication } from '../glsl/Glsl.js';
 import { DynamicVariable, DynamicVariableFn, Texture2D, Uniform } from 'regl';
-import { generateGlsl } from './generateGlsl';
+import { generateGlsl } from './generateGlsl.js';
 
 export type CompiledTransform = {
   frag: string;

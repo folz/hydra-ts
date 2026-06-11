@@ -6,10 +6,10 @@ import {
   Regl,
   Resource,
 } from 'regl';
-import { Output } from './Output';
-import { Loop } from './Loop';
-import { Source } from './Source';
-import { solid } from './glsl';
+import { Output } from './Output.js';
+import { Loop } from './Loop.js';
+import { Source } from './Source.js';
+import { solid } from './glsl/index.js';
 
 export type Precision = 'lowp' | 'mediump' | 'highp';
 

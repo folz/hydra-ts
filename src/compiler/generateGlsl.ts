@@ -1,6 +1,6 @@
-import { Glsl, TransformApplication } from '../glsl/Glsl';
-import { formatArguments, TypedArg } from './formatArguments';
-import { ShaderParams } from './compileWithEnvironment';
+import { Glsl, TransformApplication } from '../glsl/Glsl.js';
+import { formatArguments, TypedArg } from './formatArguments.js';
+import { ShaderParams } from './compileWithEnvironment.js';
 
 // This is a port of hydra-synth's src/generate-glsl.js. The emitted shader
 // code (including whitespace) is kept byte-identical to upstream so that
