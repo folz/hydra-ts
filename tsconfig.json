@@ -5,6 +5,11 @@
     "declaration": true,
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    // The package runs on Node 22+ and modern browsers. Pin lib explicitly
+    // so the available runtime APIs don't depend on the base target (TS 6
+    // no longer pulls in es2017+ globals like Object.values by default).
+    // This is type-only and does not change the emitted output.
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "outDir": "dist/"
   }
 }
