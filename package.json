@@ -24,7 +24,10 @@
     "test:watch": "vitest",
     "dev": "vite",
     "coverage": "vitest run --coverage",
-    "prepack": "tsc"
+    "prepack": "tsc",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "repository": {
     "type": "git",
@@ -49,16 +52,17 @@
     "regl": ">=1.3.9 <3"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "@tsconfig/recommended": "^1.0.1",
     "@types/node": "^22.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.8.1",
-    "@typescript-eslint/parser": "^5.8.1",
     "@vitest/coverage-v8": "^4.1.8",
-    "eslint": "^8.5.0",
+    "eslint": "^9.39.4",
+    "globals": "^17.6.0",
     "hydra-synth": "1.4.0",
-    "prettier": "^2.5.1",
+    "prettier": "^3.8.4",
     "regl": "^2.1.1",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.61.0",
     "vite": "^8.0.0",
     "vitest": "^4.1.8"
   }
