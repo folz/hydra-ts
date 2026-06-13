@@ -67,3 +67,6 @@ typings/
 
 # jetbrains config
 .idea
+
+# npm manages this file
+package-lock.json

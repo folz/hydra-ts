@@ -16,7 +16,7 @@ import UpstreamOutput from '../../node_modules/hydra-synth/src/output.js';
 
 import { Output } from '../../src/Output';
 import { Hydra, GlEnvironment } from '../../src/Hydra';
-import { buildUpstream, buildHydraTs, makeContext, PRECISION } from './helpers';
+import { buildUpstream, buildHydraTs, PRECISION } from './helpers';
 
 const WIDTH = 320;
 const HEIGHT = 240;
@@ -97,8 +97,6 @@ describe('Output', () => {
   });
 
   test('render() creates an equivalent draw command', () => {
-    const ctx = makeContext();
-
     // compile the same sketch on both sides
     const upstreamSide = buildUpstream();
     const tsSide = buildHydraTs();

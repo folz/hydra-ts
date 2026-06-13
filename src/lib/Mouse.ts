@@ -162,7 +162,7 @@ export function createMouse(
       buttonState = nextButtons | 0;
       x = nextX || 0;
       y = nextY || 0;
-      callback && callback(buttonState, x, y, mods);
+      if (callback) callback(buttonState, x, y, mods);
     }
   }
 
@@ -183,13 +183,13 @@ export function createMouse(
       x = y = 0;
       buttonState = 0;
       mods.shift = mods.alt = mods.control = mods.meta = false;
-      callback && callback(0, 0, 0, mods);
+      if (callback) callback(0, 0, 0, mods);
     }
   }
 
   function handleMods(ev: MouseEventLike) {
     if (updateMods(ev)) {
-      callback && callback(buttonState, x, y, mods);
+      if (callback) callback(buttonState, x, y, mods);
     }
   }
 
