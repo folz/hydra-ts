@@ -5,6 +5,10 @@
     "declaration": true,
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    // The package targets Node 22+ and modern browsers, so emit native
+    // ES2022 (real #private fields, class fields) rather than downleveling
+    // to WeakMap helpers. Overrides the base target of es2016.
+    "target": "ES2022",
     // The package runs on Node 22+ and modern browsers. Pin lib explicitly
     // so the available runtime APIs don't depend on the base target (TS 6
     // no longer pulls in es2017+ globals like Object.values by default).
