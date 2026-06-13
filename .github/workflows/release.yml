@@ -29,17 +29,15 @@ jobs:
   publish:
     runs-on: ubuntu-latest # trusted publishing requires a cloud-hosted runner
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      # Node 24 bundles npm >= 11.5.1, which trusted publishing requires for
+      # the OIDC exchange (Node 22 ships npm 10.x and would need an upgrade).
+      - uses: actions/setup-node@v6
         with:
-          node-version: 22 # >= 22.14.0; matches the CI test matrix
+          node-version: 24
           cache: npm
           registry-url: https://registry.npmjs.org
-
-      # Trusted publishing requires npm >= 11.5.1, but Node 22 still bundles
-      # npm 10.x — upgrade so `npm publish` performs the OIDC exchange.
-      - run: npm install -g npm@latest
 
       - run: npm ci
       - run: npx tsc --noEmit
