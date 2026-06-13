@@ -6,15 +6,20 @@ implementation to make it easier to use as a library.
 
 ## Installation
 
+`hydra-ts` takes a [regl][3] instance you create and pass in, so `regl` is a
+peer dependency — install it alongside:
+
 ```shell
 # yarn
-yarn add hydra-ts
+yarn add hydra-ts regl
 ```
 
 ```shell
 # npm
-npm install -S hydra-ts
+npm install hydra-ts regl
 ```
+
+Requires Node 22 or newer.
 
 ## Background
 
@@ -273,3 +278,4 @@ feel free to open an issue discussing the changes before starting work on them.
 
 [1]: https://github.com/ojack/hydra-synth#readme
 [2]: https://github.com/ojack/hydra#readme
+[3]: https://github.com/regl-project/regl#readme
