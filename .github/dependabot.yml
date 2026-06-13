@@ -1,0 +1,26 @@
+version: 2
+updates:
+  # npm dependencies: weekly, grouped to keep PR noise down.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    groups:
+      # routine minor/patch bumps land in a single PR per week
+      dev-minor-and-patch:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+    ignore:
+      # hydra-synth is pinned deliberately: the equivalence suite compiles
+      # against this exact version. Bump it intentionally (re-run
+      # scripts/generate-transform-definitions.mjs), not via dependabot.
+      - dependency-name: hydra-synth
+
+  # GitHub Actions used by the CI and release workflows.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
