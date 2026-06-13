@@ -1,11 +1,20 @@
 name: Release
 
-# Publishes the package to npm, then tags vX.Y.Z and creates the GitHub
-# Release. Trigger manually (workflow_dispatch) after landing a version bump
-# on main, or by pushing a v* tag.
+# Publishes hydra-ts to npm via npm Trusted Publishing (OIDC) — no tokens or
+# secrets — then pushes the vX.Y.Z tag and creates the GitHub Release.
 #
-# Requires the NPM_TOKEN repository secret (an npm "Automation" token, which
-# bypasses OTP): Settings -> Secrets and variables -> Actions.
+# Trigger: run manually (workflow_dispatch) after landing a version bump on
+# main, or push a v* tag.
+#
+# One-time setup on npmjs.com
+#   Package hydra-ts -> Settings -> Trusted Publisher -> GitHub Actions:
+#     Organization or user:  folz
+#     Repository:            hydra-ts
+#     Workflow filename:     release.yml   (basename only, with extension)
+#     Environment:           (leave blank)
+#     Allowed actions:       npm publish
+#   After the first successful publish, harden under "Publishing access":
+#     "Require two-factor authentication and disallow tokens".
 
 on:
   workflow_dispatch:
@@ -13,44 +22,52 @@ on:
     tags: ['v*']
 
 permissions:
+  id-token: write # OIDC token for npm Trusted Publishing
   contents: write # push the version tag and create the GitHub Release
-  id-token: write # npm --provenance
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # trusted publishing requires a cloud-hosted runner
     steps:
-      - name: Check NPM_TOKEN is configured
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          if [ -z "$NODE_AUTH_TOKEN" ]; then
-            echo "::error::The NPM_TOKEN repository secret is not configured. Create an npm Automation token and add it under Settings -> Secrets and variables -> Actions."
-            exit 1
-          fi
-
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 22 # >= 22.14.0; matches the CI test matrix
           cache: npm
           registry-url: https://registry.npmjs.org
+
+      # Trusted publishing requires npm >= 11.5.1, but Node 22 still bundles
+      # npm 10.x — upgrade so `npm publish` performs the OIDC exchange.
+      - run: npm install -g npm@latest
 
       - run: npm ci
       - run: npx tsc --noEmit
       - run: npm test
 
+      - name: Resolve version and check npm
+        id: meta
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if npm view "hydra-ts@$VERSION" version >/dev/null 2>&1; then
+            echo "published=true" >> "$GITHUB_OUTPUT"
+            echo "hydra-ts@$VERSION is already on npm; skipping publish."
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # No NODE_AUTH_TOKEN and no --provenance: trusted publishing
+      # authenticates via OIDC and generates provenance automatically.
       - name: Publish to npm
-        run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        if: steps.meta.outputs.published == 'false'
+        run: npm publish
 
       - name: Tag and create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          VERSION="$(node -p "require('./package.json').version")"
+          VERSION="${{ steps.meta.outputs.version }}"
           TAG="v$VERSION"
           if ! git ls-remote --exit-code --tags origin "$TAG" >/dev/null; then
             git tag "$TAG" "$GITHUB_SHA"
