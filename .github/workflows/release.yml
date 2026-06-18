@@ -29,7 +29,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest # trusted publishing requires a cloud-hosted runner
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       # Node 24 bundles npm >= 11.5.1, which trusted publishing requires for
       # the OIDC exchange (Node 22 ships npm 10.x and would need an upgrade).
