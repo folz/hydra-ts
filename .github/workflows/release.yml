@@ -33,7 +33,7 @@ jobs:
 
       # Node 24 bundles npm >= 11.5.1, which trusted publishing requires for
       # the OIDC exchange (Node 22 ships npm 10.x and would need an upgrade).
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
