@@ -1,3 +1,5 @@
+
+
 # `hydra-ts`
 
 `hydra-ts` is a fork of [ojack/hydra-synth][1] in typescript, focusing on interoperability with other projects. It
@@ -110,7 +112,8 @@ Sources and outputs may be named when destructuring from their respective proper
 Helper methods may also be destructured from the hydra instance.
 
 Calling `render()` with no argument tiles the first four outputs in a 2x2
-grid, like the original hydra editor (requires at least four outputs);
+grid, like the original hydra editor (requires at least four outputs; with
+fewer, it renders the first output);
 `render(o1)` renders a single output.
 
 #### Per-frame callbacks (`update`/`afterUpdate`)
